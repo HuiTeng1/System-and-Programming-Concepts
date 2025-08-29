@@ -332,10 +332,6 @@ int main (){
     vector<Organizer> organizerList;
     vector<Vendor> vendorList;
 
-    //File
-    ofstream write;
-    ifstream read;
-
     //Variable 
     CurrentUser currentUser;
 }
@@ -439,17 +435,17 @@ void userRegister(vector<Admin> &adminList, vector<Organizer> &organizerList, ve
     switch(choice){
     case 1:{
         Admin admin;
-        getAdminInfo(admin);
+        getAdminInfo(admin, adminList);
         adminList.push_back(admin);
         break;
     }case 2:{
         Organizer organizer;
-        getOrganizerInfo(organizer);
+        getOrganizerInfo(organizer, organizerList);
         organizerList.push_back(organizer);
         break;
     }case 3:{
         Vendor vendor;
-        getVendorInfo(vendor);
+        getVendorInfo(vendor, vendorList);
         vendorList.push_back(vendor);
         break;
     }default:
@@ -460,7 +456,8 @@ void userRegister(vector<Admin> &adminList, vector<Organizer> &organizerList, ve
 }
 
 template <typename T>
-void saveUserIntoFile(vector<T> data, string &fileName, ofstream &write){
+void saveUserIntoFile(vector<T> data,  string fileName){
+    ofstream write
     write.open(fileName);
 
     if(!write){
@@ -473,6 +470,31 @@ void saveUserIntoFile(vector<T> data, string &fileName, ofstream &write){
     }
     write.close();
 
+}
+
+template <typename T>
+void loadUserFromFile(vector<T>& data, string fileName) {
+    ifstream read(fileName);
+    if (!read) return; // File doesn't exist yet
+    
+    data.clear();
+    string line;
+    while (getline(read, line)) {
+        if (!line.empty()) {
+            try {
+                data.push_back(T::fromFileString(line));
+            } catch (...) {
+                cout << "Error parsing line in " << fileName << endl;
+            }
+        }
+    }
+    read.close();
+}
+
+void loadAllData(vector<Vendor> &vendorList,vector<Organizer> &organizerList,vector<Admin> &adminList) {
+    loadUserFromFile(adminList, "admins.txt");
+    loadUserFromFile(organizerList, "organizers.txt");
+    loadUserFromFile(vendorList, "vendors.txt");
 }
 
 bool login(vector<Vendor> &vendorList,vector<Organizer> &organizerList,vector<Admin> &adminList, CurrentUser &currentUser){
@@ -537,6 +559,44 @@ void logout(CurrentUser &currentUser) {
     currentUser.userName = "";
 }
 
+void addService(CurrentUser &currentUser, vector<Vendor> &vendorList,vector<Organizer> &organizerList,vector<Admin> &adminList) {
+    if (currentUser.type != VENDOR) return;
+    
+    Service newService;
+    cout << "=== ADD NEW SERVICE ===" << endl;
+    
+    cout << "Service name: ";
+    getline(cin, newService.serviceName);
+    
+    cout << "Description: ";
+    getline(cin, newService.description);
+    
+    cout << "Type (e.g., catering, photography, decoration): ";
+    getline(cin, newService.type);
+    
+    cout << "Price: $";
+    cin >> newService.price;
+    
+    cout << "Quantity available: ";
+    cin >> newService.quantity;
+    cin.ignore();
+    
+    newService.available = true;
+    
+    // Add to current vendor's services
+    vendorList[currentUser.userIndex].serviceHasProvide.push_back(newService);
+    vendorList[currentUser.userIndex].totalServicesProvided++;
+    
+    saveAllData(vendorList, organizerList, adminList);
+    cout << "Service added successfully!" << endl;
+    cin.get();
+}
+
+void saveAllData(vector<Vendor> &vendorList,vector<Organizer> &organizerList,vector<Admin> &adminList) {
+    saveUserIntoFile(adminList, "admins.txt");
+    saveUserIntoFile(organizerList, "organizers.txt");
+    saveUserIntoFile(vendorList, "vendors.txt");
+}
 //Event
 vector<Venue> venues;
 vector<Client> clients;
@@ -648,8 +708,6 @@ void viewAllBookings() {
 
     }
 }
-
-
 
 // This is function for formatting value
 
