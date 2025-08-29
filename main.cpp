@@ -243,7 +243,6 @@ struct Organizer{
         return o;
     }
 };
-
 struct Admin{
     BaseInfo baseInfo;
     string adminId;
@@ -272,6 +271,15 @@ struct Admin{
     }
 
 };
+// Current User Management
+enum UserType { NONE, ADMIN, ORGANIZER, VENDOR };
+struct CurrentUser {
+    UserType type = NONE;
+    int userIndex = -1;  // Index in the respective vector
+    string userId = "";
+    string userName = "";
+};
+
 struct Date {
 
     int day;
@@ -327,6 +335,13 @@ int main (){
     //File
     ofstream write;
     ifstream read;
+
+    //Variable 
+    CurrentUser currentUser;
+}
+
+string generateId(const string& prefix, int counter) {
+    return prefix + to_string(1000 + counter);
 }
 
 void clearScreen(){
@@ -348,13 +363,12 @@ void getBaseUserInfo(BaseInfo &baseInfo){
     getline(cin, baseInfo.password);
 }
 
-void getVendorInfo(Vendor &vendor){
+void getVendorInfo(Vendor &vendor, vector<Vendor> &vendorList){
     // Get base info
     getBaseUserInfo(vendor.baseInfo);
 
     // Get vendor-specific info
-    cout << "Enter vendor ID: ";
-    getline(cin, vendor.vendorId);
+    vendor.vendorId = generateId("V", vendorList.size() + 1);
 
     cout << "Enter company name: ";
     getline(cin, vendor.companyName);
@@ -366,11 +380,13 @@ void getVendorInfo(Vendor &vendor){
     getline(cin, vendor.type);
 };
 
-void getOrganizerInfo(Organizer &organizer){
+void getOrganizerInfo(Organizer &organizer,vector<Organizer> &organizerList){
     string input;
 
     // Get base info
     getBaseUserInfo(organizer.baseInfo);
+
+    organizer.organizerId = generateId("O", organizerList.size() + 1);
 
     cout << "Enter groom's name: ";
     getline(cin, organizer.groomName);
@@ -402,9 +418,10 @@ void getOrganizerInfo(Organizer &organizer){
     organizer.weddingStage = "planning";
 }
    
-void getAdminInfo(Admin &admin){
+void getAdminInfo(Admin &admin, vector<Admin> &adminList){
     getBaseUserInfo(admin.baseInfo);
 
+    admin.adminId = generateId("A", adminList.size() + 1);
 
 }
 
@@ -458,6 +475,67 @@ void saveUserIntoFile(vector<T> data, string &fileName, ofstream &write){
 
 }
 
+bool login(vector<Vendor> &vendorList,vector<Organizer> &organizerList,vector<Admin> &adminList, CurrentUser &currentUser){
+    clearScreen();
+    cout << "=== LOGIN ===" << endl;
+    
+    string email, password;
+    cout << "Enter email: ";
+    getline(cin, email);
+    
+    cout << "Enter password: ";
+    getline(cin, password);
+    
+    // Check admin
+    for (size_t i = 0; i < adminList.size(); i++) {
+        if (adminList[i].baseInfo.email == email && adminList[i].baseInfo.password == password) {
+            currentUser.type = ADMIN;
+            currentUser.userIndex = i;
+            currentUser.userId = adminList[i].adminId;
+            currentUser.userName = adminList[i].baseInfo.name;
+            cout << "Welcome Admin " << currentUser.userName << "!" << endl;
+            cin.get();
+            return true;
+        }
+    }
+    
+    // Check organizer
+    for (size_t i = 0; i < organizerList.size(); i++) {
+        if (organizerList[i].baseInfo.email == email && organizerList[i].baseInfo.password == password) {
+            currentUser.type = ORGANIZER;
+            currentUser.userIndex = i;
+            currentUser.userId = organizerList[i].organizerId;
+            currentUser.userName = organizerList[i].baseInfo.name;
+            cout << "Welcome " << currentUser.userName << "!" << endl;
+            cin.get();
+            return true;
+        }
+    }
+    
+    // Check vendor
+    for (size_t i = 0; i < vendorList.size(); i++) {
+        if (vendorList[i].baseInfo.email == email && vendorList[i].baseInfo.password == password) {
+            currentUser.type = VENDOR;
+            currentUser.userIndex = i;
+            currentUser.userId = vendorList[i].vendorId;
+            currentUser.userName = vendorList[i].baseInfo.name;
+            cout << "Welcome " << currentUser.userName << "!" << endl;
+            cin.get();
+            return true;
+        }
+    }
+    
+    cout << "Invalid email or password!" << endl;
+    cin.get();
+    return false;
+}
+
+void logout(CurrentUser &currentUser) {
+    currentUser.type = NONE;
+    currentUser.userIndex = -1;
+    currentUser.userId = "";
+    currentUser.userName = "";
+}
 
 //Event
 vector<Venue> venues;
@@ -487,9 +565,6 @@ void initializeData() {
         {4, "Emperor Package", "12 Course Gourmet", 50, 12000.00}
     };
 }
-
-
-
 
 // Event Registeration
 void eventRegisteration() {
