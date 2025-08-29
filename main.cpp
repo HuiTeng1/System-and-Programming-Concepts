@@ -410,6 +410,7 @@ void userRegister(vector<Admin> &adminList, vector<Organizer> &organizerList, ve
 
 template <typename T>
 void saveVectorIntoFile(vector<T> data, string &fileName, ofstream &write){
+void saveUserIntoFile(vector<T> data, string &fileName, ofstream &write){
     write.open(fileName);
 
     if(!write){
