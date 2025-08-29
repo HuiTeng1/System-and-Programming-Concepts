@@ -420,6 +420,7 @@ void saveVectorIntoFile(vector<T> data, string &fileName, ofstream &write){
     for(auto &obj : data){
         write << obj.toFileString() << endl;
     }
+    write.close();
 
 }
 
