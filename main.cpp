@@ -587,7 +587,7 @@ void addService(CurrentUser &currentUser, vector<Vendor> &vendorList,vector<Orga
     vendorList[currentUser.userIndex].serviceHasProvide.push_back(newService);
     vendorList[currentUser.userIndex].totalServicesProvided++;
     
-    saveAllData(vendorList, organizerList, adminList);
+    saveUserIntoFile(vendorList, "vendors.txt");
     cout << "Service added successfully!" << endl;
     cin.get();
 }
