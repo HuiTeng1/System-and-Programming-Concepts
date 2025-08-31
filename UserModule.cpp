@@ -1463,7 +1463,6 @@ void displayServicesByType(vector<Vendor> &vendorList) {
     pauseScreen();
 }
 
-// Function to read organizer's booked services
 void displayBookedServices(CurrentUser &currentUser, vector<Organizer> &organizerList, vector<Vendor> &vendorList) {
     if(currentUser.type != ORGANIZER) {
         cout << "Only organizers can view booked services!" << endl;
