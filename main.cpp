@@ -344,6 +344,11 @@ void clearScreen(){
     system("cls");
 }
 
+void pauseScreen() {
+    cout << "\nPress Enter to continue...";
+    cin.get();
+}
+
 void getBaseUserInfo(BaseInfo &baseInfo){
 
     cout << "Enter name: ";
@@ -414,11 +419,21 @@ void getOrganizerInfo(Organizer &organizer,vector<Organizer> &organizerList){
     organizer.weddingStage = "planning";
 }
    
-void getAdminInfo(Admin &admin, vector<Admin> &adminList){
+bool getAdminInfo(Admin &admin, vector<Admin> &adminList){
+    string secretPassword = "Secret";
+    string inputPassword;
     getBaseUserInfo(admin.baseInfo);
 
     admin.adminId = generateId("A", adminList.size() + 1);
 
+    cout << "Enter Secret Password to Register Admin: ";
+    getline(cin, inputPassword);
+
+    if (inputPassword != secretPassword) {
+        cout << "Incorrect secret password! Registration failed." << endl;
+        pauseScreen();
+        return false;
+    }
 }
 
 void userRegister(vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList){
@@ -435,9 +450,10 @@ void userRegister(vector<Admin> &adminList, vector<Organizer> &organizerList, ve
     switch(choice){
     case 1:{
         Admin admin;
-        getAdminInfo(admin, adminList);
-        adminList.push_back(admin);
-        break;
+        if(getAdminInfo(admin, adminList)){
+            adminList.push_back(admin);
+            break;
+        }
     }case 2:{
         Organizer organizer;
         getOrganizerInfo(organizer, organizerList);
@@ -597,6 +613,90 @@ void saveAllData(vector<Vendor> &vendorList,vector<Organizer> &organizerList,vec
     saveUserIntoFile(organizerList, "organizers.txt");
     saveUserIntoFile(vendorList, "vendors.txt");
 }
+
+void displayUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList,vector<Organizer> &organizerList,vector<Admin> &adminList) {
+    clearScreen();
+    cout << "=== MY PROFILE ===" << endl;
+    
+    if(currentUser.type == NONE) {
+        cout << "No user logged in!" << endl;
+        pauseScreen();
+        return;
+    }
+    
+    switch(currentUser.type) {
+        case ADMIN: {
+            Admin& admin = adminList[currentUser.userIndex];
+            cout << "User Type: Administrator" << endl;
+            cout << "Admin ID: " << admin.adminId << endl;
+            cout << "Name: " << admin.baseInfo.name << endl;
+            cout << "Email: " << admin.baseInfo.email << endl;
+            cout << "Phone: " << admin.baseInfo.phoneNum << endl;
+            break;
+        }
+        case ORGANIZER: {
+            Organizer& org = organizerList[currentUser.userIndex];
+            cout << "User Type: Wedding Organizer" << endl;
+            cout << "Organizer ID: " << org.organizerId << endl;
+            cout << "Name: " << org.baseInfo.name << endl;
+            cout << "Email: " << org.baseInfo.email << endl;
+            cout << "Phone: " << org.baseInfo.phoneNum << endl;
+            cout << "Groom: " << org.groomName << endl;
+            cout << "Bride: " << org.brideName << endl;
+            cout << "Wedding Date: " << (org.weddingDate.empty() ? "Not set" : org.weddingDate) << endl;
+            cout << "Venue: " << (org.weddingVenue.empty() ? "Not set" : org.weddingVenue) << endl;
+            cout << "Theme: " << (org.weddingTheme.empty() ? "Not set" : org.weddingTheme) << endl;
+            cout << "Budget: RM" << fixed << setprecision(2) << org.budget << endl;
+            cout << "Wedding Stage: " << org.weddingStage << endl;
+            cout << "Booked Services: " << org.bookedServices.size() << endl;
+            break;
+        }
+        case VENDOR: {
+            Vendor& vendor = vendorList[currentUser.userIndex];
+            cout << "User Type: Service Vendor" << endl;
+            cout << "Vendor ID: " << vendor.vendorId << endl;
+            cout << "Name: " << vendor.baseInfo.name << endl;
+            cout << "Email: " << vendor.baseInfo.email << endl;
+            cout << "Phone: " << vendor.baseInfo.phoneNum << endl;
+            cout << "Company: " << vendor.companyName << endl;
+            cout << "Company Phone: " << vendor.companyContactNum << endl;
+            cout << "Vendor Type: " << vendor.type << endl;
+            cout << "Services Provided: " << vendor.serviceHasProvide.size() << endl;
+            cout << "Products Provided: " << vendor.productHasProvide.size() << endl;
+            break;
+        }
+    }
+    pauseScreen();
+}
+
+void listAllUsers(vector<Vendor> &vendorList,vector<Organizer> &organizerList,vector<Admin> &adminList) {
+    clearScreen();
+    cout << "=== ALL USERS LIST ===" << endl;
+    
+    cout << "\n--- ADMINISTRATORS ---" << endl;
+    for(auto& admin : adminList) {
+        cout << "Admin ID: " << admin.adminId << " | Name: " << admin.baseInfo.name 
+             << " | Email: " << admin.baseInfo.email << endl;
+    }
+    
+    cout << "\n--- ORGANIZERS ---" << endl;
+    for(const auto& org : organizerList) {
+        cout << "Organizer ID: " << org.organizerId << " | Name: " << org.baseInfo.name 
+             << " | Email: " << org.baseInfo.email 
+             << " | Wedding: " << org.groomName << " & " << org.brideName << endl;
+    }
+    
+    cout << "\n--- VENDORS ---" << endl;
+    for(const auto& vendor : vendorList) {
+        cout << "Vendor ID: " << vendor.vendorId << " | Name: " << vendor.baseInfo.name 
+             << " | Email: " << vendor.baseInfo.email 
+             << " | Company: " << vendor.companyName << endl;
+    }
+    
+    pauseScreen();
+}
+
+
 //Event
 vector<Venue> venues;
 vector<Client> clients;
