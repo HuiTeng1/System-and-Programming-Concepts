@@ -1160,7 +1160,7 @@ void menu(vector<Participant> &participants)
         case 3:
             if (now > weddingStartDate())
             {
-                if (now > weddingEndDate())
+                if (now < weddingEndDate())
                 {
                     cout << "Mark Attendance selected.\n\n";
                     markAttendance(participants);
