@@ -1847,8 +1847,7 @@ void cancelBookedService(CurrentUser &currentUser, vector<Organizer> &organizerL
 }
 
 // Admin function to delete any user (Admin privileges)
-void adminDeleteUser(CurrentUser &currentUser, vector<Vendor> &vendorList, 
-                    vector<Organizer> &organizerList, vector<Admin> &adminList) {
+void adminDeleteUser(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList) {
     if(currentUser.type != ADMIN) {
         cout << "Access denied! Admin privileges required." << endl;
         pauseScreen();
@@ -1974,8 +1973,7 @@ void adminDeleteUser(CurrentUser &currentUser, vector<Vendor> &vendorList,
 }
 
 // Main delete menu function
-void deleteMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, 
-               vector<Organizer> &organizerList, vector<Admin> &adminList) {
+void deleteMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList) {
     int choice;
     
     do {
