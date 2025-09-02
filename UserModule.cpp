@@ -15,12 +15,12 @@ struct Service{
     double price;
     int quantity;
     bool available;
-    string toFileString() const {
+    string toFileString()  {
         return serviceName + "|||" + description + "|||" + type + "|||" + 
                to_string(price) + "|||" + to_string(quantity) + "|||" + (available ? "1" : "0");
     }
     
-    static Service fromFileString(const string& str) {
+    static Service fromFileString( string& str) {
         Service s;
         stringstream ss(str);
         string temp;
@@ -43,12 +43,12 @@ struct Product{
     int quantity;
     double price;
     bool available;
-    string toFileString() const {
+    string toFileString()  {
         return productName + "|||" + description + "|||" + type + "|||" + 
                to_string(quantity) + "|||" + to_string(price) + "|||" + (available ? "1" : "0");
     }
     
-    static Product fromFileString(const string& str) {
+    static Product fromFileString( string& str) {
         Product p;
         stringstream ss(str);
         string temp;
@@ -69,11 +69,11 @@ struct BaseInfo{
     string email;
     string phoneNum;
     string password;
-    string toFileString() const {
+    string toFileString()  {
         return name + "|||" + email + "|||" + phoneNum + "|||" + password;
     }
     
-    static BaseInfo fromFileString(const string& str) {
+    static BaseInfo fromFileString( string& str) {
         BaseInfo b;
         stringstream ss(str);
         
@@ -95,21 +95,21 @@ struct Vendor{
     vector<Product> productHasProvide;
     int totalServicesProvided;
     int totalProductProvided;
-    string toFileString() const {
+    string toFileString()  {
         // baseInfo
         string baseStr = baseInfo.toFileString();
         //Vendor detail
         string vendorStr =  vendorId + "|||" + companyName + "|||" + companyContactNum + "|||" + type + "|||" + to_string(totalServicesProvided);
          // service
         string servicesStr;
-        for (const auto& s : serviceHasProvide) {
+        for ( auto& s : serviceHasProvide) {
             if (!servicesStr.empty()) servicesStr += "##";
             servicesStr += s.toFileString();
         }
 
         // Product
         string productsStr;
-        for (const auto& p : productHasProvide) {
+        for ( auto& p : productHasProvide) {
             if (!productsStr.empty()) productsStr += "##";
             productsStr += p.toFileString();
         }
@@ -118,7 +118,7 @@ struct Vendor{
                servicesStr + "|||" + productsStr;
     }
     
-    static Vendor fromFileString(const string& str) {
+    static Vendor fromFileString( string& str) {
         Vendor v;
         stringstream ss(str);
         string segment;
@@ -199,7 +199,7 @@ struct Organizer{
                bookedServicesStr;
     }
 
-    static Organizer fromFileString(const string &str) {
+    static Organizer fromFileString( string &str) {
         Organizer o;
         stringstream ss(str);
         string segment;
@@ -243,11 +243,11 @@ struct Organizer{
 struct Admin{
     BaseInfo baseInfo;
     string adminId;
-    string toFileString() const {
+    string toFileString()  {
         return baseInfo.toFileString() + "|||" + adminId;
     }
     
-    static Admin fromFileString(const string& str) {
+    static Admin fromFileString( string& str) {
         Admin a;
         stringstream ss(str);
         string baseStr, temp;
@@ -959,7 +959,7 @@ void updateService(CurrentUser &currentUser, vector<Vendor> &vendorList) {
     
     cout << "\nYour Services:" << endl;
     int index = 1;
-    for(const auto &service : vendor.serviceHasProvide) {
+    for( auto &service : vendor.serviceHasProvide) {
         cout << index << ". " << service.serviceName 
              << " - RM" << service.price 
              << " (Qty: " << service.quantity << ")" << endl;
@@ -1075,7 +1075,7 @@ void updateProduct(CurrentUser &currentUser, vector<Vendor> &vendorList) {
     
     cout << "\nYour Products:" << endl;
     int index = 1;
-    for(const auto &product : vendor.productHasProvide) {
+    for( auto &product : vendor.productHasProvide) {
         cout << index << ". " << product.productName 
              << " - RM" << product.price 
              << " (Qty: " << product.quantity << ")" << endl;
@@ -1251,7 +1251,7 @@ void displayAllProducts(vector<Vendor> &vendorList) {
             cout << "\n--- Products by " << vendor.baseInfo.name << " (" << vendor.companyName << ") ---" << endl;
             cout << "Vendor ID: " << vendor.vendorId << " | Contact: " << vendor.baseInfo.phoneNum << endl;
             
-            for(const auto &product : vendor.productHasProvide) {
+            for( auto &product : vendor.productHasProvide) {
                 cout << productNum << ". Product: " << product.productName << endl;
                 cout << "   Description: " << product.description << endl;
                 cout << "   Type: " << product.type << endl;
@@ -1302,7 +1302,7 @@ void displayServicesByVendor(vector<Vendor> &vendorList) {
         return;
     }
     
-    const Vendor &selectedVendor = vendorList[choice-1];
+     Vendor &selectedVendor = vendorList[choice-1];
     
     clearScreen();
     cout << "=== SERVICES BY " << selectedVendor.baseInfo.name << " ===" << endl;
@@ -1314,7 +1314,7 @@ void displayServicesByVendor(vector<Vendor> &vendorList) {
         cout << "This vendor has no services available." << endl;
     } else {
         int serviceNum = 1;
-        for(const auto &service : selectedVendor.serviceHasProvide) {
+        for( auto &service : selectedVendor.serviceHasProvide) {
             cout << serviceNum << ". " << service.serviceName << endl;
             cout << "   Description: " << service.description << endl;
             cout << "   Type: " << service.type << endl;
@@ -1344,7 +1344,7 @@ void displayProductsByVendor(vector<Vendor> &vendorList) {
     
     // Display all vendors
     cout << "Available Vendors:" << endl;
-    for(const auto &vendor : vendorList) {
+    for( auto &vendor : vendorList) {
         cout << vendorNum << ". " << vendor.baseInfo.name << " (" << vendor.companyName << ")" << endl;
         cout << "   Vendor ID: " << vendor.vendorId << " | Products: " << vendor.productHasProvide.size() << endl;
         vendorNum++;
@@ -1360,7 +1360,7 @@ void displayProductsByVendor(vector<Vendor> &vendorList) {
         return;
     }
     
-    const Vendor &selectedVendor = vendorList[choice-1];
+     Vendor &selectedVendor = vendorList[choice-1];
     
     clearScreen();
     cout << "=== PRODUCTS BY " << selectedVendor.baseInfo.name << " ===" << endl;
@@ -1372,7 +1372,7 @@ void displayProductsByVendor(vector<Vendor> &vendorList) {
         cout << "This vendor has no products available." << endl;
     } else {
         int productNum = 1;
-        for(const auto &product : selectedVendor.productHasProvide) {
+        for( auto &product : selectedVendor.productHasProvide) {
             cout << productNum << ". " << product.productName << endl;
             cout << "   Description: " << product.description << endl;
             cout << "   Type: " << product.type << endl;
@@ -1393,10 +1393,10 @@ void displayServicesByType(vector<Vendor> &vendorList) {
     
     // First, collect all unique service types
     vector<string> serviceTypes;
-    for(const auto &vendor : vendorList) {
-        for(const auto &service : vendor.serviceHasProvide) {
+    for( auto &vendor : vendorList) {
+        for( auto &service : vendor.serviceHasProvide) {
             bool typeExists = false;
-            for(const auto &existingType : serviceTypes) {
+            for( auto &existingType : serviceTypes) {
                 if(existingType == service.type) {
                     typeExists = true;
                     break;
@@ -1417,7 +1417,7 @@ void displayServicesByType(vector<Vendor> &vendorList) {
     // Display available types
     cout << "Available Service Types:" << endl;
     int typeNum = 1;
-    for(const auto &type : serviceTypes) {
+    for( auto &type : serviceTypes) {
         cout << typeNum << ". " << type << endl;
         typeNum++;
     }
@@ -1440,8 +1440,8 @@ void displayServicesByType(vector<Vendor> &vendorList) {
     cout << string(50, '=') << endl;
     
     bool found = false;
-    for(const auto &vendor : vendorList) {
-        for(const auto &service : vendor.serviceHasProvide) {
+    for( auto &vendor : vendorList) {
+        for( auto &service : vendor.serviceHasProvide) {
             if(service.type == selectedType) {
                 found = true;
                 cout << "Service: " << service.serviceName << endl;
@@ -1473,7 +1473,7 @@ void displayBookedServices(CurrentUser &currentUser, vector<Organizer> &organize
     clearScreen();
     cout << "=== MY BOOKED SERVICES ===" << endl;
     
-    const Organizer &organizer = organizerList[currentUser.userIndex];
+     Organizer &organizer = organizerList[currentUser.userIndex];
     
     cout << "Wedding: " << organizer.groomName << " & " << organizer.brideName << endl;
     cout << "Date: " << (organizer.weddingDate.empty() ? "Not set" : organizer.weddingDate) << endl;
@@ -1526,6 +1526,528 @@ void displayBookedServices(CurrentUser &currentUser, vector<Organizer> &organize
     pauseScreen();
 }
 
+// Function to delete current user's own account
+bool deleteOwnAccount(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList) {
+    clearScreen();
+    cout << "=== DELETE MY ACCOUNT ===" << endl;
+    
+    if(currentUser.type == NONE) {
+        cout << "No user logged in!" << endl;
+        pauseScreen();
+        return false;
+    }
+    
+    // Show current user info
+    cout << "You are about to delete your account:" << endl;
+    cout << "User Type: ";
+    switch(currentUser.type) {
+        case ADMIN: cout << "Administrator"; break;
+        case ORGANIZER: cout << "Wedding Organizer"; break;
+        case VENDOR: cout << "Service Vendor"; break;
+    }
+    cout << endl;
+    cout << "Name: " << currentUser.userName << endl;
+    cout << "User ID: " << currentUser.userId << endl;
+    
+    // Warning message
+    cout << "\n" << string(50, '!') << endl;
+    cout << "WARNING: This action cannot be undone!" << endl;
+    cout << "All your data will be permanently deleted!" << endl;
+    cout << string(50, '!') << endl;
+    
+    // Confirmation
+    string confirmation;
+    cout << "\nType 'DELETE' to confirm account deletion: ";
+    getline(cin, confirmation);
+    
+    if(confirmation != "DELETE") {
+        cout << "Account deletion cancelled." << endl;
+        pauseScreen();
+        return false;
+    }
+    
+    // Final confirmation with password
+    string password;
+    cout << "Enter your password to confirm: ";
+    getline(cin, password);
+    
+    bool passwordCorrect = false;
+    
+    switch(currentUser.type) {
+        case ADMIN:
+            passwordCorrect = (adminList[currentUser.userIndex].baseInfo.password == password);
+            break;
+        case ORGANIZER:
+            passwordCorrect = (organizerList[currentUser.userIndex].baseInfo.password == password);
+            break;
+        case VENDOR:
+            passwordCorrect = (vendorList[currentUser.userIndex].baseInfo.password == password);
+            break;
+    }
+    
+    if(!passwordCorrect) {
+        cout << "Incorrect password! Account deletion cancelled." << endl;
+        pauseScreen();
+        return false;
+    }
+    
+    // Delete the account
+    switch(currentUser.type) {
+        case ADMIN:
+            adminList.erase(adminList.begin() + currentUser.userIndex);
+            break;
+        case ORGANIZER:
+            organizerList.erase(organizerList.begin() + currentUser.userIndex);
+            break;
+        case VENDOR:
+            vendorList.erase(vendorList.begin() + currentUser.userIndex);
+            break;
+    }
+    
+    // Save updated data
+    saveAllData(vendorList, organizerList, adminList);
+    
+    cout << "Account successfully deleted!" << endl;
+    cout << "You will be logged out automatically." << endl;
+    
+    // Logout user
+    logout(currentUser);
+    
+    pauseScreen();
+    return true;
+}
+
+// Function for vendor to delete their own services
+void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList) {
+    if(currentUser.type != VENDOR) {
+        cout << "Only vendors can delete services!" << endl;
+        pauseScreen();
+        return;
+    }
+    
+    clearScreen();
+    cout << "=== DELETE MY SERVICES ===" << endl;
+    
+    Vendor &vendor = vendorList[currentUser.userIndex];
+    
+    if(vendor.serviceHasProvide.empty()) {
+        cout << "You have no services to delete." << endl;
+        pauseScreen();
+        return;
+    }
+    
+    // Display current services
+    cout << "Your Current Services:" << endl;
+    int serviceNum = 1;
+    for(auto &service : vendor.serviceHasProvide) {
+        cout << serviceNum << ". " << service.serviceName 
+             << " - RM" << fixed << setprecision(2) << service.price 
+             << " (Qty: " << service.quantity << ")" << endl;
+        cout << "   Type: " << service.type << endl;
+        cout << "   Status: " << (service.available ? "Available" : "Not Available") << endl;
+        serviceNum++;
+    }
+    
+    int choice;
+    cout << "\nSelect service to delete (1-" << vendor.serviceHasProvide.size() << ") or 0 to cancel: ";
+    cin >> choice;
+    cin.ignore();
+    
+    if(choice == 0) {
+        cout << "Service deletion cancelled." << endl;
+        pauseScreen();
+        return;
+    }
+    
+    if(choice < 1 || choice > (int)vendor.serviceHasProvide.size()) {
+        cout << "Invalid selection!" << endl;
+        pauseScreen();
+        return;
+    }
+    
+    // Show selected service details
+    Service &selectedService = vendor.serviceHasProvide[choice-1];
+    cout << "\nYou selected to delete:" << endl;
+    cout << "Service: " << selectedService.serviceName << endl;
+    cout << "Type: " << selectedService.type << endl;
+    cout << "Price: RM" << fixed << setprecision(2) << selectedService.price << endl;
+    
+    // Confirmation
+    char confirm;
+    cout << "\nAre you sure you want to delete this service? (y/n): ";
+    cin >> confirm;
+    cin.ignore();
+    
+    if(confirm == 'y' || confirm == 'Y') {
+        vendor.serviceHasProvide.erase(vendor.serviceHasProvide.begin() + (choice-1));
+        vendor.totalServicesProvided = vendor.serviceHasProvide.size();
+        
+        saveUserIntoFile(vendorList, "vendors.txt");
+        cout << "Service deleted successfully!" << endl;
+    } else {
+        cout << "Service deletion cancelled." << endl;
+    }
+    
+    pauseScreen();
+}
+
+// Function for vendor to delete their own products
+void deleteOwnProduct(CurrentUser &currentUser, vector<Vendor> &vendorList) {
+    if(currentUser.type != VENDOR) {
+        cout << "Only vendors can delete products!" << endl;
+        pauseScreen();
+        return;
+    }
+    
+    clearScreen();
+    cout << "=== DELETE MY PRODUCTS ===" << endl;
+    
+    Vendor &vendor = vendorList[currentUser.userIndex];
+    
+    if(vendor.productHasProvide.empty()) {
+        cout << "You have no products to delete." << endl;
+        pauseScreen();
+        return;
+    }
+    
+    // Display current products
+    cout << "Your Current Products:" << endl;
+    int productNum = 1;
+    for( auto &product : vendor.productHasProvide) {
+        cout << productNum << ". " << product.productName 
+             << " - RM" << fixed << setprecision(2) << product.price 
+             << " (Qty: " << product.quantity << ")" << endl;
+        cout << "   Type: " << product.type << endl;
+        cout << "   Status: " << (product.available ? "Available" : "Not Available") << endl;
+        productNum++;
+    }
+    
+    int choice;
+    cout << "\nSelect product to delete (1-" << vendor.productHasProvide.size() << ") or 0 to cancel: ";
+    cin >> choice;
+    cin.ignore();
+    
+    if(choice == 0) {
+        cout << "Product deletion cancelled." << endl;
+        pauseScreen();
+        return;
+    }
+    
+    if(choice < 1 || choice > (int)vendor.productHasProvide.size()) {
+        cout << "Invalid selection!" << endl;
+        pauseScreen();
+        return;
+    }
+    
+    // Show selected product details
+    Product &selectedProduct = vendor.productHasProvide[choice-1];
+    cout << "\nYou selected to delete:" << endl;
+    cout << "Product: " << selectedProduct.productName << endl;
+    cout << "Type: " << selectedProduct.type << endl;
+    cout << "Price: RM" << fixed << setprecision(2) << selectedProduct.price << endl;
+    
+    // Confirmation
+    char confirm;
+    cout << "\nAre you sure you want to delete this product? (y/n): ";
+    cin >> confirm;
+    cin.ignore();
+    
+    if(confirm == 'y' || confirm == 'Y') {
+        vendor.productHasProvide.erase(vendor.productHasProvide.begin() + (choice-1));
+        vendor.totalProductProvided = vendor.productHasProvide.size();
+        
+        saveUserIntoFile(vendorList, "vendors.txt");
+        cout << "Product deleted successfully!" << endl;
+    } else {
+        cout << "Product deletion cancelled." << endl;
+    }
+    
+    pauseScreen();
+}
+
+// Function for organizer to cancel/remove booked services
+void cancelBookedService(CurrentUser &currentUser, vector<Organizer> &organizerList,  vector<Vendor> &vendorList) {
+    if(currentUser.type != ORGANIZER) {
+        cout << "Only organizers can cancel booked services!" << endl;
+        pauseScreen();
+        return;
+    }
+    
+    clearScreen();
+    cout << "=== CANCEL BOOKED SERVICES ===" << endl;
+    
+    Organizer &organizer = organizerList[currentUser.userIndex];
+    
+    if(organizer.bookedServices.empty()) {
+        cout << "You have no booked services to cancel." << endl;
+        pauseScreen();
+        return;
+    }
+    
+    // Display booked services
+    cout << "Your Booked Services:" << endl;
+    vector<string> serviceNames;
+    
+    int displayNum = 1;
+    for( auto &serviceId : organizer.bookedServices) {
+        string serviceName = "Service ID " + to_string(serviceId);
+        
+        // Find service name from vendors
+        for( auto &vendor : vendorList) {
+            int currentId = 1;
+            for( auto &service : vendor.serviceHasProvide) {
+                if(currentId == serviceId) {
+                    serviceName = service.serviceName + " (by " + vendor.baseInfo.name + ")";
+                    break;
+                }
+                currentId++;
+            }
+        }
+        
+        serviceNames.push_back(serviceName);
+        cout << displayNum << ". " << serviceName << endl;
+        displayNum++;
+    }
+    
+    int choice;
+    cout << "\nSelect service to cancel (1-" << organizer.bookedServices.size() << ") or 0 to go back: ";
+    cin >> choice;
+    cin.ignore();
+    
+    if(choice == 0) {
+        cout << "Service cancellation cancelled." << endl;
+        pauseScreen();
+        return;
+    }
+    
+    if(choice < 1 || choice > (int)organizer.bookedServices.size()) {
+        cout << "Invalid selection!" << endl;
+        pauseScreen();
+        return;
+    }
+    
+    cout << "\nYou selected to cancel: " << serviceNames[choice-1] << endl;
+    
+    // Confirmation
+    char confirm;
+    cout << "Are you sure you want to cancel this booked service? (y/n): ";
+    cin >> confirm;
+    cin.ignore();
+    
+    if(confirm == 'y' || confirm == 'Y') {
+        organizer.bookedServices.erase(organizer.bookedServices.begin() + (choice-1));
+        
+        saveUserIntoFile(organizerList, "organizers.txt");
+        cout << "Booked service cancelled successfully!" << endl;
+    } else {
+        cout << "Service cancellation cancelled." << endl;
+    }
+    
+    pauseScreen();
+}
+
+// Admin function to delete any user (Admin privileges)
+void adminDeleteUser(CurrentUser &currentUser, vector<Vendor> &vendorList, 
+                    vector<Organizer> &organizerList, vector<Admin> &adminList) {
+    if(currentUser.type != ADMIN) {
+        cout << "Access denied! Admin privileges required." << endl;
+        pauseScreen();
+        return;
+    }
+    
+    clearScreen();
+    cout << "=== ADMIN: DELETE USER ===" << endl;
+    
+    int userType;
+    cout << "Select user type to delete:" << endl;
+    cout << "1. Admin" << endl;
+    cout << "2. Organizer" << endl;
+    cout << "3. Vendor" << endl;
+    cout << "0. Cancel" << endl;
+    cout << "Choice: ";
+    cin >> userType;
+    cin.ignore();
+    
+    switch(userType) {
+        case 1: {
+            if(adminList.size() <= 1) {
+                cout << "Cannot delete! At least one admin must remain in the system." << endl;
+                pauseScreen();
+                return;
+            }
+            
+            cout << "\nAdmins:" << endl;
+            int index = 1;
+            for( auto &admin : adminList) {
+                cout << index << ". " << admin.baseInfo.name << " (ID: " << admin.adminId << ")" << endl;
+                index++;
+            }
+            
+            int choice;
+            cout << "Select admin to delete (1-" << adminList.size() << "): ";
+            cin >> choice;
+            cin.ignore();
+            
+            if(choice >= 1 && choice <= (int)adminList.size()) {
+                if(choice-1 == currentUser.userIndex) {
+                    cout << "You cannot delete your own account from here. Use 'Delete My Account' option." << endl;
+                    pauseScreen();
+                    return;
+                }
+                
+                cout << "Deleting admin: " << adminList[choice-1].baseInfo.name << endl;
+                adminList.erase(adminList.begin() + (choice-1));
+                cout << "Admin deleted successfully!" << endl;
+            } else {
+                cout << "Invalid selection!" << endl;
+            }
+            break;
+        }
+        case 2: {
+            if(organizerList.empty()) {
+                cout << "No organizers to delete." << endl;
+                pauseScreen();
+                return;
+            }
+            
+            cout << "\nOrganizers:" << endl;
+            int index = 1;
+            for( auto &org : organizerList) {
+                cout << index << ". " << org.baseInfo.name << " (ID: " << org.organizerId 
+                     << ") - " << org.groomName << " & " << org.brideName << endl;
+                index++;
+            }
+            
+            int choice;
+            cout << "Select organizer to delete (1-" << organizerList.size() << "): ";
+            cin >> choice;
+            cin.ignore();
+            
+            if(choice >= 1 && choice <= (int)organizerList.size()) {
+                cout << "Deleting organizer: " << organizerList[choice-1].baseInfo.name << endl;
+                organizerList.erase(organizerList.begin() + (choice-1));
+                cout << "Organizer deleted successfully!" << endl;
+            } else {
+                cout << "Invalid selection!" << endl;
+            }
+            break;
+        }
+        case 3: {
+            if(vendorList.empty()) {
+                cout << "No vendors to delete." << endl;
+                pauseScreen();
+                return;
+            }
+            
+            cout << "\nVendors:" << endl;
+            int index = 1;
+            for( auto &vendor : vendorList) {
+                cout << index << ". " << vendor.baseInfo.name << " (ID: " << vendor.vendorId 
+                     << ") - " << vendor.companyName << endl;
+                index++;
+            }
+            
+            int choice;
+            cout << "Select vendor to delete (1-" << vendorList.size() << "): ";
+            cin >> choice;
+            cin.ignore();
+            
+            if(choice >= 1 && choice <= (int)vendorList.size()) {
+                cout << "Deleting vendor: " << vendorList[choice-1].baseInfo.name << endl;
+                vendorList.erase(vendorList.begin() + (choice-1));
+                cout << "Vendor deleted successfully!" << endl;
+            } else {
+                cout << "Invalid selection!" << endl;
+            }
+            break;
+        }
+        case 0:
+            return;
+        default:
+            cout << "Invalid choice!" << endl;
+            pauseScreen();
+            return;
+    }
+    
+    saveAllData(vendorList, organizerList, adminList);
+    pauseScreen();
+}
+
+// Main delete menu function
+void deleteMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, 
+               vector<Organizer> &organizerList, vector<Admin> &adminList) {
+    int choice;
+    
+    do {
+        clearScreen();
+        cout << "=== DELETE MENU ===" << endl;
+        cout << "1. Delete My Account" << endl;
+        
+        if(currentUser.type == VENDOR) {
+            cout << "2. Delete My Services" << endl;
+            cout << "3. Delete My Products" << endl;
+        }
+        
+        if(currentUser.type == ORGANIZER) {
+            cout << "4. Cancel Booked Services" << endl;
+        }
+        
+        if(currentUser.type == ADMIN) {
+            cout << "5. Delete Any User (Admin Only)" << endl;
+        }
+        
+        cout << "0. Back to Main Menu" << endl;
+        cout << "Enter choice: ";
+        cin >> choice;
+        cin.ignore();
+        
+        switch(choice) {
+            case 1:
+                if(deleteOwnAccount(currentUser, vendorList, organizerList, adminList)) {
+                    return; // User deleted their account and logged out
+                }
+                break;
+            case 2:
+                if(currentUser.type == VENDOR) {
+                    deleteOwnService(currentUser, vendorList);
+                } else {
+                    cout << "Invalid choice!" << endl;
+                    pauseScreen();
+                }
+                break;
+            case 3:
+                if(currentUser.type == VENDOR) {
+                    deleteOwnProduct(currentUser, vendorList);
+                } else {
+                    cout << "Invalid choice!" << endl;
+                    pauseScreen();
+                }
+                break;
+            case 4:
+                if(currentUser.type == ORGANIZER) {
+                    cancelBookedService(currentUser, organizerList, vendorList);
+                } else {
+                    cout << "Invalid choice!" << endl;
+                    pauseScreen();
+                }
+                break;
+            case 5:
+                if(currentUser.type == ADMIN) {
+                    adminDeleteUser(currentUser, vendorList, organizerList, adminList);
+                } else {
+                    cout << "Access denied! Admin privileges required." << endl;
+                    pauseScreen();
+                }
+                break;
+            case 0:
+                break;
+            default:
+                cout << "Invalid choice! Please try again." << endl;
+                pauseScreen();
+                break;
+        }
+    } while(choice != 0 && currentUser.type != NONE);
+}
 // User Management
 int main (){
     vector<Admin> adminList;
