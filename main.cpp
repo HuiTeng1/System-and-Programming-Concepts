@@ -290,6 +290,8 @@ int main (){
 
     //Variable 
     CurrentUser currentUser;
+
+    userRegister(adminList,organizerList,vendorList);
 }
 
 string generateId(const string& prefix, int counter) {
@@ -424,7 +426,7 @@ void userRegister(vector<Admin> &adminList, vector<Organizer> &organizerList, ve
     cout << "Invalid choice." << endl;
         break;
     }
-
+    saveAllData(vendorList,organizerList,adminList);
 }
 
 template <typename T>
@@ -562,6 +564,7 @@ void addService(CurrentUser &currentUser, vector<Vendor> &vendorList,vector<Orga
     saveUserIntoFile(vendorList, "vendors.txt");
     cout << "Service added successfully!" << endl;
     cin.get();
+    pauseScreen();
 }
 
 void saveAllData(vector<Vendor> &vendorList,vector<Organizer> &organizerList,vector<Admin> &adminList) {

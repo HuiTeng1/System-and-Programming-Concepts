@@ -1526,6 +1526,7 @@ void displayBookedServices(CurrentUser &currentUser, vector<Organizer> &organize
     pauseScreen();
 }
 
+// Function to delete current user's own account
 bool deleteOwnAccount(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList) {
     clearScreen();
     cout << "=== DELETE MY ACCOUNT ===" << endl;
@@ -1616,6 +1617,7 @@ bool deleteOwnAccount(CurrentUser &currentUser, vector<Vendor> &vendorList, vect
     return true;
 }
 
+// Function for vendor to delete their own services
 void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList) {
     if(currentUser.type != VENDOR) {
         cout << "Only vendors can delete services!" << endl;
@@ -1689,6 +1691,7 @@ void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList) {
     pauseScreen();
 }
 
+// Function for vendor to delete their own products
 void deleteOwnProduct(CurrentUser &currentUser, vector<Vendor> &vendorList) {
     if(currentUser.type != VENDOR) {
         cout << "Only vendors can delete products!" << endl;
@@ -1762,7 +1765,7 @@ void deleteOwnProduct(CurrentUser &currentUser, vector<Vendor> &vendorList) {
     pauseScreen();
 }
 
-
+// Function for organizer to cancel/remove booked services
 void cancelBookedService(CurrentUser &currentUser, vector<Organizer> &organizerList,  vector<Vendor> &vendorList) {
     if(currentUser.type != ORGANIZER) {
         cout << "Only organizers can cancel booked services!" << endl;
@@ -1843,7 +1846,9 @@ void cancelBookedService(CurrentUser &currentUser, vector<Organizer> &organizerL
     pauseScreen();
 }
 
-void adminDeleteUser(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList) {
+// Admin function to delete any user (Admin privileges)
+void adminDeleteUser(CurrentUser &currentUser, vector<Vendor> &vendorList, 
+                    vector<Organizer> &organizerList, vector<Admin> &adminList) {
     if(currentUser.type != ADMIN) {
         cout << "Access denied! Admin privileges required." << endl;
         pauseScreen();
@@ -1968,320 +1973,83 @@ void adminDeleteUser(CurrentUser &currentUser, vector<Vendor> &vendorList, vecto
     pauseScreen();
 }
 
-void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList) {
-    int choice;
-    do {
-        clearScreen();
-        cout << "=== ORGANIZER DASHBOARD ===" << endl;
-        cout << "Welcome, " << currentUser.userName << " (Wedding Organizer)" << endl;
-        
-        // Display wedding info
-        Organizer &org = organizerList[currentUser.userIndex];
-        cout << "Wedding: " << org.groomName << " & " << org.brideName << endl;
-        cout << "Date: " << (org.weddingDate.empty() ? "Not set" : org.weddingDate) << endl;
-        cout << "Budget: RM" << fixed << setprecision(2) << org.budget << endl;
-        cout << "==========================================" << endl;
-        
-        cout << "SERVICE BROWSING:" << endl;
-        cout << "1. Browse All Services" << endl;
-        cout << "2. Browse All Products" << endl;
-        cout << "3. Browse Services by Vendor" << endl;
-        cout << "4. Browse Products by Vendor" << endl;
-        cout << "5. Browse Services by Type" << endl;
-        cout << endl;
-        cout << "WEDDING PLANNING & BOOKING MANAGEMENT:" << endl;
-        cout << "6. View My Booked Services" << endl;
-        cout << "7. Cancel Booked Service" << endl;
-        cout << endl;
-        cout << "ACCOUNT MANAGEMENT:" << endl;
-        cout << "8. View My Profile" << endl;
-        cout << "9. Update My Profile" << endl;
-        cout << "10. Delete My Account" << endl;
-        cout << endl;
-        cout << "0. Logout" << endl;
-        cout << "==========================================" << endl;
-        cout << "Enter your choice: ";
-        cin >> choice;
-        cin.ignore();
-
-        switch(choice) {
-            case 1:
-                displayAllServices(vendorList);
-                break;
-            case 2:
-                displayAllProducts(vendorList);
-                break;
-            case 3:
-                displayServicesByVendor(vendorList);
-                break;
-            case 4:
-                displayProductsByVendor(vendorList);
-                break;
-            case 5:
-                displayServicesByType(vendorList);
-                break;
-            case 6:
-                displayBookedServices(currentUser, organizerList, vendorList);
-                break;
-            case 7:
-                cancelBookedService(currentUser, organizerList, vendorList);
-                break;
-            case 8:
-                displayUserProfile(currentUser, vendorList, organizerList, adminList);
-                break;
-            case 9:
-                updateUserProfile(currentUser, vendorList, organizerList, adminList);
-                break;
-            case 10:
-                if(deleteOwnAccount(currentUser, vendorList, organizerList, adminList)) {
-                    return; // Account deleted, exit menu
-                }
-                break;
-            case 0:
-                logout(currentUser);
-                cout << "Logged out successfully!" << endl;
-                pauseScreen();
-                break;
-            default:
-                cout << "Invalid choice! Please try again." << endl;
-                pauseScreen();
-                break;
-        }
-    } while(choice != 0 && currentUser.type != NONE);
-}
-
-void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList) {
-    int choice;
-    do {
-        clearScreen();
-        cout << "=== ADMIN DASHBOARD ===" << endl;
-        cout << "Welcome, " << currentUser.userName << " (Administrator)" << endl;
-        cout << "==========================================" << endl;
-        cout << "USER MANAGEMENT:" << endl;
-        cout << "1. View All Users" << endl;
-        cout << "2. Register New User" << endl;
-        cout << "3. Delete Any User" << endl;
-        cout << endl;
-        cout << "SYSTEM MANAGEMENT:" << endl;
-        cout << "4. View All Services" << endl;
-        cout << "5. View All Products" << endl;
-        cout << "6. View Services by Vendor" << endl;
-        cout << "7. View Products by Vendor" << endl;
-        cout << "8. View Services by Type" << endl;
-        cout << endl;
-        cout << "ACCOUNT MANAGEMENT:" << endl;
-        cout << "9. View My Profile" << endl;
-        cout << "10. Update My Profile" << endl;
-        cout << "11. Delete My Account" << endl;
-        cout << endl;
-        cout << "0. Logout" << endl;
-        cout << "==========================================" << endl;
-        cout << "Enter your choice: ";
-        cin >> choice;
-        cin.ignore();
-
-        switch(choice) {
-            case 1:
-                listAllUsers(vendorList, organizerList, adminList);
-                break;
-            case 2:
-                userRegister(vendorList, organizerList, adminList);
-                break;
-            case 3:
-                adminDeleteUser(currentUser, vendorList, organizerList, adminList);
-                break;
-            case 4:
-                displayAllServices(vendorList);
-                break;
-            case 5:
-                displayAllProducts(vendorList);
-                break;
-            case 6:
-                displayServicesByVendor(vendorList);
-                break;
-            case 7:
-                displayProductsByVendor(vendorList);
-                break;
-            case 8:
-                displayServicesByType(vendorList);
-                break;
-            case 9:
-                displayUserProfile(currentUser, vendorList, organizerList, adminList);
-                break;
-            case 10:
-                updateUserProfile(currentUser, vendorList, organizerList, adminList);
-                break;
-            case 11:
-                if(deleteOwnAccount(currentUser, vendorList, organizerList, adminList)) {
-                    return; // Account deleted, exit menu
-                }
-                break;
-            case 0:
-                logout(currentUser);
-                cout << "Logged out successfully!" << endl;
-                pauseScreen();
-                break;
-            default:
-                cout << "Invalid choice! Please try again." << endl;
-                pauseScreen();
-                break;
-        }
-    } while(choice != 0 && currentUser.type != NONE);
-}
-
-void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList) {
-    int choice;
-    do {
-        clearScreen();
-        cout << "=== VENDOR DASHBOARD ===" << endl;
-        cout << "Welcome, " << currentUser.userName << " (Service Vendor)" << endl;
-        
-        // Display vendor info
-        Vendor &vendor = vendorList[currentUser.userIndex];
-        cout << "Company: " << vendor.companyName << endl;
-        cout << "Services: " << vendor.serviceHasProvide.size() << " | Products: " << vendor.productHasProvide.size() << endl;
-        cout << "==========================================" << endl;
-        
-        cout << "SERVICE MANAGEMENT:" << endl;
-        cout << "1. Add New Service" << endl;
-        cout << "2. View My Services" << endl;
-        cout << "3. Update My Services" << endl;
-        cout << "4. Delete My Services" << endl;
-        cout << endl;
-        cout << "PRODUCT MANAGEMENT:" << endl;
-        cout << "5. Add New Product" << endl;
-        cout << "6. View My Products" << endl;
-        cout << "7. Update My Products" << endl;
-        cout << "8. Delete My Products" << endl;
-        cout << endl;
-        cout << "MARKET RESEARCH:" << endl;
-        cout << "9. View All Services (Competition)" << endl;
-        cout << "10. View All Products (Competition)" << endl;
-        cout << "11. View Services by Type" << endl;
-        cout << endl;
-        cout << "ACCOUNT MANAGEMENT:" << endl;
-        cout << "12. View My Profile" << endl;
-        cout << "13. Update My Profile" << endl;
-        cout << "14. Delete My Account" << endl;
-        cout << endl;
-        cout << "0. Logout" << endl;
-        cout << "==========================================" << endl;
-        cout << "Enter your choice: ";
-        cin >> choice;
-        cin.ignore();
-
-        switch(choice) {
-            case 1:
-                addService(currentUser, vendorList);
-                break;
-            case 2:
-                displayServicesByVendor(vendorList); // They can select themselves
-                break;
-            case 3:
-                updateServiceOrProduct(currentUser, vendorList);
-                break;
-            case 4:
-                deleteOwnService(currentUser, vendorList);
-                break;
-            case 5:
-                addProduct(currentUser, vendorList);
-                break;
-            case 6:
-                displayProductsByVendor(vendorList); // They can select themselves
-                break;
-            case 7:
-                updateServiceOrProduct(currentUser, vendorList);
-                break;
-            case 8:
-                deleteOwnProduct(currentUser, vendorList);
-                break;
-            case 9:
-                displayAllServices(vendorList);
-                break;
-            case 10:
-                displayAllProducts(vendorList);
-                break;
-            case 11:
-                displayServicesByType(vendorList);
-                break;
-            case 12:
-                displayUserProfile(currentUser, vendorList, organizerList, adminList);
-                break;
-            case 13:
-                updateUserProfile(currentUser, vendorList, organizerList, adminList);
-                break;
-            case 14:
-                if(deleteOwnAccount(currentUser, vendorList, organizerList, adminList)) {
-                    return; // Account deleted, exit menu
-                }
-                break;
-            case 0:
-                logout(currentUser);
-                cout << "Logged out successfully!" << endl;
-                pauseScreen();
-                break;
-            default:
-                cout << "Invalid choice! Please try again." << endl;
-                pauseScreen();
-                break;
-        }
-    } while(choice != 0 && currentUser.type != NONE);
-}
-
-void mainMenu(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList) {
-    CurrentUser currentUser;
+// Main delete menu function
+void deleteMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, 
+               vector<Organizer> &organizerList, vector<Admin> &adminList) {
     int choice;
     
     do {
         clearScreen();
-        cout << "======================================" << endl;
-        cout << "    WEDDING MANAGEMENT SYSTEM" << endl;
-        cout << "======================================" << endl;
-        cout << "1. Login" << endl;
-        cout << "2. Register New Account" << endl;
-        cout << "3. Exit" << endl;
-        cout << "======================================" << endl;
-        cout << "Enter your choice: ";
+        cout << "=== DELETE MENU ===" << endl;
+        cout << "1. Delete My Account" << endl;
+        
+        if(currentUser.type == VENDOR) {
+            cout << "2. Delete My Services" << endl;
+            cout << "3. Delete My Products" << endl;
+        }
+        
+        if(currentUser.type == ORGANIZER) {
+            cout << "4. Cancel Booked Services" << endl;
+        }
+        
+        if(currentUser.type == ADMIN) {
+            cout << "5. Delete Any User (Admin Only)" << endl;
+        }
+        
+        cout << "0. Back to Main Menu" << endl;
+        cout << "Enter choice: ";
         cin >> choice;
         cin.ignore();
         
         switch(choice) {
             case 1:
-                if(login(vendorList, organizerList, adminList, currentUser)) {
-                    // Route to appropriate menu based on user type
-                    switch(currentUser.type) {
-                        case ADMIN:
-                            adminMenu(currentUser, vendorList, organizerList, adminList);
-                            break;
-                        case ORGANIZER:
-                            organizerMenu(currentUser, vendorList, organizerList, adminList);
-                            break;
-                        case VENDOR:
-                            vendorMenu(currentUser, vendorList, organizerList, adminList);
-                            break;
-                        default:
-                            cout << "Unknown user type!" << endl;
-                            pauseScreen();
-                            break;
-                    }
+                if(deleteOwnAccount(currentUser, vendorList, organizerList, adminList)) {
+                    return; // User deleted their account and logged out
                 }
                 break;
             case 2:
-                userRegister(vendorList, organizerList, adminList);
+                if(currentUser.type == VENDOR) {
+                    deleteOwnService(currentUser, vendorList);
+                } else {
+                    cout << "Invalid choice!" << endl;
+                    pauseScreen();
+                }
                 break;
             case 3:
-                cout << "Thank you for using Wedding Management System!" << endl;
-                cout << "Goodbye!" << endl;
+                if(currentUser.type == VENDOR) {
+                    deleteOwnProduct(currentUser, vendorList);
+                } else {
+                    cout << "Invalid choice!" << endl;
+                    pauseScreen();
+                }
+                break;
+            case 4:
+                if(currentUser.type == ORGANIZER) {
+                    cancelBookedService(currentUser, organizerList, vendorList);
+                } else {
+                    cout << "Invalid choice!" << endl;
+                    pauseScreen();
+                }
+                break;
+            case 5:
+                if(currentUser.type == ADMIN) {
+                    adminDeleteUser(currentUser, vendorList, organizerList, adminList);
+                } else {
+                    cout << "Access denied! Admin privileges required." << endl;
+                    pauseScreen();
+                }
+                break;
+            case 0:
                 break;
             default:
                 cout << "Invalid choice! Please try again." << endl;
                 pauseScreen();
                 break;
         }
-    } while(choice != 3);
+    } while(choice != 0 && currentUser.type != NONE);
 }
-
-int main() {
+// User Management
+int main (){
     vector<Admin> adminList;
     vector<Organizer> organizerList;
     vector<Vendor> vendorList;
@@ -2289,15 +2057,6 @@ int main() {
     //Variable 
     CurrentUser currentUser;
 
-    // Load existing data from files
-    loadAllData(vendorList, organizerList, adminList);
-    
-    // Start the main menu system
-    mainMenu(vendorList, organizerList, adminList);
-    
-    // Save all data before exiting
-    saveAllData(vendorList, organizerList, adminList);
-    
-    return 0;
+    userRegister(vendorList,organizerList,adminList);
 }
 
