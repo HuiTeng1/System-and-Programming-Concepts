@@ -9,6 +9,7 @@
 using namespace std;
 
 struct Service{
+    string serviceId;
     string serviceName;
     string description;
     string type; ///not sure -- like for planning , food 
@@ -16,7 +17,7 @@ struct Service{
     int quantity;
     bool available;
     string toFileString()  {
-        return serviceName + "|||" + description + "|||" + type + "|||" + 
+        return serviceId + "|||" +serviceName + "|||" + description + "|||" + type + "|||" + 
                to_string(price) + "|||" + to_string(quantity) + "|||" + (available ? "1" : "0");
     }
     
@@ -25,6 +26,7 @@ struct Service{
         stringstream ss(str);
         string temp;
         
+        getline(ss, s.serviceId, '|');ss.ignore(2);
         getline(ss, s.serviceName, '|'); ss.ignore(2);
         getline(ss, s.description, '|'); ss.ignore(2);
         getline(ss, s.type, '|'); ss.ignore(2);
@@ -37,6 +39,7 @@ struct Service{
 };
 
 struct Product{
+    string productId;
     string productName;
     string description;
     string type; // not sure
@@ -44,7 +47,7 @@ struct Product{
     double price;
     bool available;
     string toFileString()  {
-        return productName + "|||" + description + "|||" + type + "|||" + 
+        return productId + "|||" + productName + "|||" + description + "|||" + type + "|||" + 
                to_string(quantity) + "|||" + to_string(price) + "|||" + (available ? "1" : "0");
     }
     
@@ -53,6 +56,7 @@ struct Product{
         stringstream ss(str);
         string temp;
         
+        getline(ss, p.productId, '|');ss.ignore(2);
         getline(ss, p.productName, '|'); ss.ignore(2);
         getline(ss, p.description, '|'); ss.ignore(2);
         getline(ss, p.type, '|'); ss.ignore(2);
@@ -485,6 +489,7 @@ void addService(CurrentUser &currentUser, vector<Vendor> &vendorList) {
     if (currentUser.type != VENDOR) return;
     
     Service newService;
+    newService.serviceId = generateId("S", vendorList.size() + 1);
     cout << "=== ADD NEW SERVICE ===" << endl;
     
     cout << "Service name: ";
@@ -643,6 +648,7 @@ void addProduct(CurrentUser &currentUser, vector<Vendor> &vendorList) {
     if (currentUser.type != VENDOR) return;
     
     Product newProduct;
+    newProduct.productId = generateId("P", vendorList.size() + 1);
     cout << "=== ADD NEW PRODUCT ===" << endl;
     
     cout << "Product name: ";
