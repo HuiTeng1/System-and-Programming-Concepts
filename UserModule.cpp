@@ -127,45 +127,58 @@ struct Vendor{
         stringstream ss(str);
         string segment;
 
-        // 1. baseInfo
+        getline(ss, v.baseInfo.name, '|');
+        ss.ignore(2);
+        getline(ss, v.baseInfo.email, '|');
+        ss.ignore(2);
+        getline(ss, v.baseInfo.phoneNum, '|');
+        ss.ignore(2);
+        getline(ss, v.baseInfo.password, '|');
+        ss.ignore(2);
+        
+        // Parse Vendor fields
+        getline(ss, v.vendorId, '|');
+        ss.ignore(2);
+        getline(ss, v.companyName, '|');
+        ss.ignore(2);
+        getline(ss, v.companyContactNum, '|');
+        ss.ignore(2);
+        getline(ss, v.type, '|');
+        ss.ignore(2);
         getline(ss, segment, '|');
-        v.baseInfo = BaseInfo::fromFileString(segment);
-
-        // 2. vendorStr
+        v.totalServicesProvided = stoi(segment);
+        ss.ignore(2);
         getline(ss, segment, '|');
-        stringstream vss(segment);
-        getline(vss, v.vendorId, '|');
-        getline(vss, v.companyName, '|');
-        getline(vss, v.companyContactNum, '|');
-        getline(vss, v.type, '|');
-        string totalStr;
-        getline(vss, totalStr, '|');
-        v.totalServicesProvided = stoi(totalStr);
-
-        // 3. services
+        v.totalProductProvided = stoi(segment);
+        ss.ignore(2);
+        
+        // Parse services
         getline(ss, segment, '|');
         if (!segment.empty()) {
             stringstream sss(segment);
             string sItem;
             while (getline(sss, sItem, '#')) {
-                if (!sItem.empty() && sItem != "#") { 
+                if (sItem == "#") continue; // Skip standalone #
+                if (!sItem.empty()) {
                     v.serviceHasProvide.push_back(Service::fromFileString(sItem));
                 }
             }
         }
-
-        // 4. products
-        getline(ss, segment, '|');
+        ss.ignore(2);
+        
+        // Parse products
+        getline(ss, segment);
         if (!segment.empty()) {
             stringstream pss(segment);
             string pItem;
             while (getline(pss, pItem, '#')) {
-                if (!pItem.empty() && pItem != "#") {
+                if (pItem == "#") continue; // Skip standalone #
+                if (!pItem.empty()) {
                     v.productHasProvide.push_back(Product::fromFileString(pItem));
                 }
             }
         }
-
+        
         return v;
     }
 };
@@ -173,14 +186,7 @@ struct Organizer{
     BaseInfo baseInfo;
     string organizerId;
     string currentWeddingId;
-    string groomName;
-    string brideName;
-    string weddingDate;
-    string weddingVenue;
-    double budget;
-    string weddingTheme;
     vector<int> bookedServices;
-    string weddingStage;
     
     string toFileString() {
         // bookedServices
@@ -192,43 +198,34 @@ struct Organizer{
             }
         }
 
-        return baseInfo.toFileString() + "|||" + organizerId + "|||" + currentWeddingId + "|||" + groomName + "|||" +
-               brideName + "|||" + weddingDate + "|||" + weddingVenue + "|||" + to_string(budget) + "|||" + weddingTheme + "|||" + 
-               weddingStage + "|||" +
-               bookedServicesStr;
+        return baseInfo.toFileString() + "|||" + organizerId + "|||" + currentWeddingId +  "|||" + bookedServicesStr;
     }
 
     static Organizer fromFileString( string &str) {
         Organizer o;
         stringstream ss(str);
-        string segment;
 
-        // 1. baseInfo
-        getline(ss, segment, '|');
-        o.baseInfo = BaseInfo::fromFileString(segment);
-
-        //Organizer details
-        getline(ss, segment, '|');
-        stringstream vss(segment);
-        getline(vss, o.organizerId,'|');
-        getline(vss, o.currentWeddingId, '|');
-        getline(vss, o.groomName, '|');
-        getline(vss, o.brideName, '|');
-        getline(vss, o.weddingDate, '|');
-        getline(vss, o.weddingVenue, '|');
-
-        string temp;
-        getline(vss, temp, '|');
-        o.budget = stod(temp);
-
-        getline(vss, o.weddingTheme, '|');
-        getline(vss, o.weddingStage, '|');
-
-        // bookedServices
-        getline(ss, segment); 
+        getline(ss, o.baseInfo.name, '|');
+        ss.ignore(2);
+        getline(ss, o.baseInfo.email, '|');
+        ss.ignore(2);
+        getline(ss, o.baseInfo.phoneNum, '|');
+        ss.ignore(2);
+        getline(ss, o.baseInfo.password, '|');
+        ss.ignore(2);
+        
+        // Parse Organizer fields
+        getline(ss, o.organizerId, '|');
+        ss.ignore(2);
+        getline(ss, o.currentWeddingId, '|');
+        ss.ignore(2);
+        
+        // Parse booked services
+        string bookedStr;
+        getline(ss, bookedStr);
         o.bookedServices.clear();
-        if (!segment.empty()) {
-            stringstream ssServices(segment);
+        if (!bookedStr.empty()) {
+            stringstream ssServices(bookedStr);
             string serviceStr;
             while (getline(ssServices, serviceStr, ',')) {
                 if (!serviceStr.empty()) {
@@ -247,20 +244,18 @@ struct Admin{
         return baseInfo.toFileString() + "|||" + adminId;
     }
     
-    static Admin fromFileString( string& str) {
+    static Admin fromFileString(string& str) {
         Admin a;
         stringstream ss(str);
-        string baseStr, temp;
         
-        // Extract base info part
-        for(int i = 0; i < 4; i++) {
-            getline(ss, temp, '|');
-            if(i > 0) baseStr += "|||";
-            baseStr += temp;
-            if(i < 3) ss.ignore(2);
-        }
-        a.baseInfo = BaseInfo::fromFileString(baseStr);
-        
+        // Parse BaseInfo
+        getline(ss, a.baseInfo.name, '|');
+        ss.ignore(2);
+        getline(ss, a.baseInfo.email, '|');
+        ss.ignore(2);
+        getline(ss, a.baseInfo.phoneNum, '|');
+        ss.ignore(2);
+        getline(ss, a.baseInfo.password, '|');
         ss.ignore(2);
         getline(ss, a.adminId);
         
@@ -331,34 +326,34 @@ void getOrganizerInfo(Organizer &organizer,vector<Organizer> &organizerList){
 
     organizer.organizerId = generateId("O", organizerList.size() + 1);
 
-    cout << "Enter groom's name: ";
-    getline(cin, organizer.groomName);
+    // cout << "Enter groom's name: ";
+    // getline(cin, organizer.groomName);
 
-    cout << "Enter bride's name: ";
-    getline(cin, organizer.brideName);
+    // cout << "Enter bride's name: ";
+    // getline(cin, organizer.brideName);
 
-    // Optional fields: ask user if they want to set or leave empty
-    cout << "Wedding date (leave empty if not set): ";
-    getline(cin, input);
-    organizer.weddingDate = input;
+    // // Optional fields: ask user if they want to set or leave empty
+    // cout << "Wedding date (leave empty if not set): ";
+    // getline(cin, input);
+    // organizer.weddingDate = input;
 
-    cout << "Wedding venue (leave empty if not set): ";
-    getline(cin, input);
-    organizer.weddingVenue = input;
+    // cout << "Wedding venue (leave empty if not set): ";
+    // getline(cin, input);
+    // organizer.weddingVenue = input;
 
-    cout << "Wedding theme (leave empty if not set): ";
-    getline(cin, input);
-    organizer.weddingTheme = input;
+    // cout << "Wedding theme (leave empty if not set): ";
+    // getline(cin, input);
+    // organizer.weddingTheme = input;
 
-    cout << "Budget (enter 0 if not set): ";
-    getline(cin, input);
-    try {
-        organizer.budget = stod(input);
-    } catch (...) {
-        organizer.budget = 0.0;
-    }
+    // cout << "Budget (enter 0 if not set): ";
+    // getline(cin, input);
+    // try {
+    //     organizer.budget = stod(input);
+    // } catch (...) {
+    //     organizer.budget = 0.0;
+    // }
 
-    organizer.weddingStage = "planning";
+    // organizer.weddingStage = "planning";
 }
    
 bool getAdminInfo(Admin &admin, vector<Admin> &adminList){
@@ -455,7 +450,7 @@ bool login(vector<Vendor> &vendorList,vector<Organizer> &organizerList,vector<Ad
             currentUser.userName = organizerList[i].baseInfo.name;
             currentUser.currentWeddingId = organizerList[i].currentWeddingId;
             cout << "Welcome " << currentUser.userName << "!" << endl;
-            cin.get();
+            pauseScreen();
             return true;
         }
     }
@@ -469,7 +464,7 @@ bool login(vector<Vendor> &vendorList,vector<Organizer> &organizerList,vector<Ad
             currentUser.userName = vendorList[i].baseInfo.name;
             currentUser.currentWeddingId = "";
             cout << "Welcome " << currentUser.userName << "!" << endl;
-            cin.get();
+            pauseScreen();
             return true;
         }
     }
@@ -481,7 +476,7 @@ bool login(vector<Vendor> &vendorList,vector<Organizer> &organizerList,vector<Ad
 
 void logout(CurrentUser &currentUser) {
     char confirmed;
-    cout << "Are you sure you want to logout";
+    cout << "Are you sure you want to logout (Y/N)";
     cin >> confirmed;
     if(toupper(confirmed) == 'Y'){
         currentUser.type = NONE;
@@ -526,8 +521,8 @@ void addService(CurrentUser &currentUser, vector<Vendor> &vendorList) {
     vendorList[currentUser.userIndex].totalServicesProvided++;
     
     saveUserIntoFile(vendorList, "vendors.txt");
+    loadUserFromFile(vendorList, "vendors.txt");
     cout << "Service added successfully!" << endl;
-    cin.get();
     pauseScreen();
 }
 
@@ -564,13 +559,13 @@ void displayUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList,vec
             cout << "Name: " << org.baseInfo.name << endl;
             cout << "Email: " << org.baseInfo.email << endl;
             cout << "Phone: " << org.baseInfo.phoneNum << endl;
-            cout << "Groom: " << org.groomName << endl;
-            cout << "Bride: " << org.brideName << endl;
-            cout << "Wedding Date: " << (org.weddingDate.empty() ? "Not set" : org.weddingDate) << endl;
-            cout << "Venue: " << (org.weddingVenue.empty() ? "Not set" : org.weddingVenue) << endl;
-            cout << "Theme: " << (org.weddingTheme.empty() ? "Not set" : org.weddingTheme) << endl;
-            cout << "Budget: RM" << fixed << setprecision(2) << org.budget << endl;
-            cout << "Wedding Stage: " << org.weddingStage << endl;
+            // cout << "Groom: " << org.groomName << endl;
+            // cout << "Bride: " << org.brideName << endl;
+            // cout << "Wedding Date: " << (org.weddingDate.empty() ? "Not set" : org.weddingDate) << endl;
+            // cout << "Venue: " << (org.weddingVenue.empty() ? "Not set" : org.weddingVenue) << endl;
+            // cout << "Theme: " << (org.weddingTheme.empty() ? "Not set" : org.weddingTheme) << endl;
+            // cout << "Budget: RM" << fixed << setprecision(2) << org.budget << endl;
+            // cout << "Wedding Stage: " << org.weddingStage << endl;
             cout << "Booked Services: " << org.bookedServices.size() << endl;
             break;
         }
@@ -605,8 +600,7 @@ void listAllUsers(vector<Vendor> &vendorList,vector<Organizer> &organizerList,ve
     cout << "\n--- ORGANIZERS ---" << endl;
     for(Organizer &org : organizerList) {
         cout << "Organizer ID: " << org.organizerId << " | Name: " << org.baseInfo.name 
-             << " | Email: " << org.baseInfo.email 
-             << " | Wedding: " << org.groomName << " & " << org.brideName << endl;
+             << " | Email: " << org.baseInfo.email << endl;
     }
     
     cout << "\n--- VENDORS ---" << endl;
@@ -685,6 +679,7 @@ void addProduct(CurrentUser &currentUser, vector<Vendor> &vendorList) {
     vendorList[currentUser.userIndex].totalProductProvided++;
     
     saveUserIntoFile(vendorList, "vendors.txt");
+    loadUserFromFile(vendorList, "vendors.txt");
     cout << "Product added successfully!" << endl;
     cin.get();
     pauseScreen();
@@ -787,69 +782,69 @@ void updateOrganizerInfo(Organizer &organizer) {
         case 1:
             updateBaseInfo(organizer.baseInfo);
             break;
-        case 2:
-            cout << "Enter new groom name: ";
-            getline(cin, organizer.groomName);
-            cout << "Groom name updated successfully!" << endl;
-            pauseScreen();
-            break;
-        case 3:
-            cout << "Enter new bride name: ";
-            getline(cin, organizer.brideName);
-            cout << "Bride name updated successfully!" << endl;
-            pauseScreen();
-            break;
-        case 4:
-            cout << "Enter new wedding date (leave empty to clear): ";
-            getline(cin, organizer.weddingDate);
-            cout << "Wedding date updated successfully!" << endl;
-            pauseScreen();
-            break;
-        case 5:
-            cout << "Enter new wedding venue (leave empty to clear): ";
-            getline(cin, organizer.weddingVenue);
-            cout << "Wedding venue updated successfully!" << endl;
-            pauseScreen();
-            break;
-        case 6:
-            cout << "Enter new budget (RM): ";
-            cin >> organizer.budget;
-            cin.ignore();
-            cout << "Budget updated successfully!" << endl;
-            pauseScreen();
-            break;
-        case 7:
-            cout << "Enter new wedding theme (leave empty to clear): ";
-            getline(cin, organizer.weddingTheme);
-            cout << "Wedding theme updated successfully!" << endl;
-            pauseScreen();
-            break;
-        case 8:
-            cout << "Enter new wedding stage (e.g., planning, booked, completed): ";
-            getline(cin, organizer.weddingStage);
-            cout << "Wedding stage updated successfully!" << endl;
-            pauseScreen();
-            break;
-        case 9:
-            updateBaseInfo(organizer.baseInfo);
-            cout << "Enter new groom name: ";
-            getline(cin, organizer.groomName);
-            cout << "Enter new bride name: ";
-            getline(cin, organizer.brideName);
-            cout << "Wedding date (leave empty if not set): ";
-            getline(cin, organizer.weddingDate);
-            cout << "Wedding venue (leave empty if not set): ";
-            getline(cin, organizer.weddingVenue);
-            cout << "Wedding theme (leave empty if not set): ";
-            getline(cin, organizer.weddingTheme);
-            cout << "Budget (RM): ";
-            cin >> organizer.budget;
-            cin.ignore();
-            cout << "Wedding stage: ";
-            getline(cin, organizer.weddingStage);
-            cout << "All organizer information updated successfully!" << endl;
-            pauseScreen();
-            break;
+        // case 2:
+        //     cout << "Enter new groom name: ";
+        //     getline(cin, organizer.groomName);
+        //     cout << "Groom name updated successfully!" << endl;
+        //     pauseScreen();
+        //     break;
+        // case 3:
+        //     cout << "Enter new bride name: ";
+        //     getline(cin, organizer.brideName);
+        //     cout << "Bride name updated successfully!" << endl;
+        //     pauseScreen();
+        //     break;
+        // case 4:
+        //     cout << "Enter new wedding date (leave empty to clear): ";
+        //     getline(cin, organizer.weddingDate);
+        //     cout << "Wedding date updated successfully!" << endl;
+        //     pauseScreen();
+        //     break;
+        // case 5:
+        //     cout << "Enter new wedding venue (leave empty to clear): ";
+        //     getline(cin, organizer.weddingVenue);
+        //     cout << "Wedding venue updated successfully!" << endl;
+        //     pauseScreen();
+        //     break;
+        // case 6:
+        //     cout << "Enter new budget (RM): ";
+        //     cin >> organizer.budget;
+        //     cin.ignore();
+        //     cout << "Budget updated successfully!" << endl;
+        //     pauseScreen();
+        //     break;
+        // case 7:
+        //     cout << "Enter new wedding theme (leave empty to clear): ";
+        //     getline(cin, organizer.weddingTheme);
+        //     cout << "Wedding theme updated successfully!" << endl;
+        //     pauseScreen();
+        //     break;
+        // case 8:
+        //     cout << "Enter new wedding stage (e.g., planning, booked, completed): ";
+        //     getline(cin, organizer.weddingStage);
+        //     cout << "Wedding stage updated successfully!" << endl;
+        //     pauseScreen();
+        //     break;
+        // case 9:
+        //     updateBaseInfo(organizer.baseInfo);
+        //     cout << "Enter new groom name: ";
+        //     getline(cin, organizer.groomName);
+        //     cout << "Enter new bride name: ";
+        //     getline(cin, organizer.brideName);
+        //     cout << "Wedding date (leave empty if not set): ";
+        //     getline(cin, organizer.weddingDate);
+        //     cout << "Wedding venue (leave empty if not set): ";
+        //     getline(cin, organizer.weddingVenue);
+        //     cout << "Wedding theme (leave empty if not set): ";
+        //     getline(cin, organizer.weddingTheme);
+        //     cout << "Budget (RM): ";
+        //     cin >> organizer.budget;
+        //     cin.ignore();
+        //     cout << "Wedding stage: ";
+        //     getline(cin, organizer.weddingStage);
+        //     cout << "All organizer information updated successfully!" << endl;
+        //     pauseScreen();
+        //     break;
         case 0:
             return;
         default:
@@ -1069,6 +1064,7 @@ void updateService(CurrentUser &currentUser, vector<Vendor> &vendorList) {
     }
     
     saveUserIntoFile(vendorList, "vendors.txt");
+    loadUserFromFile(vendorList, "vendors.txt");
     pauseScreen();
 }
 
@@ -1185,6 +1181,7 @@ void updateProduct(CurrentUser &currentUser, vector<Vendor> &vendorList) {
     }
     
     saveUserIntoFile(vendorList, "vendors.txt");
+    loadUserFromFile(vendorList, "vendors.txt");
     pauseScreen();
 }
 
@@ -1492,10 +1489,10 @@ void displayBookedServices(CurrentUser &currentUser, vector<Organizer> &organize
     
      Organizer &organizer = organizerList[currentUser.userIndex];
     
-    cout << "Wedding: " << organizer.groomName << " & " << organizer.brideName << endl;
-    cout << "Date: " << (organizer.weddingDate.empty() ? "Not set" : organizer.weddingDate) << endl;
-    cout << "Venue: " << (organizer.weddingVenue.empty() ? "Not set" : organizer.weddingVenue) << endl;
-    cout << "Budget: RM" << fixed << setprecision(2) << organizer.budget << endl;
+    // cout << "Wedding: " << organizer.groomName << " & " << organizer.brideName << endl;
+    // cout << "Date: " << (organizer.weddingDate.empty() ? "Not set" : organizer.weddingDate) << endl;
+    // cout << "Venue: " << (organizer.weddingVenue.empty() ? "Not set" : organizer.weddingVenue) << endl;
+    // cout << "Budget: RM" << fixed << setprecision(2) << organizer.budget << endl;
     cout << string(60, '=') << endl;
     
     if(organizer.bookedServices.empty()) {
@@ -1537,7 +1534,7 @@ void displayBookedServices(CurrentUser &currentUser, vector<Organizer> &organize
         }
         
         cout << "\nTotal Cost: RM" << fixed << setprecision(2) << totalCost << endl;
-        cout << "Remaining Budget: RM" << fixed << setprecision(2) << (organizer.budget - totalCost) << endl;
+        //cout << "Remaining Budget: RM" << fixed << setprecision(2) << (organizer.budget - totalCost) << endl;
     }
     
     pauseScreen();
@@ -1622,6 +1619,7 @@ bool deleteOwnAccount(CurrentUser &currentUser, vector<Vendor> &vendorList, vect
     
     // Save updated data
     saveAllData(vendorList, organizerList, adminList);
+    loadAllData(vendorList, organizerList, adminList);
     
     cout << "Account successfully deleted!" << endl;
     cout << "You will be logged out automatically." << endl;
@@ -1698,6 +1696,7 @@ void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList) {
         vendor.totalServicesProvided = vendor.serviceHasProvide.size();
         
         saveUserIntoFile(vendorList, "vendors.txt");
+        loadUserFromFile(vendorList, "vendors.txt");
         cout << "Service deleted successfully!" << endl;
     } else {
         cout << "Service deletion cancelled." << endl;
@@ -1771,6 +1770,7 @@ void deleteOwnProduct(CurrentUser &currentUser, vector<Vendor> &vendorList) {
         vendor.totalProductProvided = vendor.productHasProvide.size();
         
         saveUserIntoFile(vendorList, "vendors.txt");
+        loadUserFromFile(vendorList, "vendors.txt");
         cout << "Product deleted successfully!" << endl;
     } else {
         cout << "Product deletion cancelled." << endl;
@@ -1897,9 +1897,6 @@ void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<
         
         // Display wedding info
         Organizer &org = organizerList[currentUser.userIndex];
-        cout << "Wedding: " << org.groomName << " & " << org.brideName << endl;
-        cout << "Date: " << (org.weddingDate.empty() ? "Not set" : org.weddingDate) << endl;
-        cout << "Budget: RM" << fixed << setprecision(2) << org.budget << endl;
         cout << "==========================================" << endl;
         
         cout << "1. Book a New Wedding" << endl;
