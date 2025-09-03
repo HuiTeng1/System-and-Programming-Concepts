@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <limits>
+#include <cctype>
 using namespace std;
 
 struct Service{
@@ -37,7 +38,6 @@ struct Service{
         return s;
     }
 };
-
 struct Product{
     string productId;
     string productName;
@@ -172,6 +172,7 @@ struct Vendor{
 struct Organizer{
     BaseInfo baseInfo;
     string organizerId;
+    string currentWeddingId;
     string groomName;
     string brideName;
     string weddingDate;
@@ -191,14 +192,8 @@ struct Organizer{
             }
         }
 
-        return baseInfo.toFileString() + "|||" +
-               organizerId + "|||" +
-               groomName + "|||" +
-               brideName + "|||" +
-               weddingDate + "|||" +
-               weddingVenue + "|||" +
-               to_string(budget) + "|||" +
-               weddingTheme + "|||" +
+        return baseInfo.toFileString() + "|||" + organizerId + "|||" + currentWeddingId + "|||" + groomName + "|||" +
+               brideName + "|||" + weddingDate + "|||" + weddingVenue + "|||" + to_string(budget) + "|||" + weddingTheme + "|||" + 
                weddingStage + "|||" +
                bookedServicesStr;
     }
@@ -215,7 +210,8 @@ struct Organizer{
         //Organizer details
         getline(ss, segment, '|');
         stringstream vss(segment);
-        getline(vss, o.organizerId, '|');
+        getline(vss, o.organizerId,'|');
+        getline(vss, o.currentWeddingId, '|');
         getline(vss, o.groomName, '|');
         getline(vss, o.brideName, '|');
         getline(vss, o.weddingDate, '|');
@@ -279,10 +275,11 @@ struct CurrentUser {
     int userIndex = -1;  // Index in the respective vector
     string userId = "";
     string userName = "";
+    string currentWeddingId;
 };
 
 string generateId(const string& prefix, int counter) {
-    return prefix + to_string(1000 + counter);
+    return prefix + to_string(10000 + counter);
 }
 
 void clearScreen(){
@@ -441,8 +438,10 @@ bool login(vector<Vendor> &vendorList,vector<Organizer> &organizerList,vector<Ad
             currentUser.userIndex = i;
             currentUser.userId = adminList[i].adminId;
             currentUser.userName = adminList[i].baseInfo.name;
+            currentUser.currentWeddingId = "";
             cout << "Welcome Admin " << currentUser.userName << "!" << endl;
-            cin.get();
+            // cin.get();
+            pauseScreen();
             return true;
         }
     }
@@ -454,6 +453,7 @@ bool login(vector<Vendor> &vendorList,vector<Organizer> &organizerList,vector<Ad
             currentUser.userIndex = i;
             currentUser.userId = organizerList[i].organizerId;
             currentUser.userName = organizerList[i].baseInfo.name;
+            currentUser.currentWeddingId = organizerList[i].currentWeddingId;
             cout << "Welcome " << currentUser.userName << "!" << endl;
             cin.get();
             return true;
@@ -467,6 +467,7 @@ bool login(vector<Vendor> &vendorList,vector<Organizer> &organizerList,vector<Ad
             currentUser.userIndex = i;
             currentUser.userId = vendorList[i].vendorId;
             currentUser.userName = vendorList[i].baseInfo.name;
+            currentUser.currentWeddingId = "";
             cout << "Welcome " << currentUser.userName << "!" << endl;
             cin.get();
             return true;
@@ -479,10 +480,20 @@ bool login(vector<Vendor> &vendorList,vector<Organizer> &organizerList,vector<Ad
 }
 
 void logout(CurrentUser &currentUser) {
-    currentUser.type = NONE;
-    currentUser.userIndex = -1;
-    currentUser.userId = "";
-    currentUser.userName = "";
+    char confirmed;
+    cout << "Are you sure you want to logout";
+    cin >> confirmed;
+    if(toupper(confirmed) == 'Y'){
+        currentUser.type = NONE;
+        currentUser.userIndex = -1;
+        currentUser.userId = "";
+        currentUser.userName = "";
+        cout << "Logged out successfully!" << endl;
+        return;
+    }else{
+        cout << "Logout Failed. Please try again.";
+        return;
+    }
 }
 
 void addService(CurrentUser &currentUser, vector<Vendor> &vendorList) {
@@ -648,7 +659,7 @@ void addProduct(CurrentUser &currentUser, vector<Vendor> &vendorList) {
     if (currentUser.type != VENDOR) return;
     
     Product newProduct;
-    newProduct.productId = generateId("P", vendorList.size() + 1);
+    newProduct.productId = generateId("S", vendorList.size() + 1);
     cout << "=== ADD NEW PRODUCT ===" << endl;
     
     cout << "Product name: ";
@@ -1768,7 +1779,6 @@ void deleteOwnProduct(CurrentUser &currentUser, vector<Vendor> &vendorList) {
     pauseScreen();
 }
 
-
 void cancelBookedService(CurrentUser &currentUser, vector<Organizer> &organizerList,  vector<Vendor> &vendorList) {
     if(currentUser.type != ORGANIZER) {
         cout << "Only organizers can cancel booked services!" << endl;
@@ -1849,129 +1859,33 @@ void cancelBookedService(CurrentUser &currentUser, vector<Organizer> &organizerL
     pauseScreen();
 }
 
-void adminDeleteUser(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList) {
-    if(currentUser.type != ADMIN) {
-        cout << "Access denied! Admin privileges required." << endl;
-        pauseScreen();
-        return;
-    }
-    
-    clearScreen();
-    cout << "=== ADMIN: DELETE USER ===" << endl;
-    
-    int userType;
-    cout << "Select user type to delete:" << endl;
-    cout << "1. Admin" << endl;
-    cout << "2. Organizer" << endl;
-    cout << "3. Vendor" << endl;
-    cout << "0. Cancel" << endl;
-    cout << "Choice: ";
-    cin >> userType;
-    cin.ignore();
-    
-    switch(userType) {
-        case 1: {
-            if(adminList.size() <= 1) {
-                cout << "Cannot delete! At least one admin must remain in the system." << endl;
-                pauseScreen();
+void UpdateWeddingMenu(CurrentUser & currentUser,vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList){
+    int choice;
+    do{
+        clearScreen();
+        cout << "1. Book a new service for wedding" << endl;
+        cout << "2. Book a new product for wedding" << endl;
+        cout << "0. Logout" << endl;
+        cout << "==========================================" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+        cin.ignore();
+
+        switch(choice) {
+            case 1:
+                //Booking a new service
+                break;
+            case 2:
+                //Booking a new product
+                break;
+            case 0:
                 return;
-            }
-            
-            cout << "\nAdmins:" << endl;
-            int index = 1;
-            for( auto &admin : adminList) {
-                cout << index << ". " << admin.baseInfo.name << " (ID: " << admin.adminId << ")" << endl;
-                index++;
-            }
-            
-            int choice;
-            cout << "Select admin to delete (1-" << adminList.size() << "): ";
-            cin >> choice;
-            cin.ignore();
-            
-            if(choice >= 1 && choice <= (int)adminList.size()) {
-                if(choice-1 == currentUser.userIndex) {
-                    cout << "You cannot delete your own account from here. Use 'Delete My Account' option." << endl;
-                    pauseScreen();
-                    return;
-                }
-                
-                cout << "Deleting admin: " << adminList[choice-1].baseInfo.name << endl;
-                adminList.erase(adminList.begin() + (choice-1));
-                cout << "Admin deleted successfully!" << endl;
-            } else {
-                cout << "Invalid selection!" << endl;
-            }
-            break;
-        }
-        case 2: {
-            if(organizerList.empty()) {
-                cout << "No organizers to delete." << endl;
+            default:
+                cout << "Invalid choice! Please try again." << endl;
                 pauseScreen();
-                return;
-            }
-            
-            cout << "\nOrganizers:" << endl;
-            int index = 1;
-            for( auto &org : organizerList) {
-                cout << index << ". " << org.baseInfo.name << " (ID: " << org.organizerId 
-                     << ") - " << org.groomName << " & " << org.brideName << endl;
-                index++;
-            }
-            
-            int choice;
-            cout << "Select organizer to delete (1-" << organizerList.size() << "): ";
-            cin >> choice;
-            cin.ignore();
-            
-            if(choice >= 1 && choice <= (int)organizerList.size()) {
-                cout << "Deleting organizer: " << organizerList[choice-1].baseInfo.name << endl;
-                organizerList.erase(organizerList.begin() + (choice-1));
-                cout << "Organizer deleted successfully!" << endl;
-            } else {
-                cout << "Invalid selection!" << endl;
-            }
-            break;
+                break;
         }
-        case 3: {
-            if(vendorList.empty()) {
-                cout << "No vendors to delete." << endl;
-                pauseScreen();
-                return;
-            }
-            
-            cout << "\nVendors:" << endl;
-            int index = 1;
-            for( auto &vendor : vendorList) {
-                cout << index << ". " << vendor.baseInfo.name << " (ID: " << vendor.vendorId 
-                     << ") - " << vendor.companyName << endl;
-                index++;
-            }
-            
-            int choice;
-            cout << "Select vendor to delete (1-" << vendorList.size() << "): ";
-            cin >> choice;
-            cin.ignore();
-            
-            if(choice >= 1 && choice <= (int)vendorList.size()) {
-                cout << "Deleting vendor: " << vendorList[choice-1].baseInfo.name << endl;
-                vendorList.erase(vendorList.begin() + (choice-1));
-                cout << "Vendor deleted successfully!" << endl;
-            } else {
-                cout << "Invalid selection!" << endl;
-            }
-            break;
-        }
-        case 0:
-            return;
-        default:
-            cout << "Invalid choice!" << endl;
-            pauseScreen();
-            return;
-    }
-    
-    saveAllData(vendorList, organizerList, adminList);
-    pauseScreen();
+    }while(choice != 0);
 }
 
 void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList) {
@@ -1988,22 +1902,12 @@ void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<
         cout << "Budget: RM" << fixed << setprecision(2) << org.budget << endl;
         cout << "==========================================" << endl;
         
-        cout << "SERVICE BROWSING:" << endl;
-        cout << "1. Browse All Services" << endl;
-        cout << "2. Browse All Products" << endl;
-        cout << "3. Browse Services by Vendor" << endl;
-        cout << "4. Browse Products by Vendor" << endl;
-        cout << "5. Browse Services by Type" << endl;
-        cout << endl;
-        cout << "WEDDING PLANNING & BOOKING MANAGEMENT:" << endl;
-        cout << "6. View My Booked Services" << endl;
-        cout << "7. Cancel Booked Service" << endl;
-        cout << endl;
-        cout << "ACCOUNT MANAGEMENT:" << endl;
-        cout << "8. View My Profile" << endl;
-        cout << "9. Update My Profile" << endl;
-        cout << "10. Delete My Account" << endl;
-        cout << endl;
+        cout << "1. Book a New Wedding" << endl;
+        cout << "2. View My All Wedding" << endl;
+        cout << "3. Update My Current Wedding / Add new service or product" << endl;
+        cout << "4. Cancel Booked Wedding" << endl;
+        cout << "5. Monitoring" << endl;
+        cout << "6. My Profile" << endl;
         cout << "0. Logout" << endl;
         cout << "==========================================" << endl;
         cout << "Enter your choice: ";
@@ -2012,40 +1916,25 @@ void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<
 
         switch(choice) {
             case 1:
-                displayAllServices(vendorList);
+                // create new wedding
+                // check user typr is organizer and check currentWedding Id is "" or not;
                 break;
             case 2:
-                displayAllProducts(vendorList);
+                // read a wedding (history and current)
                 break;
             case 3:
-                displayServicesByVendor(vendorList);
+                UpdateWeddingMenu(currentUser,vendorList,organizerList,adminList);
                 break;
             case 4:
-                displayProductsByVendor(vendorList);
+                // cancel whole wedding - need to cancel all the s/p booking
                 break;
             case 5:
-                displayServicesByType(vendorList);
+                //Monitoring 
                 break;
             case 6:
-                displayBookedServices(currentUser, organizerList, vendorList);
-                break;
-            case 7:
-                cancelBookedService(currentUser, organizerList, vendorList);
-                break;
-            case 8:
                 displayUserProfile(currentUser, vendorList, organizerList, adminList);
-                break;
-            case 9:
-                updateUserProfile(currentUser, vendorList, organizerList, adminList);
-                break;
-            case 10:
-                if(deleteOwnAccount(currentUser, vendorList, organizerList, adminList)) {
-                    return; // Account deleted, exit menu
-                }
-                break;
             case 0:
                 logout(currentUser);
-                cout << "Logged out successfully!" << endl;
                 pauseScreen();
                 break;
             default:
@@ -2054,6 +1943,11 @@ void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<
                 break;
         }
     } while(choice != 0 && currentUser.type != NONE);
+}
+// no sure how the structure run 
+void AddServiceMenu(CurrentUser & currentUser,vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList){
+
+    cout << "";
 }
 
 void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList) {
@@ -2066,19 +1960,16 @@ void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Orga
         cout << "USER MANAGEMENT:" << endl;
         cout << "1. View All Users" << endl;
         cout << "2. Register New User" << endl;
-        cout << "3. Delete Any User" << endl;
-        cout << endl;
-        cout << "SYSTEM MANAGEMENT:" << endl;
-        cout << "4. View All Services" << endl;
-        cout << "5. View All Products" << endl;
-        cout << "6. View Services by Vendor" << endl;
-        cout << "7. View Products by Vendor" << endl;
-        cout << "8. View Services by Type" << endl;
-        cout << endl;
-        cout << "ACCOUNT MANAGEMENT:" << endl;
-        cout << "9. View My Profile" << endl;
-        cout << "10. Update My Profile" << endl;
-        cout << "11. Delete My Account" << endl;
+        cout << "Service and Product MANAGEMENT:" << endl;
+        cout << "3. View All Services" << endl;
+        cout << "4. View All Products" << endl;
+        cout << "5. View Services by Vendor" << endl;
+        cout << "6. View Products by Vendor" << endl;
+        cout << "7. View Services by Type" << endl << endl;
+        cout << "OWN ACCOUNT MANAGEMENT:" << endl;
+        cout << "8. View My Profile" << endl;
+        cout << "9. Update My Profile" << endl;
+        cout << "10. Delete My Account" << endl;
         cout << endl;
         cout << "0. Logout" << endl;
         cout << "==========================================" << endl;
@@ -2094,37 +1985,33 @@ void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Orga
                 userRegister(vendorList, organizerList, adminList);
                 break;
             case 3:
-                adminDeleteUser(currentUser, vendorList, organizerList, adminList);
-                break;
-            case 4:
                 displayAllServices(vendorList);
                 break;
-            case 5:
+            case 4:
                 displayAllProducts(vendorList);
                 break;
-            case 6:
+            case 5:
                 displayServicesByVendor(vendorList);
                 break;
-            case 7:
+            case 6:
                 displayProductsByVendor(vendorList);
                 break;
-            case 8:
+            case 7:
                 displayServicesByType(vendorList);
                 break;
-            case 9:
+            case 8:
                 displayUserProfile(currentUser, vendorList, organizerList, adminList);
                 break;
-            case 10:
+            case 9:
                 updateUserProfile(currentUser, vendorList, organizerList, adminList);
                 break;
-            case 11:
+            case 10:
                 if(deleteOwnAccount(currentUser, vendorList, organizerList, adminList)) {
                     return; // Account deleted, exit menu
                 }
                 break;
             case 0:
                 logout(currentUser);
-                cout << "Logged out successfully!" << endl;
                 pauseScreen();
                 break;
             default:
@@ -2223,8 +2110,6 @@ void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Org
                 break;
             case 0:
                 logout(currentUser);
-                cout << "Logged out successfully!" << endl;
-                pauseScreen();
                 break;
             default:
                 cout << "Invalid choice! Please try again." << endl;
@@ -2234,8 +2119,7 @@ void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Org
     } while(choice != 0 && currentUser.type != NONE);
 }
 
-void mainMenu(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList) {
-    CurrentUser currentUser;
+void mainMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList) {
     int choice;
     
     do {
@@ -2299,7 +2183,7 @@ int main() {
     loadAllData(vendorList, organizerList, adminList);
     
     // Start the main menu system
-    mainMenu(vendorList, organizerList, adminList);
+    mainMenu(currentUser,vendorList, organizerList, adminList);
     
     // Save all data before exiting
     saveAllData(vendorList, organizerList, adminList);
