@@ -7,11 +7,13 @@
 #include <algorithm>
 #include <limits>
 #include <cctype>
+#include <limits>
 #include <ctime>
 #include <chrono>
+#include <windows.h>
 using namespace std;
 
-// Forward declarations using 'struct' for consistency
+// Forward declarations
 struct WeddingEvent;
 struct CurrentUser;
 struct Vendor;
@@ -32,8 +34,18 @@ void viewAllWeddings(CurrentUser& currentUser, const vector<WeddingEvent>& event
     const vector<Vendor>& vendorList);
 void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,
     vector<Vendor>& vendorList, vector<Organizer>& organizerList);
+void generateInvitationCard(const CurrentUser& currentUser, const vector<WeddingEvent>& events,
+    const vector<Organizer>& organizerList);
 
-// Corrected `Service::toFileString` to be a const member function
+// Enhanced validation functions
+bool isValidEmail(const string& email);
+bool isValidPhoneNumber(const string& phone);
+bool isValidPassword(const string& password);
+bool isValidName(const string& name);
+bool isValidBudget(double budget);
+bool isValidWeddingDate(const string& date);
+
+// Service structure
 struct Service
 {
     string serviceId;
@@ -70,7 +82,7 @@ struct Service
     }
 };
 
-// Corrected `WeddingEvent::toFileString` to be a const member function
+// WeddingEvent structure
 struct WeddingEvent {
     string eventId;
     string organizerId;
@@ -136,7 +148,7 @@ struct WeddingEvent {
     }
 };
 
-// Corrected `Product::toFileString` to be a const member function
+// Product structure
 struct Product
 {
     string productId;
@@ -174,7 +186,7 @@ struct Product
     }
 };
 
-// Corrected `BaseInfo::toFileString` to be a const member function
+// BaseInfo structure
 struct BaseInfo
 {
     string name;
@@ -201,8 +213,7 @@ struct BaseInfo
     }
 };
 
-// Corrected `Vendor::toFileString` to be a const member function
-// Corrected parsing in `Vendor::fromFileString`
+// Vendor structure
 struct Vendor
 {
     BaseInfo baseInfo;
@@ -259,7 +270,6 @@ struct Vendor
         getline(ss, segment, '|');
         v.totalProductProvided = stoi(segment);
 
-        // Corrected parsing logic for services
         getline(ss, segment, '|');
         if (!segment.empty())
         {
@@ -273,7 +283,7 @@ struct Vendor
                 }
             }
         }
-        // Corrected parsing logic for products
+
         getline(ss, segment);
         if (!segment.empty())
         {
@@ -292,7 +302,7 @@ struct Vendor
     }
 };
 
-// Corrected `Organizer::toFileString` to be a const member function
+// Organizer structure
 struct Organizer
 {
     BaseInfo baseInfo;
@@ -347,7 +357,7 @@ struct Organizer
     }
 };
 
-// Corrected `Admin::toFileString` to be a const member function
+// Admin structure
 struct Admin
 {
     BaseInfo baseInfo;
@@ -393,7 +403,6 @@ struct CurrentUser
 // Utility Functions
 string generateId(const string& prefix, size_t counter)
 {
-    // Use stringstream to handle the conversion safely and avoid arithmetic overflow warnings
     stringstream ss;
     ss << prefix << 10000 + counter;
     return ss.str();
@@ -407,7 +416,115 @@ void clearScreen()
 void pauseScreen()
 {
     cout << "\nPress Enter to continue...";
-    cin.get();
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+// Enhanced Validation Functions
+bool isValidEmail(const string& email) {
+    if (email.empty()) return false;
+
+    size_t atPos = email.find('@');
+    size_t dotPos = email.find('.', atPos);
+
+    if (atPos == string::npos || dotPos == string::npos) {
+        return false;
+    }
+
+    if (atPos == 0) return false;
+    if (dotPos == atPos + 1) return false;
+    if (dotPos == email.length() - 1) return false;
+    if (email.find(' ') != string::npos) return false;
+    if (email.find('@', atPos + 1) != string::npos) return false;
+
+    return true;
+}
+
+bool isValidPhoneNumber(const string& phone) {
+    if (phone.length() < 10 || phone.length() > 15) return false;
+
+    for (char c : phone) {
+        if (!isdigit(c) && c != '+' && c != '-' && c != ' ' && c != '(' && c != ')') {
+            return false;
+        }
+    }
+
+    int digitCount = 0;
+    for (char c : phone) {
+        if (isdigit(c)) digitCount++;
+    }
+
+    return digitCount >= 10 && digitCount <= 13;
+}
+
+bool isValidPassword(const string& password) {
+    if (password.length() < 8) {
+        cout << "Password must be at least 8 characters long!\n";
+        return false;
+    }
+
+    bool hasUpper = false, hasLower = false, hasDigit = false;
+
+    for (char c : password) {
+        if (isupper(c)) hasUpper = true;
+        if (islower(c)) hasLower = true;
+        if (isdigit(c)) hasDigit = true;
+    }
+
+    if (!hasUpper) {
+        cout << "Password must contain at least one uppercase letter!\n";
+        return false;
+    }
+    if (!hasLower) {
+        cout << "Password must contain at least one lowercase letter!\n";
+        return false;
+    }
+    if (!hasDigit) {
+        cout << "Password must contain at least one digit!\n";
+        return false;
+    }
+
+    return true;
+}
+
+bool isValidName(const string& name) {
+    if (name.empty() || name.length() < 2) {
+        cout << "Name must be at least 2 characters long!\n";
+        return false;
+    }
+
+    for (char c : name) {
+        if (!isalpha(c) && c != ' ' && c != '\'' && c != '-') {
+            cout << "Name can only contain letters, spaces, apostrophes, and hyphens!\n";
+            return false;
+        }
+    }
+
+    bool hasLetter = false;
+    for (char c : name) {
+        if (isalpha(c)) {
+            hasLetter = true;
+            break;
+        }
+    }
+
+    if (!hasLetter) {
+        cout << "Name must contain at least one letter!\n";
+        return false;
+    }
+
+    return true;
+}
+
+bool isValidBudget(double budget) {
+    if (budget < 1000) {
+        cout << "Budget must be at least RM1000!\n";
+        return false;
+    }
+    if (budget > 1000000) {
+        cout << "Budget cannot exceed RM1,000,000!\n";
+        return false;
+    }
+    return true;
 }
 
 bool isValidDate(const string& date) {
@@ -419,7 +536,6 @@ bool isValidDate(const string& date) {
         if (!isdigit(date[i])) return false;
     }
 
-    // Corrected C4996 warning by using localtime_s
     time_t now = time(0);
     tm currentDate;
     localtime_s(&currentDate, &now);
@@ -434,6 +550,34 @@ bool isValidDate(const string& date) {
     if (year < (currentDate.tm_year + 1900)) return false;
     if (year == (currentDate.tm_year + 1900) && month < (currentDate.tm_mon + 1)) return false;
     if (year == (currentDate.tm_year + 1900) && month == (currentDate.tm_mon + 1) && day <= currentDate.tm_mday) return false;
+
+    return true;
+}
+
+bool isValidWeddingDate(const string& date) {
+    if (!isValidDate(date)) return false;
+
+    int year = stoi(date.substr(0, 4));
+    int month = stoi(date.substr(5, 2));
+    int day = stoi(date.substr(8, 2));
+
+    time_t now = time(0);
+    tm futureDate;
+    localtime_s(&futureDate, &now);
+    futureDate.tm_mday += 30;
+    mktime(&futureDate);
+
+    tm inputDate = { 0 };
+    inputDate.tm_year = year - 1900;
+    inputDate.tm_mon = month - 1;
+    inputDate.tm_mday = day;
+    mktime(&inputDate);
+
+    if (inputDate.tm_year < futureDate.tm_year ||
+        (inputDate.tm_year == futureDate.tm_year && inputDate.tm_yday < futureDate.tm_yday)) {
+        cout << "Wedding date must be at least 30 days from today!\n";
+        return false;
+    }
 
     return true;
 }
@@ -491,32 +635,143 @@ void saveEventsToFile(const vector<WeddingEvent>& events, const string& filename
     }
 
     for (const auto& event : events) {
-        // Corrected C2662 and E1086 errors by marking toFileString as const
         file << event.toFileString() << endl;
     }
     file.close();
 }
 
+// Invitation Card Function
+void generateInvitationCard(const CurrentUser& currentUser, const vector<WeddingEvent>& events,
+    const vector<Organizer>& organizerList) {
+    if (currentUser.type != ORGANIZER) {
+        cout << "Only organizers can generate invitation cards!" << endl;
+        pauseScreen();
+        return;
+    }
+
+    string currentWeddingId;
+    for (const auto& organizer : organizerList) {
+        if (organizer.organizerId == currentUser.userId) {
+            currentWeddingId = organizer.currentWeddingId;
+            break;
+        }
+    }
+
+    if (currentWeddingId.empty()) {
+        cout << "No active wedding! Please create a wedding first." << endl;
+        pauseScreen();
+        return;
+    }
+
+    const WeddingEvent* wedding = nullptr;
+    for (const auto& event : events) {
+        if (event.eventId == currentWeddingId && event.status != "cancelled") {
+            wedding = &event;
+            break;
+        }
+    }
+
+    if (!wedding) {
+        cout << "Wedding not found or cancelled!" << endl;
+        pauseScreen();
+        return;
+    }
+
+    clearScreen();
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    SetConsoleTextAttribute(hConsole, 14);
+    cout << "==================================================\n";
+    cout << "           WEDDING INVITATION CARD\n";
+    cout << "==================================================\n\n";
+
+    SetConsoleTextAttribute(hConsole, 14);
+    cout << "   💕 You're Cordially Invited To The Wedding Of 💕\n\n";
+
+    SetConsoleTextAttribute(hConsole, 11);
+    cout << "         " << wedding->groomName << "\n";
+    cout << "            &\n";
+    cout << "         " << wedding->brideName << "\n\n";
+
+    SetConsoleTextAttribute(hConsole, 10);
+    cout << "   Date: " << wedding->weddingDate << "\n";
+    cout << "   Time: 2:00 PM (Please arrive by 1:30 PM)\n";
+    cout << "   Venue: " << wedding->weddingVenue << "\n";
+    cout << "   Theme: " << wedding->weddingTheme << "\n\n";
+
+    SetConsoleTextAttribute(hConsole, 13);
+    cout << "   💐 Dress Code: Formal Attire 💐\n";
+    cout << "   🎉 Reception to Follow Immediately After 🎉\n\n";
+
+    SetConsoleTextAttribute(hConsole, 14);
+    cout << "   RSVP: " << currentUser.userName << "\n";
+    cout << "   Contact: " << wedding->weddingVenue << "\n\n";
+
+    SetConsoleTextAttribute(hConsole, 15);
+    cout << "==================================================\n";
+    cout << "   Your presence is the greatest gift we could ask for!\n";
+    cout << "==================================================\n\n";
+
+    ofstream inviteFile("invitation_" + wedding->eventId + ".txt");
+    if (inviteFile) {
+        inviteFile << "==================================================\n";
+        inviteFile << "           WEDDING INVITATION CARD\n";
+        inviteFile << "==================================================\n\n";
+        inviteFile << "   You're Cordially Invited To The Wedding Of\n\n";
+        inviteFile << "         " << wedding->groomName << "\n";
+        inviteFile << "            &\n";
+        inviteFile << "         " << wedding->brideName << "\n\n";
+        inviteFile << "   Date: " << wedding->weddingDate << "\n";
+        inviteFile << "   Time: 2:00 PM\n";
+        inviteFile << "   Venue: " << wedding->weddingVenue << "\n";
+        inviteFile << "   Theme: " << wedding->weddingTheme << "\n\n";
+        inviteFile << "   Dress Code: Formal Attire\n";
+        inviteFile << "   Reception to Follow Immediately After\n\n";
+        inviteFile << "   RSVP: " << currentUser.userName << "\n";
+        inviteFile << "   Contact: " << wedding->weddingVenue << "\n\n";
+        inviteFile << "==================================================\n";
+        inviteFile.close();
+
+        cout << "Invitation card saved to: invitation_" << wedding->eventId << ".txt\n";
+    }
+
+    SetConsoleTextAttribute(hConsole, 7);
+    pauseScreen();
+}
+
 // User Management Functions
 void getBaseUserInfo(BaseInfo& baseInfo)
 {
-    cout << "Enter name: ";
-    getline(cin, baseInfo.name);
+    do {
+        cout << "Enter name: ";
+        getline(cin, baseInfo.name);
+    } while (!isValidName(baseInfo.name));
 
-    cout << "Enter email: ";
-    getline(cin, baseInfo.email);
+    do {
+        cout << "Enter email: ";
+        getline(cin, baseInfo.email);
+        if (!isValidEmail(baseInfo.email)) {
+            cout << "Invalid email format! Example: user@example.com\n";
+        }
+    } while (!isValidEmail(baseInfo.email));
 
-    cout << "Enter phone: ";
-    getline(cin, baseInfo.phoneNum);
+    do {
+        cout << "Enter phone: ";
+        getline(cin, baseInfo.phoneNum);
+        if (!isValidPhoneNumber(baseInfo.phoneNum)) {
+            cout << "Invalid phone number! Must be 10-13 digits.\n";
+        }
+    } while (!isValidPhoneNumber(baseInfo.phoneNum));
 
-    cout << "Enter password: ";
-    getline(cin, baseInfo.password);
+    do {
+        cout << "Enter password: ";
+        getline(cin, baseInfo.password);
+    } while (!isValidPassword(baseInfo.password));
 }
 
 void getVendorInfo(Vendor& vendor, vector<Vendor>& vendorList)
 {
     getBaseUserInfo(vendor.baseInfo);
-
     vendor.vendorId = generateId("V", vendorList.size() + 1);
 
     cout << "Enter company name: ";
@@ -629,13 +884,12 @@ bool login(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<
     cout << "Enter password: ";
     getline(cin, password);
 
-    // Check admin
     for (size_t i = 0; i < adminList.size(); i++)
     {
         if (adminList[i].baseInfo.email == email && adminList[i].baseInfo.password == password)
         {
             currentUser.type = ADMIN;
-            currentUser.userIndex = static_cast<int>(i); // Corrected C4267 conversion
+            currentUser.userIndex = static_cast<int>(i);
             currentUser.userId = adminList[i].adminId;
             currentUser.userName = adminList[i].baseInfo.name;
             currentUser.currentWeddingId = "";
@@ -645,13 +899,12 @@ bool login(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<
         }
     }
 
-    // Check organizer
     for (size_t i = 0; i < organizerList.size(); i++)
     {
         if (organizerList[i].baseInfo.email == email && organizerList[i].baseInfo.password == password)
         {
             currentUser.type = ORGANIZER;
-            currentUser.userIndex = static_cast<int>(i); // Corrected C4267 conversion
+            currentUser.userIndex = static_cast<int>(i);
             currentUser.userId = organizerList[i].organizerId;
             currentUser.userName = organizerList[i].baseInfo.name;
             currentUser.currentWeddingId = organizerList[i].currentWeddingId;
@@ -661,13 +914,12 @@ bool login(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<
         }
     }
 
-    // Check vendor
     for (size_t i = 0; i < vendorList.size(); i++)
     {
         if (vendorList[i].baseInfo.email == email && vendorList[i].baseInfo.password == password)
         {
             currentUser.type = VENDOR;
-            currentUser.userIndex = static_cast<int>(i); // Corrected C4267 conversion
+            currentUser.userIndex = static_cast<int>(i);
             currentUser.userId = vendorList[i].vendorId;
             currentUser.userName = vendorList[i].baseInfo.name;
             currentUser.currentWeddingId = "";
@@ -678,7 +930,7 @@ bool login(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<
     }
 
     cout << "Invalid email or password!" << endl;
-    cin.get();
+    pauseScreen();
     return false;
 }
 
@@ -687,7 +939,7 @@ void logout(CurrentUser& currentUser)
     char confirmed;
     cout << "Are you sure you want to logout (Y/N): ";
     cin >> confirmed;
-    cin.ignore();  // Added to consume newline
+    cin.ignore();
 
     if (toupper(confirmed) == 'Y')
     {
@@ -793,7 +1045,6 @@ void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
     newEvent.organizerId = currentUser.userId;
     newEvent.status = "planning";
     newEvent.totalCost = 0.0;
-    newEvent.weddingVenue = "";  // Initialize venue
 
     cout << "Groom's Name: ";
     getline(cin, newEvent.groomName);
@@ -806,13 +1057,16 @@ void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
         cout << "Wedding Date (YYYY-MM-DD): ";
         getline(cin, newEvent.weddingDate);
 
-        if (!isValidDate(newEvent.weddingDate)) {
-            cout << "Invalid date! Please use YYYY-MM-DD format and ensure it's a future date." << endl;
+        if (!isValidWeddingDate(newEvent.weddingDate)) {
+            cout << "Invalid date! Please use YYYY-MM-DD format and ensure it's at least 30 days from today.\n";
         }
         else {
             validDate = true;
         }
     }
+
+    cout << "Wedding Venue: ";
+    getline(cin, newEvent.weddingVenue);
 
     cout << "Wedding Theme: ";
     getline(cin, newEvent.weddingTheme);
@@ -825,15 +1079,15 @@ void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
 
         try {
             newEvent.budget = stod(budgetStr);
-            if (newEvent.budget <= 0) {
-                cout << "Budget must be greater than 0!" << endl;
+            if (!isValidBudget(newEvent.budget)) {
+                cout << "Budget must be between RM1000 and RM1,000,000!\n";
             }
             else {
                 validBudget = true;
             }
         }
         catch (...) {
-            cout << "Invalid budget amount!" << endl;
+            cout << "Invalid budget amount!\n";
         }
     }
 
@@ -870,7 +1124,7 @@ void displayUserProfile(CurrentUser& currentUser, vector<Vendor>& vendorList, ve
     {
     case ADMIN:
     {
-        Admin& admin = adminList[static_cast<size_t>(currentUser.userIndex)]; // Corrected C4267 conversion
+        Admin& admin = adminList[static_cast<size_t>(currentUser.userIndex)];
         cout << "User Type: Administrator" << endl;
         cout << "Admin ID: " << admin.adminId << endl;
         cout << "Name: " << admin.baseInfo.name << endl;
@@ -880,7 +1134,7 @@ void displayUserProfile(CurrentUser& currentUser, vector<Vendor>& vendorList, ve
     }
     case ORGANIZER:
     {
-        Organizer& org = organizerList[static_cast<size_t>(currentUser.userIndex)]; // Corrected C4267 conversion
+        Organizer& org = organizerList[static_cast<size_t>(currentUser.userIndex)];
         cout << "User Type: Wedding Organizer" << endl;
         cout << "Organizer ID: " << org.organizerId << endl;
         cout << "Name: " << org.baseInfo.name << endl;
@@ -892,7 +1146,7 @@ void displayUserProfile(CurrentUser& currentUser, vector<Vendor>& vendorList, ve
     }
     case VENDOR:
     {
-        Vendor& vendor = vendorList[static_cast<size_t>(currentUser.userIndex)]; // Corrected C4267 conversion
+        Vendor& vendor = vendorList[static_cast<size_t>(currentUser.userIndex)];
         cout << "User Type: Service Vendor" << endl;
         cout << "Vendor ID: " << vendor.vendorId << endl;
         cout << "Name: " << vendor.baseInfo.name << endl;
@@ -996,7 +1250,7 @@ void userRegister(vector<Vendor>& vendorList, vector<Organizer>& organizerList, 
     pauseScreen();
 }
 
-// Menu Functions
+// Booking Functions
 void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
     vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
     if (currentUser.type != ORGANIZER) {
@@ -1063,7 +1317,7 @@ void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& even
     case 2: serviceType = "catering"; break;
     case 3: serviceType = "photography"; break;
     case 4: serviceType = "decoration"; break;
-    case 5: serviceType = ""; break; // Show all
+    case 5: serviceType = ""; break;
     default:
         cout << "Invalid choice!" << endl;
         pauseScreen();
@@ -1073,7 +1327,7 @@ void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& even
     clearScreen();
     cout << "=== AVAILABLE SERVICES ===" << endl;
 
-    vector<pair<size_t, size_t>> availableServices; // vendor index, service index
+    vector<pair<size_t, size_t>> availableServices;
     int optionNum = 1;
 
     for (size_t i = 0; i < vendorList.size(); i++) {
@@ -1107,17 +1361,16 @@ void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& even
     cin >> serviceChoice;
     cin.ignore();
 
-    if (serviceChoice < 1 || serviceChoice > static_cast<int>(availableServices.size())) { // Corrected C4267 conversion
+    if (serviceChoice < 1 || serviceChoice > static_cast<int>(availableServices.size())) {
         cout << "Invalid selection!" << endl;
         pauseScreen();
         return;
     }
 
-    auto& selected = availableServices[static_cast<size_t>(serviceChoice - 1)]; // Corrected C4267 conversion
+    auto& selected = availableServices[static_cast<size_t>(serviceChoice - 1)];
     Service& service = vendorList[selected.first].serviceHasProvide[selected.second];
     Vendor& vendor = vendorList[selected.first];
 
-    // Check budget
     double newTotal = currentEvent->totalCost + service.price;
     if (newTotal > currentEvent->budget) {
         cout << "Cannot book service! Exceeds budget by RM"
@@ -1232,13 +1485,13 @@ void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,
     cin >> choice;
     cin.ignore();
 
-    if (choice < 1 || choice > static_cast<int>(myEvents.size())) { // Corrected C4267 conversion
+    if (choice < 1 || choice > static_cast<int>(myEvents.size())) {
         cout << "Invalid selection!" << endl;
         pauseScreen();
         return;
     }
 
-    WeddingEvent* selectedEvent = myEvents[static_cast<size_t>(choice - 1)]; // Corrected C4267 conversion
+    WeddingEvent* selectedEvent = myEvents[static_cast<size_t>(choice - 1)];
 
     clearScreen();
     cout << "=== MANAGING: " << selectedEvent->groomName << " & " << selectedEvent->brideName << " ===" << endl;
@@ -1252,6 +1505,7 @@ void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,
     cout << "1. Set as Current Wedding" << endl;
     cout << "2. Cancel Wedding" << endl;
     cout << "3. Mark as Completed" << endl;
+    cout << "4. Generate Invitation Card" << endl;
     cout << "0. Back" << endl;
 
     int option;
@@ -1296,11 +1550,16 @@ void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,
         pauseScreen();
         break;
 
+    case 4:
+        generateInvitationCard(currentUser, events, organizerList);
+        break;
+
     default:
         break;
     }
 }
 
+// Menu Functions
 void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList,
     vector<Organizer>& organizerList, vector<Admin>& adminList,
     vector<WeddingEvent>& events) {
@@ -1333,6 +1592,7 @@ void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList,
         cout << "2. Manage My Weddings" << endl;
         cout << "3. Book Services" << endl;
         cout << "4. My Profile" << endl;
+        cout << "5. Generate Invitation Card" << endl;
         cout << "0. Logout" << endl;
         cout << "==========================================" << endl;
         cout << "Enter your choice: ";
@@ -1351,6 +1611,9 @@ void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList,
             break;
         case 4:
             displayUserProfile(currentUser, vendorList, organizerList, adminList);
+            break;
+        case 5:
+            generateInvitationCard(currentUser, events, organizerList);
             break;
         case 0:
             logout(currentUser);
@@ -1416,7 +1679,7 @@ void vendorMenu(CurrentUser& currentUser, vector<Vendor>& vendorList,
         cout << "=== VENDOR DASHBOARD ===" << endl;
         cout << "Welcome, " << currentUser.userName << " (Service Vendor)" << endl;
 
-        Vendor& vendor = vendorList[static_cast<size_t>(currentUser.userIndex)]; // Corrected C4267 conversion
+        Vendor& vendor = vendorList[static_cast<size_t>(currentUser.userIndex)];
         cout << "Company: " << vendor.companyName << endl;
         cout << "Services: " << vendor.serviceHasProvide.size() << " | Products: " << vendor.productHasProvide.size() << endl;
         cout << "==========================================" << endl;
