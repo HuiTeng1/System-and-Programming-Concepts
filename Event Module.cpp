@@ -415,7 +415,7 @@ void clearScreen()
 void pauseScreen()
 {
     cout << "\nPress Enter to continue...";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
 }
 
 // Enhanced Validation Functions
