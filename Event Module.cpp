@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <limits>
 #include <cctype>
-#include <limits>
 #include <ctime>
 #include <chrono>
 #include <windows.h>
@@ -416,43 +415,43 @@ void clearScreen()
 void pauseScreen()
 {
     cout << "\nPress Enter to continue...";
-    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
 // Enhanced Validation Functions
 bool isValidEmail(const string& email) {
     if (email.empty()) return false;
-
+    
     size_t atPos = email.find('@');
     size_t dotPos = email.find('.', atPos);
-
+    
     if (atPos == string::npos || dotPos == string::npos) {
         return false;
     }
-
+    
     if (atPos == 0) return false;
     if (dotPos == atPos + 1) return false;
     if (dotPos == email.length() - 1) return false;
     if (email.find(' ') != string::npos) return false;
     if (email.find('@', atPos + 1) != string::npos) return false;
-
+    
     return true;
 }
 
 bool isValidPhoneNumber(const string& phone) {
     if (phone.length() < 10 || phone.length() > 15) return false;
-
+    
     for (char c : phone) {
         if (!isdigit(c) && c != '+' && c != '-' && c != ' ' && c != '(' && c != ')') {
             return false;
         }
     }
-
+    
     int digitCount = 0;
     for (char c : phone) {
         if (isdigit(c)) digitCount++;
     }
-
+    
     return digitCount >= 10 && digitCount <= 13;
 }
 
@@ -461,15 +460,15 @@ bool isValidPassword(const string& password) {
         cout << "Password must be at least 8 characters long!\n";
         return false;
     }
-
+    
     bool hasUpper = false, hasLower = false, hasDigit = false;
-
+    
     for (char c : password) {
         if (isupper(c)) hasUpper = true;
         if (islower(c)) hasLower = true;
         if (isdigit(c)) hasDigit = true;
     }
-
+    
     if (!hasUpper) {
         cout << "Password must contain at least one uppercase letter!\n";
         return false;
@@ -482,7 +481,7 @@ bool isValidPassword(const string& password) {
         cout << "Password must contain at least one digit!\n";
         return false;
     }
-
+    
     return true;
 }
 
@@ -491,14 +490,14 @@ bool isValidName(const string& name) {
         cout << "Name must be at least 2 characters long!\n";
         return false;
     }
-
+    
     for (char c : name) {
         if (!isalpha(c) && c != ' ' && c != '\'' && c != '-') {
             cout << "Name can only contain letters, spaces, apostrophes, and hyphens!\n";
             return false;
         }
     }
-
+    
     bool hasLetter = false;
     for (char c : name) {
         if (isalpha(c)) {
@@ -506,12 +505,12 @@ bool isValidName(const string& name) {
             break;
         }
     }
-
+    
     if (!hasLetter) {
         cout << "Name must contain at least one letter!\n";
         return false;
     }
-
+    
     return true;
 }
 
@@ -556,29 +555,29 @@ bool isValidDate(const string& date) {
 
 bool isValidWeddingDate(const string& date) {
     if (!isValidDate(date)) return false;
-
+    
     int year = stoi(date.substr(0, 4));
     int month = stoi(date.substr(5, 2));
     int day = stoi(date.substr(8, 2));
-
+    
     time_t now = time(0);
     tm futureDate;
     localtime_s(&futureDate, &now);
     futureDate.tm_mday += 30;
     mktime(&futureDate);
-
-    tm inputDate = { 0 };
+    
+    tm inputDate = {0};
     inputDate.tm_year = year - 1900;
     inputDate.tm_mon = month - 1;
     inputDate.tm_mday = day;
     mktime(&inputDate);
-
+    
     if (inputDate.tm_year < futureDate.tm_year ||
         (inputDate.tm_year == futureDate.tm_year && inputDate.tm_yday < futureDate.tm_yday)) {
         cout << "Wedding date must be at least 30 days from today!\n";
         return false;
     }
-
+    
     return true;
 }
 
@@ -679,34 +678,34 @@ void generateInvitationCard(const CurrentUser& currentUser, const vector<Wedding
 
     clearScreen();
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
+    
     SetConsoleTextAttribute(hConsole, 14);
     cout << "==================================================\n";
     cout << "           WEDDING INVITATION CARD\n";
     cout << "==================================================\n\n";
-
+    
     SetConsoleTextAttribute(hConsole, 14);
     cout << "   💕 You're Cordially Invited To The Wedding Of 💕\n\n";
-
+    
     SetConsoleTextAttribute(hConsole, 11);
     cout << "         " << wedding->groomName << "\n";
     cout << "            &\n";
     cout << "         " << wedding->brideName << "\n\n";
-
+    
     SetConsoleTextAttribute(hConsole, 10);
     cout << "   Date: " << wedding->weddingDate << "\n";
     cout << "   Time: 2:00 PM (Please arrive by 1:30 PM)\n";
     cout << "   Venue: " << wedding->weddingVenue << "\n";
     cout << "   Theme: " << wedding->weddingTheme << "\n\n";
-
+    
     SetConsoleTextAttribute(hConsole, 13);
     cout << "   💐 Dress Code: Formal Attire 💐\n";
     cout << "   🎉 Reception to Follow Immediately After 🎉\n\n";
-
+    
     SetConsoleTextAttribute(hConsole, 14);
     cout << "   RSVP: " << currentUser.userName << "\n";
     cout << "   Contact: " << wedding->weddingVenue << "\n\n";
-
+    
     SetConsoleTextAttribute(hConsole, 15);
     cout << "==================================================\n";
     cout << "   Your presence is the greatest gift we could ask for!\n";
@@ -731,7 +730,7 @@ void generateInvitationCard(const CurrentUser& currentUser, const vector<Wedding
         inviteFile << "   Contact: " << wedding->weddingVenue << "\n\n";
         inviteFile << "==================================================\n";
         inviteFile.close();
-
+        
         cout << "Invitation card saved to: invitation_" << wedding->eventId << ".txt\n";
     }
 
