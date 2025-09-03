@@ -685,7 +685,7 @@ void generateInvitationCard(const CurrentUser& currentUser, const vector<Wedding
     cout << "==================================================\n\n";
     
     SetConsoleTextAttribute(hConsole, 14);
-    cout << "   💕 You're Cordially Invited To The Wedding Of 💕\n\n";
+    cout << "    You're Cordially Invited To The Wedding Of \n\n";
     
     SetConsoleTextAttribute(hConsole, 11);
     cout << "         " << wedding->groomName << "\n";
@@ -699,8 +699,8 @@ void generateInvitationCard(const CurrentUser& currentUser, const vector<Wedding
     cout << "   Theme: " << wedding->weddingTheme << "\n\n";
     
     SetConsoleTextAttribute(hConsole, 13);
-    cout << "   💐 Dress Code: Formal Attire 💐\n";
-    cout << "   🎉 Reception to Follow Immediately After 🎉\n\n";
+    cout << "    Dress Code: Formal Attire \n";
+    cout << "    Reception to Follow Immediately After \n\n";
     
     SetConsoleTextAttribute(hConsole, 14);
     cout << "   RSVP: " << currentUser.userName << "\n";
