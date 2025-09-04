@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include "vendor.h" // Include vendor header for dependencies
+
 
 // Forward declarations
 struct Vendor;
