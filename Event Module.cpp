@@ -1,4 +1,5 @@
 #include "UserModule.h"
+#include "EventModule.h"
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -91,6 +92,35 @@ bool isValidDate(const string& date) {
     return true;
 }
 
+bool isValidWeddingDate(const string& date) {
+    if (!isValidDate(date)) return false;
+
+    int year = stoi(date.substr(0, 4));
+    int month = stoi(date.substr(5, 2));
+    int day = stoi(date.substr(8, 2));
+
+    time_t now = time(0);
+    tm futureDate;
+    localtime_s(&futureDate, &now);
+    futureDate.tm_mday += 30;
+    mktime(&futureDate);
+
+    tm inputDate = { 0 };
+    inputDate.tm_year = year - 1900;
+    inputDate.tm_mon = month - 1;
+    inputDate.tm_mday = day;
+    mktime(&inputDate);
+
+    if (inputDate.tm_year < futureDate.tm_year ||
+        (inputDate.tm_year == futureDate.tm_year && inputDate.tm_yday < futureDate.tm_yday)) {
+        cout << "Wedding date must be at least 30 days from today!\n";
+        return false;
+    }
+
+    return true;
+}
+
+
 bool isDateAvailable(const string& date, const vector<WeddingEvent>& events, const string& venue) {
     for (const auto& event : events) {
         if (event.weddingDate == date && event.status != "cancelled") {
@@ -98,6 +128,18 @@ bool isDateAvailable(const string& date, const vector<WeddingEvent>& events, con
                 return false;
             }
         }
+    }
+    return true;
+}
+
+bool isValidBudget(double budget) {
+    if (budget < 1000) {
+        cout << "Budget must be at least RM1000!\n";
+        return false;
+    }
+    if (budget > 1000000) {
+        cout << "Budget cannot exceed RM1,000,000!\n";
+        return false;
     }
     return true;
 }
