@@ -487,6 +487,20 @@ void viewAllWeddings(CurrentUser& currentUser, const vector<WeddingEvent>& event
     pauseScreen();
 }
 
+bool isValidBudget(double budget) {
+    if (budget < 1000) {
+        cout << "Budget must be at least RM1000!\n";
+        return false;
+    }
+    if (budget > 1000000) {
+        cout << "Budget cannot exceed RM1,000,000!\n";
+        return false;
+    }
+    return true;
+}
+
+
+
 void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,
     vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
     if (currentUser.type != ORGANIZER) {
