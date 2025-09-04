@@ -1,5 +1,4 @@
 #include "Payment.h"
-#include "Header.h" 
 #include <iomanip>
 #include <ctime>
 #include <windows.h>
