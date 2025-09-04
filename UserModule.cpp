@@ -44,41 +44,6 @@ struct Service
         return s;
     }
 };
-struct Product
-{
-    string productId;
-    string productName;
-    string description;
-    string type; // not sure
-    int quantity;
-    double price;
-    bool available;
-    string toFileString()
-    {
-        return productId + "|" + productName + "|" + description + "|" + type + "|" +
-               to_string(quantity) + "|" + to_string(price) + "|" + (available ? "1" : "0");
-    }
-
-    static Product fromFileString(string &str)
-    {
-        Product p;
-        stringstream ss(str);
-        string temp;
-
-        getline(ss, p.productId, '|');
-        getline(ss, p.productName, '|');
-        getline(ss, p.description, '|');
-        getline(ss, p.type, '|');
-        getline(ss, temp, '|');
-        p.quantity = stoi(temp);
-        getline(ss, temp);
-        p.price = stod(temp);
-        getline(ss, temp);
-        p.available = (temp == "1");
-
-        return p;
-    }
-};
 
 struct BaseInfo
 {
@@ -112,15 +77,13 @@ struct Vendor
     string companyContactNum;
     string type; // not sure will use or not, "individual", "company", "partnership" or which type service can provide
     vector<Service> serviceHasProvide;
-    vector<Product> productHasProvide;
     int totalServicesProvided;
-    int totalProductProvided;
     string toFileString()
     {
         // baseInfo
         string baseStr = baseInfo.toFileString();
         // Vendor detail
-        string vendorStr = vendorId + "|" + companyName + "|" + companyContactNum + "|" + type + "|" + to_string(totalServicesProvided) + "|" + to_string(totalProductProvided);
+        string vendorStr = vendorId + "|" + companyName + "|" + companyContactNum + "|" + type + "|" + to_string(totalServicesProvided) ;
         ;
         // service
         string servicesStr;
@@ -131,17 +94,7 @@ struct Vendor
             servicesStr += s.toFileString();
         }
 
-        // Product
-        string productsStr;
-        for (auto &p : productHasProvide)
-        {
-            if (!productsStr.empty())
-                productsStr += "##";
-            productsStr += p.toFileString();
-        }
-
-        return baseStr + "|" + vendorStr +
-               servicesStr + "|" + productsStr;
+        return baseStr + "|" + vendorStr + "|" + servicesStr;
     }
 
     static Vendor fromFileString(string &str)
@@ -162,8 +115,6 @@ struct Vendor
         getline(ss, v.type, '|');
         getline(ss, segment, '|');
         v.totalServicesProvided = stoi(segment);
-        getline(ss, segment, '|');
-        v.totalProductProvided = stoi(segment);
 
         // Parse services
         getline(ss, segment, '|');
@@ -182,25 +133,6 @@ struct Vendor
                 }
             }
         }
-
-        // Parse products
-        getline(ss, segment);
-        if (!segment.empty())
-        {
-            stringstream pss(segment);
-            string pItem;
-            while (getline(pss, pItem, '#'))
-            {
-                if (getline(pss, pItem, '#'))
-                { // Skip the second #
-                    if (!pItem.empty())
-                    {
-                        v.productHasProvide.push_back(Product::fromFileString(pItem));
-                    }
-                }
-            }
-        }
-
         return v;
     }
 };
@@ -645,7 +577,6 @@ void displayUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList, ve
         cout << "Company Phone: " << vendor.companyContactNum << endl;
         cout << "Vendor Type: " << vendor.type << endl;
         cout << "Services Provided: " << vendor.serviceHasProvide.size() << endl;
-        cout << "Products Provided: " << vendor.productHasProvide.size() << endl;
         break;
     }
     }
@@ -725,43 +656,6 @@ void userRegister(vector<Vendor> &vendorList, vector<Organizer> &organizerList, 
     }
 
     saveAllData(vendorList, organizerList, adminList);
-}
-
-void addProduct(CurrentUser &currentUser, vector<Vendor> &vendorList)
-{
-    if (currentUser.type != VENDOR)
-        return;
-
-    Product newProduct;
-    newProduct.productId = generateId("P", vendorList[currentUser.userIndex].productHasProvide.size() + 1);
-    cout << "=== ADD NEW PRODUCT ===" << endl;
-
-    cout << "Product name: ";
-    getline(cin, newProduct.productName);
-
-    cout << "Description: ";
-    getline(cin, newProduct.description);
-
-    cout << "Type (e.g., catering, photography, decoration): ";
-    getline(cin, newProduct.type);
-
-    cout << "Price: RM";
-    cin >> newProduct.price;
-
-    cout << "Quantity available: ";
-    cin >> newProduct.quantity;
-    cin.ignore();
-
-    newProduct.available = true;
-
-    // Add to current vendor's services
-    vendorList[currentUser.userIndex].productHasProvide.push_back(newProduct);
-    vendorList[currentUser.userIndex].totalProductProvided++;
-
-    saveUserIntoFile(vendorList, "vendors.txt");
-    cout << "Product added successfully!" << endl;
-    ;
-    pauseScreen();
 }
 
 void updateBaseInfo(BaseInfo &baseInfo)
@@ -1045,7 +939,7 @@ void updateUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList, vec
     }
 }
 
-void updateService(CurrentUser &currentUser, vector<Vendor> &vendorList)
+void updateOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList)
 {
     if (currentUser.type != VENDOR)
     {
@@ -1168,166 +1062,6 @@ void updateService(CurrentUser &currentUser, vector<Vendor> &vendorList)
     pauseScreen();
 }
 
-void updateProduct(CurrentUser &currentUser, vector<Vendor> &vendorList)
-{
-    if (currentUser.type != VENDOR)
-    {
-        cout << "Only vendors can update products!" << endl;
-        pauseScreen();
-        return;
-    }
-
-    clearScreen();
-    cout << "=== UPDATE PRODUCTS ===" << endl;
-
-    Vendor &vendor = vendorList[currentUser.userIndex];
-
-    if (vendor.productHasProvide.empty())
-    {
-        cout << "No products available to update!" << endl;
-        pauseScreen();
-        return;
-    }
-
-    cout << "\nYour Products:" << endl;
-    int index = 1;
-    for (auto &product : vendor.productHasProvide)
-    {
-        cout << index << ". " << product.productName
-             << " - RM" << product.price
-             << " (Qty: " << product.quantity << ")" << endl;
-        index++;
-    }
-
-    int productIndex;
-    cout << "Select product to update (1-" << vendor.productHasProvide.size() << "): ";
-    cin >> productIndex;
-    cin.ignore();
-
-    if (productIndex < 1 || productIndex > (int)vendor.productHasProvide.size())
-    {
-        cout << "Invalid selection!" << endl;
-        pauseScreen();
-        return;
-    }
-
-    Product &product = vendor.productHasProvide[productIndex - 1];
-
-    int updateChoice;
-    cout << "\nCurrent Product Information:" << endl;
-    cout << "1. Product Name: " << product.productName << endl;
-    cout << "2. Description: " << product.description << endl;
-    cout << "3. Type: " << product.type << endl;
-    cout << "4. Price: RM" << product.price << endl;
-    cout << "5. Quantity: " << product.quantity << endl;
-    cout << "6. Availability: " << (product.available ? "Available" : "Not Available") << endl;
-    cout << "7. Update All Product Info" << endl;
-    cout << "0. Back" << endl;
-    cout << "Choose what to update: ";
-    cin >> updateChoice;
-    cin.ignore();
-
-    switch (updateChoice)
-    {
-    case 1:
-        cout << "Enter new product name: ";
-        getline(cin, product.productName);
-        cout << "Product name updated successfully!" << endl;
-        break;
-    case 2:
-        cout << "Enter new description: ";
-        getline(cin, product.description);
-        cout << "Description updated successfully!" << endl;
-        break;
-    case 3:
-        cout << "Enter new type: ";
-        getline(cin, product.type);
-        cout << "Type updated successfully!" << endl;
-        break;
-    case 4:
-        cout << "Enter new price: RM";
-        cin >> product.price;
-        cin.ignore();
-        cout << "Price updated successfully!" << endl;
-        break;
-    case 5:
-        cout << "Enter new quantity: ";
-        cin >> product.quantity;
-        cin.ignore();
-        cout << "Quantity updated successfully!" << endl;
-        break;
-    case 6:
-        product.available = !product.available;
-        cout << "Availability changed to: " << (product.available ? "Available" : "Not Available") << endl;
-        break;
-    case 7:
-        cout << "Enter new product name: ";
-        getline(cin, product.productName);
-        cout << "Enter new description: ";
-        getline(cin, product.description);
-        cout << "Enter new type: ";
-        getline(cin, product.type);
-        cout << "Enter new price: RM";
-        cin >> product.price;
-        cout << "Enter new quantity: ";
-        cin >> product.quantity;
-        cin.ignore();
-        char availChoice;
-        cout << "Is product available? (y/n): ";
-        cin >> availChoice;
-        product.available = (availChoice == 'y' || availChoice == 'Y');
-        cout << "All product information updated successfully!" << endl;
-        break;
-    case 0:
-        return;
-    default:
-        cout << "Invalid choice!" << endl;
-        pauseScreen();
-        return;
-    }
-
-    saveUserIntoFile(vendorList, "vendors.txt");
-    loadUserFromFile(vendorList, "vendors.txt");
-    pauseScreen();
-}
-
-void updateServiceOrProduct(CurrentUser &currentUser, vector<Vendor> &vendorList)
-{
-    if (currentUser.type != VENDOR)
-    {
-        cout << "Only vendors can update services/products!" << endl;
-        pauseScreen();
-        return;
-    }
-
-    clearScreen();
-    cout << "=== UPDATE SERVICES/PRODUCTS ===" << endl;
-
-    int choice;
-    cout << "1. Update Services" << endl;
-    cout << "2. Update Products" << endl;
-    cout << "0. Back" << endl;
-    cout << "Choose: ";
-    cin >> choice;
-    cin.ignore();
-
-    switch (choice)
-    {
-    case 1:
-        updateService(currentUser, vendorList);
-        break;
-    case 2:
-        updateProduct(currentUser, vendorList);
-        break;
-    case 0:
-        return;
-    default:
-        cout << "Invalid choice!" << endl;
-        pauseScreen();
-        break;
-    }
-}
-
 void displayAllServices(vector<Vendor> &vendorList)
 {
     bool hasServices = false;
@@ -1361,43 +1095,6 @@ void displayAllServices(vector<Vendor> &vendorList)
     if (!hasServices)
     {
         cout << "No services available at the moment." << endl;
-    }
-
-    pauseScreen();
-}
-
-void displayAllProducts(vector<Vendor> &vendorList)
-{
-    bool hasProducts = false;
-    clearScreen();
-    cout << "=== ALL AVAILABLE PRODUCTS ===" << endl;
-
-    for (auto &vendor : vendorList)
-    {
-        if (!vendor.productHasProvide.empty())
-        {
-            int productNum = 1;
-            hasProducts = true;
-            cout << "\n--- Products by " << vendor.baseInfo.name << " (" << vendor.companyName << ") ---" << endl;
-            cout << "Vendor ID: " << vendor.vendorId << " | Contact: " << vendor.baseInfo.phoneNum << endl;
-
-            for (auto &product : vendor.productHasProvide)
-            {
-                cout << productNum << ". Product: " << product.productName << endl;
-                cout << "   Description: " << product.description << endl;
-                cout << "   Type: " << product.type << endl;
-                cout << "   Price: RM" << fixed << setprecision(2) << product.price << endl;
-                cout << "   Quantity Available: " << product.quantity << endl;
-                cout << "   Status: " << (product.available ? "Available" : "Not Available") << endl;
-                cout << "   " << string(50, '-') << endl;
-                productNum++;
-            }
-        }
-    }
-
-    if (!hasProducts)
-    {
-        cout << "No products available at the moment." << endl;
     }
 
     pauseScreen();
@@ -1463,72 +1160,6 @@ void displayServicesByVendor(vector<Vendor> &vendorList)
             cout << "   Status: " << (service.available ? "Available" : "Not Available") << endl;
             cout << "   " << string(50, '-') << endl;
             serviceNum++;
-        }
-    }
-
-    pauseScreen();
-}
-
-void displayProductsByVendor(vector<Vendor> &vendorList)
-{
-    int vendorNum = 1;
-    int choice;
-
-    clearScreen();
-    cout << "=== PRODUCTS BY VENDOR ===" << endl;
-
-    if (vendorList.empty())
-    {
-        cout << "No vendors registered." << endl;
-        pauseScreen();
-        return;
-    }
-
-    // Display all vendors
-    cout << "Available Vendors:" << endl;
-    for (auto &vendor : vendorList)
-    {
-        cout << vendorNum << ". " << vendor.baseInfo.name << " (" << vendor.companyName << ")" << endl;
-        cout << "   Vendor ID: " << vendor.vendorId << " | Products: " << vendor.productHasProvide.size() << endl;
-        vendorNum++;
-    }
-
-    cout << "\nSelect vendor to view products (1-" << vendorList.size() << "): ";
-    cin >> choice;
-    cin.ignore();
-
-    if (choice < 1 || choice > (int)vendorList.size())
-    {
-        cout << "Invalid selection!" << endl;
-        pauseScreen();
-        return;
-    }
-
-    Vendor &selectedVendor = vendorList[choice - 1];
-
-    clearScreen();
-    cout << "=== PRODUCTS BY " << selectedVendor.baseInfo.name << " ===" << endl;
-    cout << "Company: " << selectedVendor.companyName << endl;
-    cout << "Contact: " << selectedVendor.baseInfo.phoneNum << " | Email: " << selectedVendor.baseInfo.email << endl;
-    cout << string(60, '=') << endl;
-
-    if (selectedVendor.productHasProvide.empty())
-    {
-        cout << "This vendor has no products available." << endl;
-    }
-    else
-    {
-        int productNum = 1;
-        for (auto &product : selectedVendor.productHasProvide)
-        {
-            cout << productNum << ". " << product.productName << endl;
-            cout << "   Description: " << product.description << endl;
-            cout << "   Type: " << product.type << endl;
-            cout << "   Price: RM" << fixed << setprecision(2) << product.price << endl;
-            cout << "   Quantity: " << product.quantity << endl;
-            cout << "   Status: " << (product.available ? "Available" : "Not Available") << endl;
-            cout << "   " << string(50, '-') << endl;
-            productNum++;
         }
     }
 
@@ -1886,89 +1517,6 @@ void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList)
     pauseScreen();
 }
 
-void deleteOwnProduct(CurrentUser &currentUser, vector<Vendor> &vendorList)
-{
-    if (currentUser.type != VENDOR)
-    {
-        cout << "Only vendors can delete products!" << endl;
-        pauseScreen();
-        return;
-    }
-
-    clearScreen();
-    cout << "=== DELETE MY PRODUCTS ===" << endl;
-
-    Vendor &vendor = vendorList[currentUser.userIndex];
-
-    if (vendor.productHasProvide.empty())
-    {
-        cout << "You have no products to delete." << endl;
-        pauseScreen();
-        return;
-    }
-
-    // Display current products
-    cout << "Your Current Products:" << endl;
-    int productNum = 1;
-    for (auto &product : vendor.productHasProvide)
-    {
-        cout << productNum << ". " << product.productName
-             << " - RM" << fixed << setprecision(2) << product.price
-             << " (Qty: " << product.quantity << ")" << endl;
-        cout << "   Type: " << product.type << endl;
-        cout << "   Status: " << (product.available ? "Available" : "Not Available") << endl;
-        productNum++;
-    }
-
-    int choice;
-    cout << "\nSelect product to delete (1-" << vendor.productHasProvide.size() << ") or 0 to cancel: ";
-    cin >> choice;
-    cin.ignore();
-
-    if (choice == 0)
-    {
-        cout << "Product deletion cancelled." << endl;
-        pauseScreen();
-        return;
-    }
-
-    if (choice < 1 || choice > (int)vendor.productHasProvide.size())
-    {
-        cout << "Invalid selection!" << endl;
-        pauseScreen();
-        return;
-    }
-
-    // Show selected product details
-    Product &selectedProduct = vendor.productHasProvide[choice - 1];
-    cout << "\nYou selected to delete:" << endl;
-    cout << "Product: " << selectedProduct.productName << endl;
-    cout << "Type: " << selectedProduct.type << endl;
-    cout << "Price: RM" << fixed << setprecision(2) << selectedProduct.price << endl;
-
-    // Confirmation
-    char confirm;
-    cout << "\nAre you sure you want to delete this product? (y/n): ";
-    cin >> confirm;
-    cin.ignore();
-
-    if (confirm == 'y' || confirm == 'Y')
-    {
-        vendor.productHasProvide.erase(vendor.productHasProvide.begin() + (choice - 1));
-        vendor.totalProductProvided = vendor.productHasProvide.size();
-
-        saveUserIntoFile(vendorList, "vendors.txt");
-        loadUserFromFile(vendorList, "vendors.txt");
-        cout << "Product deleted successfully!" << endl;
-    }
-    else
-    {
-        cout << "Product deletion cancelled." << endl;
-    }
-
-    pauseScreen();
-}
-
 void cancelBookedService(CurrentUser &currentUser, vector<Organizer> &organizerList, vector<Vendor> &vendorList)
 {
     if (currentUser.type != ORGANIZER)
@@ -2067,9 +1615,10 @@ void UpdateWeddingMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vec
     do
     {
         clearScreen();
-        cout << "1. Book a new service for wedding" << endl;
-        cout << "2. Book a new product for wedding" << endl;
-        cout << "0. Logout" << endl;
+        cout << "1. Book a New Service for Wedding" << endl;
+        cout << "2. Read All The Booked Service" << endl;
+        cout << "3. Delete Booked Service" << endl;
+        cout << "0. Back to Main Menu" << endl;
         cout << "==========================================" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
@@ -2081,7 +1630,10 @@ void UpdateWeddingMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vec
             // Booking a new service
             break;
         case 2:
-            // Booking a new product
+            //Read all the service have be booked for this wedding
+            break;
+        case 3:
+            //delete the booked service;
             break;
         case 0:
             return;
@@ -2101,17 +1653,16 @@ void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<
         clearScreen();
         cout << "=== ORGANIZER DASHBOARD ===" << endl;
         cout << "Welcome, " << currentUser.userName << " (Wedding Organizer)" << endl;
-
         // Display wedding info
         Organizer &org = organizerList[currentUser.userIndex];
         cout << "==========================================" << endl;
-
         cout << "1. Book a New Wedding" << endl;
         cout << "2. View My All Wedding" << endl;
-        cout << "3. Update My Current Wedding / Add new service or product" << endl;
+        cout << "3. Update My Current Wedding / Add new service for current wedding" << endl;
         cout << "4. Cancel Booked Wedding" << endl;
         cout << "5. Monitoring" << endl;
-        cout << "6. My Profile" << endl;
+        cout << "6. Payment for Current Wedding" << endl;
+        cout << "7. My Profile" << endl;
         cout << "0. Logout" << endl;
         cout << "==========================================" << endl;
         cout << "Enter your choice: ";
@@ -2137,6 +1688,9 @@ void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<
             // Monitoring
             break;
         case 6:
+            // Payment
+            break;
+        case 7:
             displayUserProfile(currentUser, vendorList, organizerList, adminList);
             break;
         case 0:
@@ -2168,14 +1722,13 @@ void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Orga
         cout << "==========================================" << endl;
         cout << "USER MANAGEMENT:" << endl;
         cout << "1. View All Users" << endl;
-        cout << "2. Register New User" << endl;
-        cout << "Service and Product MANAGEMENT:" << endl;
+        cout << "2. Register New User" << endl<< endl;
+
+        cout << "Service MANAGEMENT:" << endl;
         cout << "3. View All Services" << endl;
-        cout << "4. View All Products" << endl;
         cout << "5. View Services by Vendor" << endl;
-        cout << "6. View Products by Vendor" << endl;
-        cout << "7. View Services by Type" << endl
-             << endl;
+        cout << "7. View Services by Type" << endl << endl;
+        
         cout << "OWN ACCOUNT MANAGEMENT:" << endl;
         cout << "8. View My Profile" << endl;
         cout << "9. Update My Profile" << endl;
@@ -2199,13 +1752,13 @@ void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Orga
             displayAllServices(vendorList);
             break;
         case 4:
-            displayAllProducts(vendorList);
+            
             break;
         case 5:
             displayServicesByVendor(vendorList);
             break;
         case 6:
-            displayProductsByVendor(vendorList);
+            
             break;
         case 7:
             displayServicesByType(vendorList);
@@ -2233,7 +1786,7 @@ void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Orga
         }
     } while (choice != 0 && currentUser.type != NONE);
 }
-
+// product
 void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
 {
     int choice;
@@ -2246,31 +1799,23 @@ void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Org
         // Display vendor info
         Vendor &vendor = vendorList[currentUser.userIndex];
         cout << "Company: " << vendor.companyName << endl;
-        cout << "Services: " << vendor.serviceHasProvide.size() << " | Products: " << vendor.productHasProvide.size() << endl;
+        cout << "Services: " << vendor.serviceHasProvide.size() << endl;
         cout << "==========================================" << endl;
-
         cout << "SERVICE MANAGEMENT:" << endl;
         cout << "1. Add New Service" << endl;
         cout << "2. View My Services" << endl;
         cout << "3. Update My Services" << endl;
-        cout << "4. Delete My Services" << endl;
-        cout << endl;
-        cout << "PRODUCT MANAGEMENT:" << endl;
-        cout << "5. Add New Product" << endl;
-        cout << "6. View My Products" << endl;
-        cout << "7. Update My Products" << endl;
-        cout << "8. Delete My Products" << endl;
-        cout << endl;
+        cout << "4. Delete My Services" << endl << endl;
+
         cout << "MARKET RESEARCH:" << endl;
-        cout << "9. View All Services (Competition)" << endl;
-        cout << "10. View All Products (Competition)" << endl;
-        cout << "11. View Services by Type" << endl;
-        cout << endl;
+        cout << "5. View All Services (Competition)" << endl;
+        cout << "6. View Services by Type" << endl << endl;
+
         cout << "ACCOUNT MANAGEMENT:" << endl;
-        cout << "12. View My Profile" << endl;
-        cout << "13. Update My Profile" << endl;
-        cout << "14. Delete My Account" << endl;
-        cout << endl;
+        cout << "7. View My Profile" << endl;
+        cout << "8. Update My Profile" << endl;
+        cout << "9. Delete My Account" << endl << endl;
+
         cout << "0. Logout" << endl;
         cout << "==========================================" << endl;
         cout << "Enter your choice: ";
@@ -2286,43 +1831,25 @@ void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Org
             displayServicesByVendor(vendorList); // They can select themselves
             break;
         case 3:
-            updateServiceOrProduct(currentUser, vendorList);
+            updateOwnService(currentUser, vendorList);
             break;
         case 4:
             deleteOwnService(currentUser, vendorList);
             break;
         case 5:
-            addProduct(currentUser, vendorList);
-            break;
-        case 6:
-            displayProductsByVendor(vendorList); // They can select themselves
-            break;
-        case 7:
-            updateServiceOrProduct(currentUser, vendorList);
-            break;
-        case 8:
-            deleteOwnProduct(currentUser, vendorList);
-            break;
-        case 9:
             displayAllServices(vendorList);
             break;
-        case 10:
-            displayAllProducts(vendorList);
-            break;
-        case 11:
+        case 6:
             displayServicesByType(vendorList);
             break;
-        case 12:
+        case 7:
             displayUserProfile(currentUser, vendorList, organizerList, adminList);
             break;
-        case 13:
+        case 8:
             updateUserProfile(currentUser, vendorList, organizerList, adminList);
             break;
-        case 14:
-            if (deleteOwnAccount(currentUser, vendorList, organizerList, adminList))
-            {
-                return; // Account deleted, exit menu
-            }
+        case 9:
+            deleteOwnAccount( currentUser, vendorList, organizerList, adminList);
             break;
         case 0:
             logout(currentUser);
