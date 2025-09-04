@@ -1,51 +1,5 @@
 #include "EventModule.h"
 
-// Forward declarations of structures needed
-struct Vendor {
-    struct BaseInfo {
-        string name;
-        string email;
-        string phoneNum;
-        string password;
-    } baseInfo;
-    
-    string vendorId;
-    string companyName;
-    string companyContactNum;
-    string type;
-    vector<struct Service> serviceHasProvide;
-    vector<struct Product> productHasProvide;
-    int totalServicesProvided;
-    int totalProductProvided;
-};
-
-struct Organizer {
-    struct BaseInfo {
-        string name;
-        string email;
-        string phoneNum;
-        string password;
-    } baseInfo;
-    
-    string organizerId;
-    string currentWeddingId;
-    vector<int> bookedServices;
-};
-
-struct CurrentUser {
-    enum UserType {
-        NONE,
-        ADMIN,
-        ORGANIZER,
-        VENDOR
-    } type = NONE;
-    
-    int userIndex = -1;
-    string userId = "";
-    string userName = "";
-    string currentWeddingId;
-};
-
 // WeddingEvent methods implementation
 string WeddingEvent::toFileString() const {
     string servicesStr;
