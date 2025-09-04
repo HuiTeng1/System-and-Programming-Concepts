@@ -1,52 +1,17 @@
-#include "EventModule.h"
+#include "UserModule.h"
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <iomanip>
+#include <algorithm>
+#include <ctime>
+#include <windows.h>
 
-// Forward declarations of structures needed
-struct Vendor {
-    struct BaseInfo {
-        string name;
-        string email;
-        string phoneNum;
-        string password;
-    } baseInfo;
-    
-    string vendorId;
-    string companyName;
-    string companyContactNum;
-    string type;
-    vector<struct Service> serviceHasProvide;
-    vector<struct Product> productHasProvide;
-    int totalServicesProvided;
-    int totalProductProvided;
-};
+using namespace std;
 
-struct Organizer {
-    struct BaseInfo {
-        string name;
-        string email;
-        string phoneNum;
-        string password;
-    } baseInfo;
-    
-    string organizerId;
-    string currentWeddingId;
-    vector<int> bookedServices;
-};
-
-struct CurrentUser {
-    enum UserType {
-        NONE,
-        ADMIN,
-        ORGANIZER,
-        VENDOR
-    } type = NONE;
-    
-    int userIndex = -1;
-    string userId = "";
-    string userName = "";
-    string currentWeddingId;
-};
-
-// WeddingEvent methods implementation
+// WeddingEvent member functions
 string WeddingEvent::toFileString() const {
     string servicesStr;
     for (size_t i = 0; i < bookedServices.size(); ++i) {
@@ -57,8 +22,8 @@ string WeddingEvent::toFileString() const {
     }
 
     return eventId + "|" + organizerId + "|" + groomName + "|" + brideName + "|" +
-        weddingDate + "|" + weddingVenue + "|" + weddingTheme + "|" +
-        to_string(budget) + "|" + to_string(totalCost) + "|" + status + "|" + servicesStr;
+           weddingDate + "|" + weddingVenue + "|" + weddingTheme + "|" +
+           to_string(budget) + "|" + to_string(totalCost) + "|" + status + "|" + servicesStr;
 }
 
 WeddingEvent WeddingEvent::fromFileString(string& str) {
@@ -98,7 +63,7 @@ WeddingEvent WeddingEvent::fromFileString(string& str) {
     return event;
 }
 
-// Utility Functions
+// Event utility functions
 bool isValidDate(const string& date) {
     if (date.length() != 10) return false;
     if (date[4] != '-' || date[7] != '-') return false;
@@ -126,34 +91,6 @@ bool isValidDate(const string& date) {
     return true;
 }
 
-bool isValidWeddingDate(const string& date) {
-    if (!isValidDate(date)) return false;
-
-    int year = stoi(date.substr(0, 4));
-    int month = stoi(date.substr(5, 2));
-    int day = stoi(date.substr(8, 2));
-
-    time_t now = time(0);
-    tm futureDate;
-    localtime_s(&futureDate, &now);
-    futureDate.tm_mday += 30;
-    mktime(&futureDate);
-
-    tm inputDate = { 0 };
-    inputDate.tm_year = year - 1900;
-    inputDate.tm_mon = month - 1;
-    inputDate.tm_mday = day;
-    mktime(&inputDate);
-
-    if (inputDate.tm_year < futureDate.tm_year ||
-        (inputDate.tm_year == futureDate.tm_year && inputDate.tm_yday < futureDate.tm_yday)) {
-        cout << "Wedding date must be at least 30 days from today!\n";
-        return false;
-    }
-
-    return true;
-}
-
 bool isDateAvailable(const string& date, const vector<WeddingEvent>& events, const string& venue) {
     for (const auto& event : events) {
         if (event.weddingDate == date && event.status != "cancelled") {
@@ -161,18 +98,6 @@ bool isDateAvailable(const string& date, const vector<WeddingEvent>& events, con
                 return false;
             }
         }
-    }
-    return true;
-}
-
-bool isValidBudget(double budget) {
-    if (budget < 1000) {
-        cout << "Budget must be at least RM1000!\n";
-        return false;
-    }
-    if (budget > 1000000) {
-        cout << "Budget cannot exceed RM1,000,000!\n";
-        return false;
     }
     return true;
 }
@@ -224,9 +149,8 @@ void saveEventsToFile(const vector<WeddingEvent>& events, const string& filename
     file.close();
 }
 
-// Wedding Event Functions
 void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
-    vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
+                     vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
     if (currentUser.type != ORGANIZER) {
         cout << "Only organizers can create weddings!" << endl;
         pauseScreen();
@@ -303,9 +227,8 @@ void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
     pauseScreen();
 }
 
-// Booking Functions
 void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
-    vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
+                           vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
     if (currentUser.type != ORGANIZER) {
         cout << "Only organizers can book services!" << endl;
         pauseScreen();
@@ -473,7 +396,7 @@ void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& even
 }
 
 void viewAllWeddings(CurrentUser& currentUser, const vector<WeddingEvent>& events,
-    const vector<Vendor>& vendorList) {
+                    const vector<Vendor>& vendorList) {
     clearScreen();
     cout << "=== ALL WEDDING EVENTS ===" << endl;
 
@@ -500,7 +423,7 @@ void viewAllWeddings(CurrentUser& currentUser, const vector<WeddingEvent>& event
 }
 
 void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,
-    vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
+                     vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
     if (currentUser.type != ORGANIZER) {
         cout << "Only organizers can manage weddings!" << endl;
         pauseScreen();
@@ -612,9 +535,8 @@ void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,
     }
 }
 
-// Invitation Card Function
 void generateInvitationCard(const CurrentUser& currentUser, const vector<WeddingEvent>& events,
-    const vector<Organizer>& organizerList) {
+                          const vector<Organizer>& organizerList) {
     if (currentUser.type != ORGANIZER) {
         cout << "Only organizers can generate invitation cards!" << endl;
         pauseScreen();
