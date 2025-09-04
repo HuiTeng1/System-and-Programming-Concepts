@@ -16,6 +16,8 @@
 
 using namespace std;
 
+using namespace std;
+
 // Forward declarations
 struct WeddingEvent;
 struct CurrentUser;
