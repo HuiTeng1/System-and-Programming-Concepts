@@ -1,20 +1,52 @@
-#include "wedding_event.h"
-#include "vendor.h"
-#include "organizer.h"
-#include "current_user.h"
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
-#include <fstream>
-#include <iomanip>
-#include <algorithm>
-#include <ctime>
-#include <windows.h>
+#include "EventModule.h"
 
-using namespace std;
+// Forward declarations of structures needed
+struct Vendor {
+    struct BaseInfo {
+        string name;
+        string email;
+        string phoneNum;
+        string password;
+    } baseInfo;
+    
+    string vendorId;
+    string companyName;
+    string companyContactNum;
+    string type;
+    vector<struct Service> serviceHasProvide;
+    vector<struct Product> productHasProvide;
+    int totalServicesProvided;
+    int totalProductProvided;
+};
 
-// WeddingEvent member functions
+struct Organizer {
+    struct BaseInfo {
+        string name;
+        string email;
+        string phoneNum;
+        string password;
+    } baseInfo;
+    
+    string organizerId;
+    string currentWeddingId;
+    vector<int> bookedServices;
+};
+
+struct CurrentUser {
+    enum UserType {
+        NONE,
+        ADMIN,
+        ORGANIZER,
+        VENDOR
+    } type = NONE;
+    
+    int userIndex = -1;
+    string userId = "";
+    string userName = "";
+    string currentWeddingId;
+};
+
+// WeddingEvent methods implementation
 string WeddingEvent::toFileString() const {
     string servicesStr;
     for (size_t i = 0; i < bookedServices.size(); ++i) {
@@ -66,7 +98,7 @@ WeddingEvent WeddingEvent::fromFileString(string& str) {
     return event;
 }
 
-// Event utility functions
+// Utility Functions
 bool isValidDate(const string& date) {
     if (date.length() != 10) return false;
     if (date[4] != '-' || date[7] != '-') return false;
@@ -91,17 +123,6 @@ bool isValidDate(const string& date) {
     if (year == (currentDate.tm_year + 1900) && month < (currentDate.tm_mon + 1)) return false;
     if (year == (currentDate.tm_year + 1900) && month == (currentDate.tm_mon + 1) && day <= currentDate.tm_mday) return false;
 
-    return true;
-}
-
-bool isDateAvailable(const string& date, const vector<WeddingEvent>& events, const string& venue) {
-    for (const auto& event : events) {
-        if (event.weddingDate == date && event.status != "cancelled") {
-            if (venue.empty() || event.weddingVenue == venue) {
-                return false;
-            }
-        }
-    }
     return true;
 }
 
@@ -203,6 +224,7 @@ void saveEventsToFile(const vector<WeddingEvent>& events, const string& filename
     file.close();
 }
 
+// Wedding Event Functions
 void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
     vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
     if (currentUser.type != ORGANIZER) {
@@ -281,6 +303,7 @@ void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
     pauseScreen();
 }
 
+// Booking Functions
 void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
     vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
     if (currentUser.type != ORGANIZER) {
@@ -589,6 +612,7 @@ void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,
     }
 }
 
+// Invitation Card Function
 void generateInvitationCard(const CurrentUser& currentUser, const vector<WeddingEvent>& events,
     const vector<Organizer>& organizerList) {
     if (currentUser.type != ORGANIZER) {
