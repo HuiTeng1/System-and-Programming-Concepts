@@ -1517,7 +1517,7 @@ void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList)
     pauseScreen();
 }
 
-void cancelBookedService(CurrentUser &currentUser, vector<Organizer> &organizerList, vector<Vendor> &vendorList)
+/*void cancelBookedService(CurrentUser &currentUser, vector<Organizer> &organizerList, vector<Vendor> &vendorList)
 {
     if (currentUser.type != ORGANIZER)
     {
@@ -1608,7 +1608,7 @@ void cancelBookedService(CurrentUser &currentUser, vector<Organizer> &organizerL
 
     pauseScreen();
 }
-
+*/
 void UpdateWeddingMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
 {
     int choice;
@@ -1728,7 +1728,7 @@ void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Orga
         cout << "3. View All Services" << endl;
         cout << "5. View Services by Vendor" << endl;
         cout << "7. View Services by Type" << endl << endl;
-        
+
         cout << "OWN ACCOUNT MANAGEMENT:" << endl;
         cout << "8. View My Profile" << endl;
         cout << "9. Update My Profile" << endl;
