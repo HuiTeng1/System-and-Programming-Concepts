@@ -1,63 +1,48 @@
-#ifndef EVENTMODULE_H
-#define EVENTMODULE_H
+#ifndef WEDDING_EVENT_H
+#define WEDDING_EVENT_H
 
-#include <iostream>
-#include <sstream>
 #include <string>
 #include <vector>
-#include <fstream>
-#include <iomanip>
-#include <algorithm>
-#include <limits>
-#include <cctype>
-#include <ctime>
-#include <chrono>
-#include <windows.h>
-using namespace std;
+#include "vendor.h" // Include vendor header for dependencies
 
 // Forward declarations
-struct WeddingEvent;
-struct CurrentUser;
 struct Vendor;
 struct Organizer;
-struct Admin;
-
-// Event-related utility functions declarations
-bool isValidDate(const string& date);
-bool isDateAvailable(const string& date, const vector<WeddingEvent>& events, const string& venue = "");
-double calculateServiceCost(const vector<int>& serviceIds, const vector<Vendor>& vendorList);
-void loadEventsFromFile(vector<WeddingEvent>& events, const string& filename);
-void saveEventsToFile(const vector<WeddingEvent>& events, const string& filename);
-void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
-    vector<Vendor>& vendorList, vector<Organizer>& organizerList);
-void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
-    vector<Vendor>& vendorList, vector<Organizer>& organizerList);
-void viewAllWeddings(CurrentUser& currentUser, const vector<WeddingEvent>& events,
-    const vector<Vendor>& vendorList);
-void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,
-    vector<Vendor>& vendorList, vector<Organizer>& organizerList);
-void generateInvitationCard(const CurrentUser& currentUser, const vector<WeddingEvent>& events,
-    const vector<Organizer>& organizerList);
-
-// Enhanced validation functions
-bool isValidWeddingDate(const string& date);
+struct CurrentUser;
 
 // WeddingEvent structure
 struct WeddingEvent {
-    string eventId;
-    string organizerId;
-    string groomName;
-    string brideName;
-    string weddingDate;
-    string weddingVenue;
-    string weddingTheme;
+    std::string eventId;
+    std::string organizerId;
+    std::string groomName;
+    std::string brideName;
+    std::string weddingDate;
+    std::string weddingVenue;
+    std::string weddingTheme;
     double budget;
     double totalCost;
-    string status;
-    vector<int> bookedServices;
+    std::string status;
+    std::vector<int> bookedServices;
 
-    string toFileString() const;
-    static WeddingEvent fromFileString(string& str);
+    std::string toFileString() const;
+    static WeddingEvent fromFileString(std::string& str);
 };
 
-#endif // EVENTMODULE_H
+// Event utility functions
+bool isValidDate(const std::string& date);
+bool isDateAvailable(const std::string& date, const std::vector<WeddingEvent>& events, const std::string& venue = "");
+double calculateServiceCost(const std::vector<int>& serviceIds, const std::vector<Vendor>& vendorList);
+void loadEventsFromFile(std::vector<WeddingEvent>& events, const std::string& filename);
+void saveEventsToFile(const std::vector<WeddingEvent>& events, const std::string& filename);
+void createNewWedding(CurrentUser& currentUser, std::vector<WeddingEvent>& events,
+    std::vector<Vendor>& vendorList, std::vector<Organizer>& organizerList);
+void bookServicesForWedding(CurrentUser& currentUser, std::vector<WeddingEvent>& events,
+    std::vector<Vendor>& vendorList, std::vector<Organizer>& organizerList);
+void viewAllWeddings(CurrentUser& currentUser, const std::vector<WeddingEvent>& events,
+    const std::vector<Vendor>& vendorList);
+void manageMyWeddings(CurrentUser& currentUser, std::vector<WeddingEvent>& events,
+    std::vector<Vendor>& vendorList, std::vector<Organizer>& organizerList);
+void generateInvitationCard(const CurrentUser& currentUser, const std::vector<WeddingEvent>& events,
+    const std::vector<Organizer>& organizerList);
+
+#endif // WEDDING_EVENT_H
