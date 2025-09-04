@@ -154,6 +154,19 @@ bool isValidWeddingDate(const string& date) {
     return true;
 }
 
+bool isValidBudget(double budget) {
+    if (budget < 1000) {
+        cout << "Budget must be at least RM1000!\n";
+        return false;
+    }
+    if (budget > 1000000) {
+        cout << "Budget cannot exceed RM1,000,000!\n";
+        return false;
+    }
+    return true;
+}
+
+
 bool isDateAvailable(const string& date, const vector<WeddingEvent>& events, const string& venue) {
     for (const auto& event : events) {
         if (event.weddingDate == date && event.status != "cancelled") {
@@ -486,19 +499,6 @@ void viewAllWeddings(CurrentUser& currentUser, const vector<WeddingEvent>& event
 
     pauseScreen();
 }
-
-bool isValidBudget(double budget) {
-    if (budget < 1000) {
-        cout << "Budget must be at least RM1000!\n";
-        return false;
-    }
-    if (budget > 1000000) {
-        cout << "Budget cannot exceed RM1,000,000!\n";
-        return false;
-    }
-    return true;
-}
-
 
 
 void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,
