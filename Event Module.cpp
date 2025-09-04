@@ -1,5 +1,6 @@
 #include "EventModule.h"
 
+
 // WeddingEvent methods implementation
 string WeddingEvent::toFileString() const {
     string servicesStr;
