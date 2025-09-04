@@ -1,7 +1,9 @@
 #include "Payment.h"
+#include <EventModule.h>
+
 #include <iomanip>
 #include <ctime>
-#include <windows.h>
+#include <iostream>
 
 using namespace std;
 
