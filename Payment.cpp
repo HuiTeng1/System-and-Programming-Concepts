@@ -5,6 +5,8 @@
 #include <iomanip>
 #include <ctime>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -32,25 +34,25 @@ PaymentTransaction PaymentTransaction::fromFileString(string& str) {
 }
 
 // Function implementations
-void viewPaymentSummary(const CurrentUser& currentUser, const WeddingEvent* selectedEvent, const vector<Vendor>& vendorList) {
+void viewPaymentSummary(const CurrentUser& currentUser, const WeddingEvent& selectedEvent, const vector<Vendor>& vendorList) { // Changed to reference
     clearScreen();
-    if (selectedEvent->status != "planning") {
+    if (selectedEvent.status != "planning") { // Changed to '.'
         cout << "Payment summary is only available for weddings in the 'planning' state." << endl;
         pauseScreen();
         return;
     }
 
     cout << "=== PAYMENT SUMMARY (INVOICE) ===" << endl;
-    cout << "Invoice for Wedding Event ID: " << selectedEvent->eventId << endl;
+    cout << "Invoice for Wedding Event ID: " << selectedEvent.eventId << endl; // Changed to '.'
     cout << "Client: " << currentUser.userName << endl;
-    cout << "Couple: " << selectedEvent->groomName << " & " << selectedEvent->brideName << endl;
-    cout << "Wedding Date: " << selectedEvent->weddingDate << endl;
+    cout << "Couple: " << selectedEvent.groomName << " & " << selectedEvent.brideName << endl; // Changed to '.'
+    cout << "Wedding Date: " << selectedEvent.weddingDate << endl; // Changed to '.'
     cout << "---------------------------------------" << endl;
-    cout << "Description                    Cost (RM)" << endl;
+    cout << "Description                 Cost (RM)" << endl;
     cout << "---------------------------------------" << endl;
 
     double subtotal = 0.0;
-    for (int serviceIdNum : selectedEvent->bookedServices) {
+    for (int serviceIdNum : selectedEvent.bookedServices) { // Changed to '.'
         bool found = false;
         for (const auto& vendor : vendorList) {
             for (const auto& service : vendor.serviceHasProvide) {
@@ -74,9 +76,9 @@ void viewPaymentSummary(const CurrentUser& currentUser, const WeddingEvent* sele
     localtime_s(&nowTm, &now);
 
     tm weddingTm = { 0 };
-    weddingTm.tm_year = stoi(selectedEvent->weddingDate.substr(0, 4)) - 1900;
-    weddingTm.tm_mon = stoi(selectedEvent->weddingDate.substr(5, 2)) - 1;
-    weddingTm.tm_mday = stoi(selectedEvent->weddingDate.substr(8, 2));
+    weddingTm.tm_year = stoi(selectedEvent.weddingDate.substr(0, 4)) - 1900; // Changed to '.'
+    weddingTm.tm_mon = stoi(selectedEvent.weddingDate.substr(5, 2)) - 1; // Changed to '.'
+    weddingTm.tm_mday = stoi(selectedEvent.weddingDate.substr(8, 2)); // Changed to '.'
 
     time_t weddingTime = mktime(&weddingTm);
 
@@ -95,9 +97,9 @@ void viewPaymentSummary(const CurrentUser& currentUser, const WeddingEvent* sele
     pauseScreen();
 }
 
-void generateReport(const CurrentUser& currentUser, const WeddingEvent* selectedEvent, const vector<Vendor>& vendorList) {
+void generateReport(const CurrentUser& currentUser, const WeddingEvent& selectedEvent, const vector<Vendor>& vendorList) { // Changed to reference
     clearScreen();
-    if (selectedEvent->status != "completed") {
+    if (selectedEvent.status != "completed") { // Changed to '.'
         cout << "Report can only be generated for weddings in the 'completed' state." << endl;
         pauseScreen();
         return;
@@ -115,7 +117,7 @@ void generateReport(const CurrentUser& currentUser, const WeddingEvent* selected
 
     PaymentTransaction* transaction = nullptr;
     for (auto& pt : transactions) {
-        if (pt.weddingId == selectedEvent->eventId) {
+        if (pt.weddingId == selectedEvent.eventId) { // Changed to '.'
             transaction = &pt;
             break;
         }
@@ -133,11 +135,11 @@ void generateReport(const CurrentUser& currentUser, const WeddingEvent* selected
     cout << "Report Date: " << transaction->transactionDate << endl;
     cout << "Report Time: " << transaction->transactionTime << endl;
     cout << "--------------------------------------" << endl;
-    cout << "Event ID: " << selectedEvent->eventId << endl;
-    cout << "Couple: " << selectedEvent->groomName << " & " << selectedEvent->brideName << endl;
-    cout << "Wedding Date: " << selectedEvent->weddingDate << endl;
-    cout << "Wedding Venue: " << selectedEvent->weddingVenue << endl;
-    cout << "Status: " << selectedEvent->status << endl;
+    cout << "Event ID: " << selectedEvent.eventId << endl; // Changed to '.'
+    cout << "Couple: " << selectedEvent.groomName << " & " << selectedEvent.brideName << endl; // Changed to '.'
+    cout << "Wedding Date: " << selectedEvent.weddingDate << endl; // Changed to '.'
+    cout << "Wedding Venue: " << selectedEvent.weddingVenue << endl; // Changed to '.'
+    cout << "Status: " << selectedEvent.status << endl; // Changed to '.'
     cout << "--------------------------------------" << endl;
     cout << "PAYMENT DETAILS" << endl;
     cout << "Transaction ID: " << transaction->transactionId << endl;
@@ -146,7 +148,7 @@ void generateReport(const CurrentUser& currentUser, const WeddingEvent* selected
     cout << "Payment Status: " << transaction->paymentStatus << endl;
     cout << "--------------------------------------" << endl;
     cout << "SERVICES RENDERED" << endl;
-    for (int serviceIdNum : selectedEvent->bookedServices) {
+    for (int serviceIdNum : selectedEvent.bookedServices) { // Changed to '.'
         bool found = false;
         for (const auto& vendor : vendorList) {
             for (const auto& service : vendor.serviceHasProvide) {
@@ -312,10 +314,10 @@ void paymentAndReportingMenu(CurrentUser& currentUser, WeddingEvent* selectedEve
             }
         } break;
         case 2:
-            viewPaymentSummary(currentUser, selectedEvent, vendorList);
+            viewPaymentSummary(currentUser, *selectedEvent, vendorList); // Changed call to use '*'
             break;
         case 3:
-            generateReport(currentUser, selectedEvent, vendorList);
+            generateReport(currentUser, *selectedEvent, vendorList); // Changed call to use '*'
             break;
         case 4:
             return;
