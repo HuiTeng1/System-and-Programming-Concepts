@@ -18,7 +18,7 @@ int main() {
     CurrentUser currentUser;
 
     // Load data from files
-    loadAllData(vendorList, organizerList, adminList, events);
+    loadAllData(vendorList, organizerList, adminList);
     loadEventsFromFile(events, "events.txt");
     addDefaultParticipants(participants);
 

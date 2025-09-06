@@ -1,1 +1,1 @@
-organizerList
+struct WeddingEvent {

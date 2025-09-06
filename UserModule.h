@@ -85,7 +85,10 @@ void getBaseUserInfo(BaseInfo &baseInfo);
 void getVendorInfo(Vendor &vendor, vector<Vendor> &vendorList);
 void getOrganizerInfo(Organizer &organizer, vector<Organizer> &organizerList);
 bool getAdminInfo(Admin &admin, vector<Admin> &adminList);
-
+template <typename T>
+void saveUserIntoFile(vector<T> &data, string fileName);
+template <typename T>
+void loadUserFromFile(vector<T> &data, string fileName);
 template <typename T>
 void saveUserIntoFile(vector<T> &data, string fileName){
     ofstream write(fileName);

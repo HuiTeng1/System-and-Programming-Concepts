@@ -262,7 +262,6 @@ void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,vec
     }
 
     saveEventsToFile(events, "events.txt");
-    saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
 
     cout << "Wedding created successfully! Event ID: " << newEvent.eventId << endl;
     pauseScreen();
@@ -428,8 +427,6 @@ void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& even
     }
 
     saveEventsToFile(events, "events.txt");
-    saveUserIntoFile <Vendor>(vendorList, "vendors.txt");
-    saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
 
     cout << "Service booked successfully!" << endl;
     pauseScreen();
@@ -535,7 +532,7 @@ void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,vec
                 break;
             }
         }
-        saveUserIntoFile <Organizer>(organizerList, "organizers.txt");
+        saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
         cout << "Wedding set as current wedding." << endl;
         pauseScreen();
         break;

@@ -86,8 +86,7 @@ struct Vendor
         // baseInfo
         string baseStr = baseInfo.toFileString();
         // Vendor detail
-        string vendorStr = vendorId + "|" + companyName + "|" + companyContactNum + "|" + type + "|" + to_string(totalServicesProvided) ;
-        ;
+        string vendorStr = vendorId + "|" + companyName + "|" + companyContactNum + "|" + type + "|" + to_string(totalServicesProvided);
         // service
         string servicesStr;
         for (auto &s : serviceHasProvide)
@@ -369,6 +368,9 @@ void loadUserFromFile(vector<T> &data, string fileName)
     }
     read.close();
 }
+template void loadUserFromFile<Vendor>(vector<Vendor> &data, string fileName);
+template void loadUserFromFile<Organizer>(vector<Organizer> &data, string fileName);
+template void loadUserFromFile<Admin>(vector<Admin> &data, string fileName);
 
 template <typename T>
 void saveUserIntoFile(vector<T> &data, string fileName){
@@ -386,11 +388,16 @@ void saveUserIntoFile(vector<T> &data, string fileName){
     }
     write.close();
 }
+template void saveUserIntoFile<Vendor>(vector<Vendor> &data, string fileName);
+template void saveUserIntoFile<Organizer>(vector<Organizer> &data, string fileName);
+template void saveUserIntoFile<Admin>(vector<Admin> &data, string fileName);
+
 void loadAllData(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList){
     loadUserFromFile<Admin>(adminList, "admins.txt");
     loadUserFromFile<Organizer>(organizerList, "organizers.txt");
     loadUserFromFile<Vendor>(vendorList, "vendors.txt");
 }
+
 
 bool login(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, CurrentUser &currentUser){
     clearScreen();
@@ -1624,6 +1631,8 @@ void UpdateWeddingMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vec
         case 1:
             // Booking a new service
             bookServicesForWedding(currentUser, events, vendorList, organizerList);
+            saveUserIntoFile<Vendor>(vendorList, "vendors.txt");
+            saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
             break;
         case 2:
             //Read all the service have be booked for this wedding
@@ -1669,6 +1678,7 @@ void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<
         {
         case 1:
             createNewWedding(currentUser,events,vendorList, organizerList);
+            saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
             break;
         case 2:
             viewAllWeddings(currentUser, events, vendorList);
@@ -1907,4 +1917,27 @@ void mainMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organ
             break;
         }
     } while (choice != 3);
+}
+
+int main() {
+    vector<Vendor> vendorList;
+    vector<Organizer> organizerList;
+    vector<Admin> adminList;
+    vector<WeddingEvent> events;
+    vector<Participant> participants;
+    CurrentUser currentUser;
+
+    // Load data from files
+    loadAllData(vendorList, organizerList, adminList);
+    loadEventsFromFile(events, "events.txt");
+    addDefaultParticipants(participants);
+
+    // Start main menu
+    mainMenu(currentUser, vendorList, organizerList, adminList, events, participants);
+
+    // Save data before exit
+    saveAllData(vendorList, organizerList, adminList);
+    saveEventsToFile(events, "events.txt");
+
+    return 0;
 }
