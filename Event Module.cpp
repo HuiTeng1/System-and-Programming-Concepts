@@ -1,3 +1,5 @@
+#include "UserModule.h"
+#include "EventModule.h"
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -5,536 +7,670 @@
 #include <fstream>
 #include <iomanip>
 #include <algorithm>
-#include <limits>
 #include <ctime>
-#include <iomanip>
+#include <windows.h>
+
 using namespace std;
 
-// ... [Previous struct definitions remain the same until Event-related structs] ...
-
-struct Date {
-    int day;
-    int month;
-    int year;
-    
-    string toString() const {
-        return to_string(day) + "/" + to_string(month) + "/" + to_string(year);
-    }
-    
-    bool isValid() const {
-        if (month < 1 || month > 12) return false;
-        if (day < 1) return false;
-        
-        int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-        if (month == 2 && (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0))) {
-            return day <= 29;
+// WeddingEvent member functions
+string WeddingEvent::toFileString() const {
+    string servicesStr;
+    for (size_t i = 0; i < bookedServices.size(); ++i) {
+        servicesStr += to_string(bookedServices[i]);
+        if (i < bookedServices.size() - 1) {
+            servicesStr += ",";
         }
-        return day <= daysInMonth[month - 1];
     }
-    
-    bool isFutureDate() const {
-        time_t now = time(0);
-        tm* currentTime = localtime(&now);
-        int currentYear = currentTime->tm_year + 1900;
-        int currentMonth = currentTime->tm_mon + 1;
-        int currentDay = currentTime->tm_mday;
-        
-        if (year > currentYear) return true;
-        if (year == currentYear && month > currentMonth) return true;
-        if (year == currentYear && month == currentMonth && day > currentDay) return true;
+
+    return eventId + "|" + organizerId + "|" + groomName + "|" + brideName + "|" +
+           weddingDate + "|" + weddingVenue + "|" + weddingTheme + "|" +
+           to_string(budget) + "|" + to_string(totalCost) + "|" + status + "|" + servicesStr;
+}
+
+WeddingEvent WeddingEvent::fromFileString(string& str) {
+    WeddingEvent event;
+    stringstream ss(str);
+    string temp;
+
+    getline(ss, event.eventId, '|');
+    getline(ss, event.organizerId, '|');
+    getline(ss, event.groomName, '|');
+    getline(ss, event.brideName, '|');
+    getline(ss, event.weddingDate, '|');
+    getline(ss, event.weddingVenue, '|');
+    getline(ss, event.weddingTheme, '|');
+
+    getline(ss, temp, '|');
+    event.budget = stod(temp);
+
+    getline(ss, temp, '|');
+    event.totalCost = stod(temp);
+
+    getline(ss, event.status, '|');
+
+    string servicesStr;
+    getline(ss, servicesStr);
+    event.bookedServices.clear();
+    if (!servicesStr.empty()) {
+        stringstream ssServices(servicesStr);
+        string serviceIdStr;
+        while (getline(ssServices, serviceIdStr, ',')) {
+            if (!serviceIdStr.empty()) {
+                event.bookedServices.push_back(stoi(serviceIdStr));
+            }
+        }
+    }
+
+    return event;
+}
+
+// Event utility functions
+bool isValidDate(const string& date) {
+    if (date.length() != 10) return false;
+    if (date[4] != '-' || date[7] != '-') return false;
+
+    for (int i = 0; i < 10; i++) {
+        if (i == 4 || i == 7) continue;
+        if (!isdigit(date[i])) return false;
+    }
+
+    time_t now = time(0);
+    tm currentDate;
+    localtime_s(&currentDate, &now);
+
+    int year = stoi(date.substr(0, 4));
+    int month = stoi(date.substr(5, 2));
+    int day = stoi(date.substr(8, 2));
+
+    if (month < 1 || month > 12) return false;
+    if (day < 1 || day > 31) return false;
+
+    if (year < (currentDate.tm_year + 1900)) return false;
+    if (year == (currentDate.tm_year + 1900) && month < (currentDate.tm_mon + 1)) return false;
+    if (year == (currentDate.tm_year + 1900) && month == (currentDate.tm_mon + 1) && day <= currentDate.tm_mday) return false;
+
+    return true;
+}
+
+bool isValidWeddingDate(const string& date) {
+    if (!isValidDate(date)) return false;
+
+    int year = stoi(date.substr(0, 4));
+    int month = stoi(date.substr(5, 2));
+    int day = stoi(date.substr(8, 2));
+
+    time_t now = time(0);
+    tm futureDate;
+    localtime_s(&futureDate, &now);
+    futureDate.tm_mday += 30;
+    mktime(&futureDate);
+
+    tm inputDate = { 0 };
+    inputDate.tm_year = year - 1900;
+    inputDate.tm_mon = month - 1;
+    inputDate.tm_mday = day;
+    mktime(&inputDate);
+
+    if (inputDate.tm_year < futureDate.tm_year ||
+        (inputDate.tm_year == futureDate.tm_year && inputDate.tm_yday < futureDate.tm_yday)) {
+        cout << "Wedding date must be at least 30 days from today!\n";
         return false;
     }
-};
 
-struct Venue {
-    int id;
-    string name;
-    string location;
-    int capacity;
-    double price;
-    vector<Date> bookedDates;
-    
-    bool isAvailable(const Date& date) const {
-        for (const auto& bookedDate : bookedDates) {
-            if (bookedDate.day == date.day && bookedDate.month == date.month && bookedDate.year == date.year) {
+    return true;
+}
+
+
+bool isDateAvailable(const string& date, const vector<WeddingEvent>& events, const string& venue) {
+    for (const auto& event : events) {
+        if (event.weddingDate == date && event.status != "cancelled") {
+            if (venue.empty() || event.weddingVenue == venue) {
                 return false;
             }
         }
-        return true;
     }
-    
-    string toFileString() const {
-        string bookedDatesStr;
-        for (const auto& date : bookedDates) {
-            if (!bookedDatesStr.empty()) bookedDatesStr += "#";
-            bookedDatesStr += to_string(date.day) + "," + to_string(date.month) + "," + to_string(date.year);
-        }
-        return to_string(id) + "|||" + name + "|||" + location + "|||" + 
-               to_string(capacity) + "|||" + to_string(price) + "|||" + bookedDatesStr;
+    return true;
+}
+
+bool isValidBudget(double budget) {
+    if (budget < 1000) {
+        cout << "Budget must be at least RM1000!\n";
+        return false;
     }
-    
-    static Venue fromFileString(const string& str) {
-        Venue v;
-        stringstream ss(str);
-        string temp;
-        
-        getline(ss, temp, '|'); v.id = stoi(temp); ss.ignore(2);
-        getline(ss, v.name, '|'); ss.ignore(2);
-        getline(ss, v.location, '|'); ss.ignore(2);
-        getline(ss, temp, '|'); v.capacity = stoi(temp); ss.ignore(2);
-        getline(ss, temp, '|'); v.price = stod(temp); ss.ignore(2);
-        
-        // Parse booked dates
-        string datesStr;
-        getline(ss, datesStr);
-        if (!datesStr.empty()) {
-            stringstream datesSS(datesStr);
-            string dateStr;
-            while (getline(datesSS, dateStr, '#')) {
-                if (!dateStr.empty()) {
-                    stringstream dateSS(dateStr);
-                    string part;
-                    Date date;
-                    getline(dateSS, part, ','); date.day = stoi(part);
-                    getline(dateSS, part, ','); date.month = stoi(part);
-                    getline(dateSS, part); date.year = stoi(part);
-                    v.bookedDates.push_back(date);
+    if (budget > 1000000) {
+        cout << "Budget cannot exceed RM1,000,000!\n";
+        return false;
+    }
+    return true;
+}
+
+double calculateServiceCost(const vector<int>& serviceIds, const vector<Vendor>& vendorList) {
+    double total = 0.0;
+    for (int serviceId : serviceIds) {
+        for (const auto& vendor : vendorList) {
+            for (const auto& service : vendor.serviceHasProvide) {
+                if (service.serviceId == "S" + to_string(serviceId)) {
+                    total += service.price;
+                    break;
                 }
             }
         }
-        
-        return v;
     }
-};
-
-struct CateringPackage {
-    int id;
-    string packageName;
-    string description;
-    int minGuests;
-    int maxGuests;
-    double basePrice;
-    double pricePerGuest;
-    
-    string toFileString() const {
-        return to_string(id) + "|||" + packageName + "|||" + description + "|||" + 
-               to_string(minGuests) + "|||" + to_string(maxGuests) + "|||" + 
-               to_string(basePrice) + "|||" + to_string(pricePerGuest);
-    }
-    
-    static CateringPackage fromFileString(const string& str) {
-        CateringPackage cp;
-        stringstream ss(str);
-        string temp;
-        
-        getline(ss, temp, '|'); cp.id = stoi(temp); ss.ignore(2);
-        getline(ss, cp.packageName, '|'); ss.ignore(2);
-        getline(ss, cp.description, '|'); ss.ignore(2);
-        getline(ss, temp, '|'); cp.minGuests = stoi(temp); ss.ignore(2);
-        getline(ss, temp, '|'); cp.maxGuests = stoi(temp); ss.ignore(2);
-        getline(ss, temp, '|'); cp.basePrice = stod(temp); ss.ignore(2);
-        getline(ss, temp); cp.pricePerGuest = stod(temp);
-        
-        return cp;
-    }
-};
-
-struct EventBooking {
-    string bookingId;
-    string organizerId;
-    string eventType;
-    Date eventDate;
-    int venueId;
-    int cateringId;
-    int numberOfGuests;
-    double totalCost;
-    string status; // "pending", "confirmed", "cancelled"
-    vector<int> serviceIds;
-    
-    string toFileString() const {
-        string serviceIdsStr;
-        for (size_t i = 0; i < serviceIds.size(); ++i) {
-            serviceIdsStr += to_string(serviceIds[i]);
-            if (i < serviceIds.size() - 1) serviceIdsStr += ",";
-        }
-        
-        return bookingId + "|||" + organizerId + "|||" + eventType + "|||" + 
-               to_string(eventDate.day) + "," + to_string(eventDate.month) + "," + to_string(eventDate.year) + "|||" + 
-               to_string(venueId) + "|||" + to_string(cateringId) + "|||" + 
-               to_string(numberOfGuests) + "|||" + to_string(totalCost) + "|||" + 
-               status + "|||" + serviceIdsStr;
-    }
-    
-    static EventBooking fromFileString(const string& str) {
-        EventBooking eb;
-        stringstream ss(str);
-        string temp;
-        
-        getline(ss, eb.bookingId, '|'); ss.ignore(2);
-        getline(ss, eb.organizerId, '|'); ss.ignore(2);
-        getline(ss, eb.eventType, '|'); ss.ignore(2);
-        
-        // Parse date
-        string dateStr;
-        getline(ss, dateStr, '|');
-        stringstream dateSS(dateStr);
-        getline(dateSS, temp, ','); eb.eventDate.day = stoi(temp);
-        getline(dateSS, temp, ','); eb.eventDate.month = stoi(temp);
-        getline(dateSS, temp); eb.eventDate.year = stoi(temp);
-        ss.ignore(2);
-        
-        getline(ss, temp, '|'); eb.venueId = stoi(temp); ss.ignore(2);
-        getline(ss, temp, '|'); eb.cateringId = stoi(temp); ss.ignore(2);
-        getline(ss, temp, '|'); eb.numberOfGuests = stoi(temp); ss.ignore(2);
-        getline(ss, temp, '|'); eb.totalCost = stod(temp); ss.ignore(2);
-        getline(ss, eb.status, '|'); ss.ignore(2);
-        
-        // Parse service IDs
-        string servicesStr;
-        getline(ss, servicesStr);
-        if (!servicesStr.empty()) {
-            stringstream servicesSS(servicesStr);
-            string serviceIdStr;
-            while (getline(servicesSS, serviceIdStr, ',')) {
-                if (!serviceIdStr.empty()) {
-                    eb.serviceIds.push_back(stoi(serviceIdStr));
-                }
-            }
-        }
-        
-        return eb;
-    }
-};
-
-// Global vectors for event management
-vector<Venue> venues;
-vector<CateringPackage> cateringPackages;
-vector<EventBooking> eventBookings;
-
-// Function declarations
-void initializeEventData();
-void saveEventData();
-void loadEventData();
-void eventRegistrationMenu(CurrentUser& currentUser, vector<Organizer>& organizerList, vector<Vendor>& vendorList);
-void eventBookingMenu(CurrentUser& currentUser, vector<Organizer>& organizerList, vector<Vendor>& vendorList);
-void viewMyBookings(CurrentUser& currentUser);
-void manageVenues(CurrentUser& currentUser);
-void manageCatering(CurrentUser& currentUser);
-Date getDateInput(const string& prompt);
-bool validateDate(const Date& date);
-double calculateCateringCost(int cateringId, int guests);
-void displayAvailableVenues(const Date& date);
-void displayCateringPackages();
-
-// Initialize event data
-void initializeEventData() {
-    venues = {
-        {1, "Emperor Palace", "Kuala Lumpur", 300, 15000.00, {}},
-        {2, "Lexis Hotel", "Selangor", 150, 8000.00, {}},
-        {3, "Avillion Cove Resort", "Penang", 200, 12000.00, {}},
-        {4, "The First Hotel", "Johor Bahru", 250, 10000.00, {}}
-    };
-
-    cateringPackages = {
-        {1, "Basic Package", "Buffet Dinner with basic beverages", 50, 200, 2000.00, 40.00},
-        {2, "Premium Package", "5 Course Meal with premium beverages", 30, 150, 5000.00, 80.00},
-        {3, "VIP Package", "7 Course Gourmet Meal with fine wines", 20, 100, 9000.00, 150.00},
-        {4, "Emperor Package", "12 Course Gourmet Experience", 10, 50, 12000.00, 250.00}
-    };
+    return total;
 }
 
-// Save event data to files
-void saveEventData() {
-    ofstream venueFile("venues.txt");
-    ofstream cateringFile("catering.txt");
-    ofstream bookingFile("bookings.txt");
-    
-    for (const auto& venue : venues) {
-        venueFile << venue.toFileString() << endl;
-    }
-    
-    for (const auto& catering : cateringPackages) {
-        cateringFile << catering.toFileString() << endl;
-    }
-    
-    for (const auto& booking : eventBookings) {
-        bookingFile << booking.toFileString() << endl;
-    }
-    
-    venueFile.close();
-    cateringFile.close();
-    bookingFile.close();
-}
+void loadEventsFromFile(vector<WeddingEvent>& events, const string& filename) {
+    ifstream file(filename);
+    if (!file) return;
 
-// Load event data from files
-void loadEventData() {
-    ifstream venueFile("venues.txt");
-    ifstream cateringFile("catering.txt");
-    ifstream bookingFile("bookings.txt");
-    
-    venues.clear();
-    cateringPackages.clear();
-    eventBookings.clear();
-    
+    events.clear();
     string line;
-    while (getline(venueFile, line)) {
+    while (getline(file, line)) {
         if (!line.empty()) {
-            venues.push_back(Venue::fromFileString(line));
+            try {
+                events.push_back(WeddingEvent::fromFileString(line));
+            }
+            catch (...) {
+                cout << "Error parsing event line: " << line << endl;
+            }
         }
     }
-    
-    while (getline(cateringFile, line)) {
-        if (!line.empty()) {
-            cateringPackages.push_back(CateringPackage::fromFileString(line));
-        }
-    }
-    
-    while (getline(bookingFile, line)) {
-        if (!line.empty()) {
-            eventBookings.push_back(EventBooking::fromFileString(line));
-        }
-    }
-    
-    venueFile.close();
-    cateringFile.close();
-    bookingFile.close();
+    file.close();
 }
 
-// Event Registration Module
-void eventRegistrationMenu(CurrentUser& currentUser, vector<Organizer>& organizerList, vector<Vendor>& vendorList) {
+void saveEventsToFile(const vector<WeddingEvent>& events, const string& filename) {
+    ofstream file(filename);
+    if (!file) {
+        cout << "Error opening events file for writing." << endl;
+        return;
+    }
+
+    for (const auto& event : events) {
+        file << event.toFileString() << endl;
+    }
+    file.close();
+}
+
+void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
+                     vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
     if (currentUser.type != ORGANIZER) {
-        cout << "This feature is only available for organizers!" << endl;
+        cout << "Only organizers can create weddings!" << endl;
         pauseScreen();
         return;
     }
-    
-    int choice;
-    do {
-        clearScreen();
-        cout << "=== EVENT REGISTRATION MENU ===" << endl;
-        cout << "1. Create New Event Booking" << endl;
-        cout << "2. View My Bookings" << endl;
-        cout << "3. Cancel Booking" << endl;
-        cout << "4. Return to Main Menu" << endl;
-        cout << "Enter your choice: ";
-        cin >> choice;
-        cin.ignore();
-        
-        switch (choice) {
-            case 1:
-                eventBookingMenu(currentUser, organizerList, vendorList);
-                break;
-            case 2:
-                viewMyBookings(currentUser);
-                break;
-            case 3:
-                // Cancel booking function would go here
-                cout << "Cancel booking feature coming soon!" << endl;
-                pauseScreen();
-                break;
-            case 4:
-                return;
-            default:
-                cout << "Invalid choice!" << endl;
-                pauseScreen();
+
+    clearScreen();
+    cout << "=== CREATE NEW WEDDING ===" << endl;
+
+    WeddingEvent newEvent;
+    newEvent.eventId = generateId("W", events.size() + 1);
+    newEvent.organizerId = currentUser.userId;
+    newEvent.status = "planning";
+    newEvent.totalCost = 0.0;
+
+    cout << "Groom's Name: ";
+    getline(cin, newEvent.groomName);
+
+    cout << "Bride's Name: ";
+    getline(cin, newEvent.brideName);
+
+    bool validDate = false;
+    while (!validDate) {
+        cout << "Wedding Date (YYYY-MM-DD): ";
+        getline(cin, newEvent.weddingDate);
+
+        if (!isValidWeddingDate(newEvent.weddingDate)) {
+            cout << "Invalid date! Please use YYYY-MM-DD format and ensure it's at least 30 days from today.\n";
         }
-    } while (choice != 4);
+        else {
+            validDate = true;
+        }
+    }
+
+    cout << "Wedding Venue: ";
+    getline(cin, newEvent.weddingVenue);
+
+    cout << "Wedding Theme: ";
+    getline(cin, newEvent.weddingTheme);
+
+    bool validBudget = false;
+    while (!validBudget) {
+        cout << "Budget (RM): ";
+        string budgetStr;
+        getline(cin, budgetStr);
+
+        try {
+            newEvent.budget = stod(budgetStr);
+            if (!isValidBudget(newEvent.budget)) {
+                cout << "Budget must be between RM1000 and RM1,000,000!\n";
+            }
+            else {
+                validBudget = true;
+            }
+        }
+        catch (...) {
+            cout << "Invalid budget amount!\n";
+        }
+    }
+
+    events.push_back(newEvent);
+
+    for (auto& organizer : organizerList) {
+        if (organizer.organizerId == currentUser.userId) {
+            organizer.currentWeddingId = newEvent.eventId;
+            break;
+        }
+    }
+
+    saveEventsToFile(events, "events.txt");
+    saveUserIntoFile(organizerList, "organizers.txt");
+
+    cout << "Wedding created successfully! Event ID: " << newEvent.eventId << endl;
+    pauseScreen();
 }
 
-// Event Booking Module
-void eventBookingMenu(CurrentUser& currentUser, vector<Organizer>& organizerList, vector<Vendor>& vendorList) {
+void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
+                           vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
+    if (currentUser.type != ORGANIZER) {
+        cout << "Only organizers can book services!" << endl;
+        pauseScreen();
+        return;
+    }
+
+    string currentWeddingId;
+    for (const auto& organizer : organizerList) {
+        if (organizer.organizerId == currentUser.userId) {
+            currentWeddingId = organizer.currentWeddingId;
+            break;
+        }
+    }
+
+    if (currentWeddingId.empty()) {
+        cout << "No active wedding! Please create a wedding first." << endl;
+        pauseScreen();
+        return;
+    }
+
+    WeddingEvent* currentEvent = nullptr;
+    for (auto& event : events) {
+        if (event.eventId == currentWeddingId) {
+            currentEvent = &event;
+            break;
+        }
+    }
+
+    if (!currentEvent || currentEvent->status == "cancelled") {
+        cout << "Wedding not found or cancelled!" << endl;
+        pauseScreen();
+        return;
+    }
+
     clearScreen();
-    cout << "=== CREATE NEW EVENT BOOKING ===" << endl;
-    
-    EventBooking newBooking;
-    newBooking.bookingId = generateId("B", eventBookings.size() + 1);
-    newBooking.organizerId = currentUser.userId;
-    newBooking.status = "pending";
-    
-    // Get event type
-    cout << "Enter event type (wedding, conference, birthday, etc.): ";
-    getline(cin, newBooking.eventType);
-    
-    // Get event date
-    newBooking.eventDate = getDateInput("Enter event date (DD MM YYYY): ");
-    if (!validateDate(newBooking.eventDate)) {
-        cout << "Invalid date or date is not in the future!" << endl;
+    cout << "=== BOOK SERVICES FOR WEDDING ===" << endl;
+    cout << "Event: " << currentEvent->groomName << " & " << currentEvent->brideName << endl;
+    cout << "Date: " << currentEvent->weddingDate << endl;
+    cout << "Budget: RM" << fixed << setprecision(2) << currentEvent->budget << endl;
+    cout << "Current Total: RM" << fixed << setprecision(2) << currentEvent->totalCost << endl;
+    cout << "Remaining Budget: RM" << fixed << setprecision(2) << (currentEvent->budget - currentEvent->totalCost) << endl;
+    cout << "==========================================" << endl;
+
+    cout << "Service Categories:" << endl;
+    cout << "1. Venue" << endl;
+    cout << "2. Catering" << endl;
+    cout << "3. Photography" << endl;
+    cout << "4. Decoration" << endl;
+    cout << "5. View All Services" << endl;
+    cout << "0. Back to Main Menu" << endl;
+
+    int choice;
+    cout << "Select category: ";
+    cin >> choice;
+    cin.ignore();
+
+    if (choice == 0) return;
+
+    string serviceType;
+    switch (choice) {
+    case 1: serviceType = "venue"; break;
+    case 2: serviceType = "catering"; break;
+    case 3: serviceType = "photography"; break;
+    case 4: serviceType = "decoration"; break;
+    case 5: serviceType = ""; break;
+    default:
+        cout << "Invalid choice!" << endl;
         pauseScreen();
         return;
     }
-    
-    // Venue selection
-    displayAvailableVenues(newBooking.eventDate);
-    cout << "Select venue ID: ";
-    cin >> newBooking.venueId;
-    cin.ignore();
-    
-    // Validate venue selection
-    bool validVenue = false;
-    for (auto& venue : venues) {
-        if (venue.id == newBooking.venueId && venue.isAvailable(newBooking.eventDate)) {
-            validVenue = true;
-            venue.bookedDates.push_back(newBooking.eventDate);
-            break;
-        }
-    }
-    
-    if (!validVenue) {
-        cout << "Invalid venue selection or venue not available on selected date!" << endl;
-        pauseScreen();
-        return;
-    }
-    
-    // Catering selection
-    displayCateringPackages();
-    cout << "Select catering package ID: ";
-    cin >> newBooking.cateringId;
-    cin.ignore();
-    
-    // Validate catering selection
-    bool validCatering = false;
-    for (const auto& catering : cateringPackages) {
-        if (catering.id == newBooking.cateringId) {
-            validCatering = true;
-            break;
-        }
-    }
-    
-    if (!validCatering) {
-        cout << "Invalid catering package selection!" << endl;
-        pauseScreen();
-        return;
-    }
-    
-    // Number of guests
-    cout << "Enter number of guests: ";
-    cin >> newBooking.numberOfGuests;
-    cin.ignore();
-    
-    // Calculate total cost
-    double venueCost = 0;
-    for (const auto& venue : venues) {
-        if (venue.id == newBooking.venueId) {
-            venueCost = venue.price;
-            break;
-        }
-    }
-    
-    double cateringCost = calculateCateringCost(newBooking.cateringId, newBooking.numberOfGuests);
-    newBooking.totalCost = venueCost + cateringCost;
-    
-    // Display summary
+
     clearScreen();
-    cout << "=== BOOKING SUMMARY ===" << endl;
-    cout << "Event Type: " << newBooking.eventType << endl;
-    cout << "Date: " << newBooking.eventDate.toString() << endl;
-    cout << "Venue ID: " << newBooking.venueId << endl;
-    cout << "Catering Package ID: " << newBooking.cateringId << endl;
-    cout << "Number of Guests: " << newBooking.numberOfGuests << endl;
-    cout << "Total Cost: RM " << fixed << setprecision(2) << newBooking.totalCost << endl;
-    cout << "=======================" << endl;
-    
+    cout << "=== AVAILABLE SERVICES ===" << endl;
+
+    vector<pair<size_t, size_t>> availableServices;
+    int optionNum = 1;
+
+    for (size_t i = 0; i < vendorList.size(); i++) {
+        const auto& vendor = vendorList[i];
+        for (size_t j = 0; j < vendor.serviceHasProvide.size(); j++) {
+            const auto& service = vendor.serviceHasProvide[j];
+            if ((serviceType.empty() || service.type == serviceType) &&
+                service.available && service.quantity > 0) {
+
+                cout << optionNum << ". " << service.serviceName << " (by " << vendor.baseInfo.name << ")" << endl;
+                cout << "   Description: " << service.description << endl;
+                cout << "   Type: " << service.type << endl;
+                cout << "   Price: RM" << fixed << setprecision(2) << service.price << endl;
+                cout << "   Available: " << service.quantity << endl;
+                cout << "   " << string(40, '-') << endl;
+
+                availableServices.push_back({ i, j });
+                optionNum++;
+            }
+        }
+    }
+
+    if (availableServices.empty()) {
+        cout << "No available services in this category!" << endl;
+        pauseScreen();
+        return;
+    }
+
+    int serviceChoice;
+    cout << "Select service to book (0 to cancel): ";
+    cin >> serviceChoice;
+    cin.ignore();
+
+    if (serviceChoice < 1 || serviceChoice > static_cast<int>(availableServices.size())) {
+        cout << "Invalid selection!" << endl;
+        pauseScreen();
+        return;
+    }
+
+    auto& selected = availableServices[static_cast<size_t>(serviceChoice - 1)];
+    Service& service = vendorList[selected.first].serviceHasProvide[selected.second];
+    Vendor& vendor = vendorList[selected.first];
+
+    double newTotal = currentEvent->totalCost + service.price;
+    if (newTotal > currentEvent->budget) {
+        cout << "Cannot book service! Exceeds budget by RM"
+            << fixed << setprecision(2) << (newTotal - currentEvent->budget) << endl;
+        pauseScreen();
+        return;
+    }
+
+    cout << "\nConfirm booking:" << endl;
+    cout << "Service: " << service.serviceName << endl;
+    cout << "Vendor: " << vendor.baseInfo.name << endl;
+    cout << "Price: RM" << fixed << setprecision(2) << service.price << endl;
+    cout << "Proceed? (y/n): ";
+
     char confirm;
-    cout << "Confirm booking? (y/n): ";
     cin >> confirm;
     cin.ignore();
-    
-    if (tolower(confirm) == 'y') {
-        newBooking.status = "confirmed";
-        eventBookings.push_back(newBooking);
-        saveEventData();
-        cout << "Booking confirmed successfully!" << endl;
-    } else {
-        // Remove venue booking if cancelled
-        for (auto& venue : venues) {
-            if (venue.id == newBooking.venueId) {
-                auto it = find(venue.bookedDates.begin(), venue.bookedDates.end(), newBooking.eventDate);
-                if (it != venue.bookedDates.end()) {
-                    venue.bookedDates.erase(it);
-                }
+
+    if (confirm != 'y' && confirm != 'Y') {
+        cout << "Booking cancelled." << endl;
+        pauseScreen();
+        return;
+    }
+
+    service.quantity--;
+    if (service.quantity == 0) {
+        service.available = false;
+    }
+
+    int serviceIdNum = stoi(service.serviceId.substr(1));
+    currentEvent->bookedServices.push_back(serviceIdNum);
+    currentEvent->totalCost += service.price;
+
+    for (auto& organizer : organizerList) {
+        if (organizer.organizerId == currentUser.userId) {
+            organizer.bookedServices.push_back(serviceIdNum);
+            break;
+        }
+    }
+
+    saveEventsToFile(events, "events.txt");
+    saveUserIntoFile(vendorList, "vendors.txt");
+    saveUserIntoFile(organizerList, "organizers.txt");
+
+    cout << "Service booked successfully!" << endl;
+    pauseScreen();
+}
+
+void viewAllWeddings(CurrentUser& currentUser, const vector<WeddingEvent>& events,
+                    const vector<Vendor>& vendorList) {
+    clearScreen();
+    cout << "=== ALL WEDDING EVENTS ===" << endl;
+
+    if (events.empty()) {
+        cout << "No wedding events found." << endl;
+        pauseScreen();
+        return;
+    }
+
+    for (const auto& event : events) {
+        if (event.status == "cancelled") continue;
+
+        cout << "Event ID: " << event.eventId << endl;
+        cout << "Couple: " << event.groomName << " & " << event.brideName << endl;
+        cout << "Date: " << event.weddingDate << endl;
+        cout << "Theme: " << event.weddingTheme << endl;
+        cout << "Budget: RM" << fixed << setprecision(2) << event.budget << endl;
+        cout << "Total Cost: RM" << fixed << setprecision(2) << event.totalCost << endl;
+        cout << "Status: " << event.status << endl;
+        cout << string(50, '=') << endl;
+    }
+
+    pauseScreen();
+}
+
+void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,
+                     vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
+    if (currentUser.type != ORGANIZER) {
+        cout << "Only organizers can manage weddings!" << endl;
+        pauseScreen();
+        return;
+    }
+
+    vector<WeddingEvent*> myEvents;
+    for (auto& event : events) {
+        if (event.organizerId == currentUser.userId && event.status != "cancelled") {
+            myEvents.push_back(&event);
+        }
+    }
+
+    if (myEvents.empty()) {
+        cout << "You have no wedding events!" << endl;
+        pauseScreen();
+        return;
+    }
+
+    clearScreen();
+    cout << "=== MY WEDDING EVENTS ===" << endl;
+
+    for (size_t i = 0; i < myEvents.size(); i++) {
+        WeddingEvent* event = myEvents[i];
+        cout << (i + 1) << ". " << event->groomName << " & " << event->brideName
+            << " (" << event->weddingDate << ")" << endl;
+        cout << "   Status: " << event->status << endl;
+        cout << "   Cost: RM" << fixed << setprecision(2) << event->totalCost
+            << " / RM" << fixed << setprecision(2) << event->budget << endl;
+        cout << "   " << string(30, '-') << endl;
+    }
+
+    int choice;
+    cout << "Select wedding to manage (0 to cancel): ";
+    cin >> choice;
+    cin.ignore();
+
+    if (choice < 1 || choice > static_cast<int>(myEvents.size())) {
+        cout << "Invalid selection!" << endl;
+        pauseScreen();
+        return;
+    }
+
+    WeddingEvent* selectedEvent = myEvents[static_cast<size_t>(choice - 1)];
+
+    clearScreen();
+    cout << "=== MANAGING: " << selectedEvent->groomName << " & " << selectedEvent->brideName << " ===" << endl;
+    cout << "Date: " << selectedEvent->weddingDate << endl;
+    cout << "Status: " << selectedEvent->status << endl;
+    cout << "Budget: RM" << fixed << setprecision(2) << selectedEvent->budget << endl;
+    cout << "Total Cost: RM" << fixed << setprecision(2) << selectedEvent->totalCost << endl;
+    cout << "==========================================" << endl;
+
+    cout << "Management Options:" << endl;
+    cout << "1. Set as Current Wedding" << endl;
+    cout << "2. Cancel Wedding" << endl;
+    cout << "3. Mark as Completed" << endl;
+    cout << "4. Generate Invitation Card" << endl;
+    cout << "0. Back" << endl;
+
+    int option;
+    cout << "Select option: ";
+    cin >> option;
+    cin.ignore();
+
+    switch (option) {
+    case 1:
+        for (auto& organizer : organizerList) {
+            if (organizer.organizerId == currentUser.userId) {
+                organizer.currentWeddingId = selectedEvent->eventId;
                 break;
             }
         }
-        cout << "Booking cancelled." << endl;
+        saveUserIntoFile(organizerList, "organizers.txt");
+        cout << "Wedding set as current wedding." << endl;
+        pauseScreen();
+        break;
+
+    case 2:
+        cout << "Are you sure you want to cancel this wedding? (y/n): ";
+        char confirm;
+        cin >> confirm;
+        cin.ignore();
+
+        if (confirm == 'y' || confirm == 'Y') {
+            selectedEvent->status = "cancelled";
+            saveEventsToFile(events, "events.txt");
+            cout << "Wedding cancelled successfully." << endl;
+        }
+        else {
+            cout << "Cancellation aborted." << endl;
+        }
+        pauseScreen();
+        break;
+
+    case 3:
+        selectedEvent->status = "completed";
+        saveEventsToFile(events, "events.txt");
+        cout << "Wedding marked as completed." << endl;
+        pauseScreen();
+        break;
+
+    case 4:
+        generateInvitationCard(currentUser, events, organizerList);
+        break;
+
+    default:
+        break;
     }
-    
-    pauseScreen();
 }
 
-// View user's bookings
-void viewMyBookings(CurrentUser& currentUser) {
+void generateInvitationCard(const CurrentUser& currentUser, const vector<WeddingEvent>& events,
+                          const vector<Organizer>& organizerList) {
+    if (currentUser.type != ORGANIZER) {
+        cout << "Only organizers can generate invitation cards!" << endl;
+        pauseScreen();
+        return;
+    }
+
+    string currentWeddingId;
+    for (const auto& organizer : organizerList) {
+        if (organizer.organizerId == currentUser.userId) {
+            currentWeddingId = organizer.currentWeddingId;
+            break;
+        }
+    }
+
+    if (currentWeddingId.empty()) {
+        cout << "No active wedding! Please create a wedding first." << endl;
+        pauseScreen();
+        return;
+    }
+
+    const WeddingEvent* wedding = nullptr;
+    for (const auto& event : events) {
+        if (event.eventId == currentWeddingId && event.status != "cancelled") {
+            wedding = &event;
+            break;
+        }
+    }
+
+    if (!wedding) {
+        cout << "Wedding not found or cancelled!" << endl;
+        pauseScreen();
+        return;
+    }
+
     clearScreen();
-    cout << "=== MY EVENT BOOKINGS ===" << endl;
-    
-    bool found = false;
-    for (const auto& booking : eventBookings) {
-        if (booking.organizerId == currentUser.userId) {
-            found = true;
-            cout << "Booking ID: " << booking.bookingId << endl;
-            cout << "Event Type: " << booking.eventType << endl;
-            cout << "Date: " << booking.eventDate.toString() << endl;
-            cout << "Venue ID: " << booking.venueId << endl;
-            cout << "Catering ID: " << booking.cateringId << endl;
-            cout << "Guests: " << booking.numberOfGuests << endl;
-            cout << "Total Cost: RM " << fixed << setprecision(2) << booking.totalCost << endl;
-            cout << "Status: " << booking.status << endl;
-            cout << "------------------------" << endl;
-        }
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    SetConsoleTextAttribute(hConsole, 14);
+    cout << "==================================================\n";
+    cout << "           WEDDING INVITATION CARD\n";
+    cout << "==================================================\n\n";
+
+    SetConsoleTextAttribute(hConsole, 14);
+    cout << "    You're Cordially Invited To The Wedding Of \n\n";
+
+    SetConsoleTextAttribute(hConsole, 11);
+    cout << "         " << wedding->groomName << "\n";
+    cout << "            &\n";
+    cout << "         " << wedding->brideName << "\n\n";
+
+    SetConsoleTextAttribute(hConsole, 10);
+    cout << "   Date: " << wedding->weddingDate << "\n";
+    cout << "   Time: 2:00 PM (Please arrive by 1:30 PM)\n";
+    cout << "   Venue: " << wedding->weddingVenue << "\n";
+    cout << "   Theme: " << wedding->weddingTheme << "\n\n";
+
+    SetConsoleTextAttribute(hConsole, 13);
+    cout << "    Dress Code: Formal Attire \n";
+    cout << "    Reception to Follow Immediately After \n\n";
+
+    SetConsoleTextAttribute(hConsole, 14);
+    cout << "   RSVP: " << currentUser.userName << "\n";
+    cout << "   Contact: " << wedding->weddingVenue << "\n\n";
+
+    SetConsoleTextAttribute(hConsole, 15);
+    cout << "==================================================\n";
+    cout << "   Your presence is the greatest gift we could ask for!\n";
+    cout << "==================================================\n\n";
+
+    ofstream inviteFile("invitation_" + wedding->eventId + ".txt");
+    if (inviteFile) {
+        inviteFile << "==================================================\n";
+        inviteFile << "           WEDDING INVITATION CARD\n";
+        inviteFile << "==================================================\n\n";
+        inviteFile << "   You're Cordially Invited To The Wedding Of\n\n";
+        inviteFile << "         " << wedding->groomName << "\n";
+        inviteFile << "            &\n";
+        inviteFile << "         " << wedding->brideName << "\n\n";
+        inviteFile << "   Date: " << wedding->weddingDate << "\n";
+        inviteFile << "   Time: 2:00 PM\n";
+        inviteFile << "   Venue: " << wedding->weddingVenue << "\n";
+        inviteFile << "   Theme: " << wedding->weddingTheme << "\n\n";
+        inviteFile << "   Dress Code: Formal Attire\n";
+        inviteFile << "   Reception to Follow Immediately After\n\n";
+        inviteFile << "   RSVP: " << currentUser.userName << "\n";
+        inviteFile << "   Contact: " << wedding->weddingVenue << "\n\n";
+        inviteFile << "==================================================\n";
+        inviteFile.close();
+
+        cout << "Invitation card saved to: invitation_" << wedding->eventId << ".txt\n";
     }
-    
-    if (!found) {
-        cout << "No bookings found!" << endl;
-    }
-    
+
+    SetConsoleTextAttribute(hConsole, 7);
     pauseScreen();
 }
-
-// Helper functions
-Date getDateInput(const string& prompt) {
-    Date date;
-    cout << prompt;
-    cin >> date.day >> date.month >> date.year;
-    cin.ignore();
-    return date;
-}
-
-bool validateDate(const Date& date) {
-    return date.isValid() && date.isFutureDate();
-}
-
-double calculateCateringCost(int cateringId, int guests) {
-    for (const auto& catering : cateringPackages) {
-        if (catering.id == cateringId) {
-            if (guests < catering.minGuests) guests = catering.minGuests;
-            if (guests > catering.maxGuests) guests = catering.maxGuests;
-            return catering.basePrice + (guests * catering.pricePerGuest);
-        }
-    }
-    return 0.0;
-}
-
-void displayAvailableVenues(const Date& date) {
-    cout << "\n=== AVAILABLE VENUES ON " << date.toString() << " ===" << endl;
-    for (const auto& venue : venues) {
-        if (venue.isAvailable(date)) {
-            cout << "ID: " << venue.id << " | " << venue.name 
-                 << " | " << venue.location << " | Capacity: " << venue.capacity
-                 << " | Price: RM " << fixed << setprecision(2) << venue.price << endl;
-        }
-    }
-}
-
-void displayCateringPackages() {
-    cout << "\n=== CATERING PACKAGES ===" << endl;
-    for (const auto& catering : cateringPackages) {
-        cout << "ID: " << catering.id << " | " << catering.packageName 
-             << " | " << catering.description << " | Guests: " << catering.minGuests 
-             << "-" << catering.maxGuests << " | Base: RM " << fixed << setprecision(2) << catering.basePrice
-             << " | Per Guest: RM " << catering.pricePerGuest << endl;
-    }
-}
-
-// Add these to your main menu options
-// In your main function or main menu, add:
-// case 4: eventRegistrationMenu(currentUser, organizerList, vendorList); break;
-// case 5: // Event management for admin would go here
