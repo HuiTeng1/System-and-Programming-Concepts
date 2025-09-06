@@ -191,8 +191,7 @@ void saveEventsToFile(const vector<WeddingEvent>& events, const string& filename
     file.close();
 }
 
-void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
-                     vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
+void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
     if (currentUser.type != ORGANIZER) {
         cout << "Only organizers can create weddings!" << endl;
         pauseScreen();
@@ -263,14 +262,13 @@ void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
     }
 
     saveEventsToFile(events, "events.txt");
-    saveUserIntoFile(organizerList, "organizers.txt");
+    saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
 
     cout << "Wedding created successfully! Event ID: " << newEvent.eventId << endl;
     pauseScreen();
 }
 
-void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,
-                           vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
+void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
     if (currentUser.type != ORGANIZER) {
         cout << "Only organizers can book services!" << endl;
         pauseScreen();
@@ -430,15 +428,14 @@ void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& even
     }
 
     saveEventsToFile(events, "events.txt");
-    saveUserIntoFile(vendorList, "vendors.txt");
-    saveUserIntoFile(organizerList, "organizers.txt");
+    saveUserIntoFile <Vendor>(vendorList, "vendors.txt");
+    saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
 
     cout << "Service booked successfully!" << endl;
     pauseScreen();
 }
 
-void viewAllWeddings(CurrentUser& currentUser, const vector<WeddingEvent>& events,
-                    const vector<Vendor>& vendorList) {
+void viewAllWeddings(CurrentUser& currentUser, const vector<WeddingEvent>& events,const vector<Vendor>& vendorList) {
     clearScreen();
     cout << "=== ALL WEDDING EVENTS ===" << endl;
 
@@ -464,8 +461,7 @@ void viewAllWeddings(CurrentUser& currentUser, const vector<WeddingEvent>& event
     pauseScreen();
 }
 
-void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,
-                     vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
+void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
     if (currentUser.type != ORGANIZER) {
         cout << "Only organizers can manage weddings!" << endl;
         pauseScreen();
@@ -539,7 +535,7 @@ void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,
                 break;
             }
         }
-        saveUserIntoFile(organizerList, "organizers.txt");
+        saveUserIntoFile <Organizer>(organizerList, "organizers.txt");
         cout << "Wedding set as current wedding." << endl;
         pauseScreen();
         break;
@@ -577,8 +573,7 @@ void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,
     }
 }
 
-void generateInvitationCard(const CurrentUser& currentUser, const vector<WeddingEvent>& events,
-                          const vector<Organizer>& organizerList) {
+void generateInvitationCard(CurrentUser& currentUser, const vector<WeddingEvent>& events,const vector<Organizer>& organizerList) {
     if (currentUser.type != ORGANIZER) {
         cout << "Only organizers can generate invitation cards!" << endl;
         pauseScreen();

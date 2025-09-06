@@ -11,23 +11,23 @@
 
 // Struct definitions
 struct PaymentTransaction {
-    std::string transactionId;
-    std::string userId;
-    std::string userName;
-    std::string weddingId;
+    string transactionId;
+    string userId;
+    string userName;
+    string weddingId;
     double amount;
-    std::string paymentMethod;
-    std::string paymentStatus;
-    std::string transactionDate;
-    std::string transactionTime;
+    string paymentMethod;
+    string paymentStatus;
+    string transactionDate;
+    string transactionTime;
 
-    std::string toFileString() const;
-    static PaymentTransaction fromFileString(std::string& str);
+    string toFileString() const;
+    static PaymentTransaction fromFileString(string& str);
 };
 
 // Function declarations
-void viewPaymentSummary(const CurrentUser& currentUser, const WeddingEvent& selectedEvent, const std::vector<Vendor>& vendorList);
-void processPayment(CurrentUser& currentUser, WeddingEvent* selectedEvent, std::vector<PaymentTransaction>& transactions);
-void paymentAndReportingMenu(CurrentUser& currentUser, WeddingEvent* selectedEvent, std::vector<WeddingEvent>& events, std::vector<Vendor>& vendorList, std::vector<PaymentTransaction>& transactions);
+void viewPaymentSummary(const CurrentUser& currentUser, const WeddingEvent& selectedEvent, const vector<Vendor>& vendorList);
+void processPayment(CurrentUser& currentUser, WeddingEvent* selectedEvent, vector<PaymentTransaction>& transactions);
+void paymentAndReportingMenu(CurrentUser& currentUser, WeddingEvent* selectedEvent, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<PaymentTransaction>& transactions);
 void viewPaymentHistory(CurrentUser& currentUser);
-void savePaymentToFile(const std::vector<PaymentTransaction>& transactions, const std::string& filename);
+// void savePaymentToFile(const vector<PaymentTransaction>& transactions, const string& filename);

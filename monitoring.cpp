@@ -7,7 +7,10 @@
 #include <sstream>
 #include <limits>
 #include <algorithm>
+#include "UserModule.h"
+#include "EventModule.h"
 #include "monitoring.h"
+#include "Payment.h"
 
 using namespace std;
 

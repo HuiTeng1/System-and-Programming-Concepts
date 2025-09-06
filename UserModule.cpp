@@ -1,3 +1,7 @@
+#include "UserModule.h"
+#include "EventModule.h"
+#include "monitoring.h"
+#include "Payment.h"
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -5,27 +9,27 @@
 #include <fstream>
 #include <iomanip>
 #include <algorithm>
-#include <limits>
 #include <cctype>
 using namespace std;
 
-struct Service
-{
+// Forward declaration for loadWeddingEventsFromFile
+void loadWeddingEventsFromFile(vector<WeddingEvent>& events, const string& filename);
+
+
+struct Service{
     string serviceId;
     string serviceName;
     string description;
-    string type; /// not sure -- like for planning , food
+    string type;
     double price;
     int quantity;
     bool available;
-    string toFileString()
-    {
+    string toFileString(){
         return serviceId + "|" + serviceName + "|" + description + "|" + type + "|" +
                to_string(price) + "|" + to_string(quantity) + "|" + (available ? "1" : "0");
     }
 
-    static Service fromFileString(string &str)
-    {
+    static Service fromFileString(string &str){
         Service s;
         stringstream ss(str);
         string temp;
@@ -44,7 +48,6 @@ struct Service
         return s;
     }
 };
-
 struct BaseInfo
 {
     string name;
@@ -217,8 +220,7 @@ struct Admin
     }
 };
 // Current User Management
-enum UserType
-{
+enum UserType{
     NONE,
     ADMIN,
     ORGANIZER,
@@ -226,15 +228,15 @@ enum UserType
 };
 struct CurrentUser
 {
-    UserType type = NONE;
-    int userIndex = -1; // Index in the respective vector
-    string userId = "";
-    string userName = "";
+    UserType type;
+    int userIndex; // Index in the respective vector
+    string userId;
+    string userName;
     string currentWeddingId;
+
 };
 
-string generateId(const string &prefix, int counter)
-{
+string generateId(const string &prefix, int counter){
     return prefix + to_string(10000 + counter);
 }
 
@@ -343,24 +345,6 @@ bool getAdminInfo(Admin &admin, vector<Admin> &adminList)
 }
 
 template <typename T>
-void saveUserIntoFile(vector<T> data, string fileName)
-{
-    ofstream write(fileName);
-
-    if (!write)
-    {
-        cout << "Error opening file." << endl;
-        return;
-    }
-    // 'auto' means the compiler will automatically figure out the type of this variable based on its value
-    for (auto &obj : data)
-    {
-        write << obj.toFileString() << endl;
-    }
-    write.close();
-}
-
-template <typename T>
 void loadUserFromFile(vector<T> &data, string fileName)
 {
     ifstream read(fileName);
@@ -386,15 +370,29 @@ void loadUserFromFile(vector<T> &data, string fileName)
     read.close();
 }
 
-void loadAllData(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
-{
-    loadUserFromFile(adminList, "admins.txt");
-    loadUserFromFile(organizerList, "organizers.txt");
-    loadUserFromFile(vendorList, "vendors.txt");
+template <typename T>
+void saveUserIntoFile(vector<T> &data, string fileName){
+    ofstream write(fileName);
+
+    if (!write)
+    {
+        cout << "Error opening file." << endl;
+        return;
+    }
+    // 'auto' means the compiler will automatically figure out the type of this variable based on its value
+    for (auto &obj : data)
+    {
+        write << obj.toFileString() << endl;
+    }
+    write.close();
+}
+void loadAllData(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList){
+    loadUserFromFile<Admin>(adminList, "admins.txt");
+    loadUserFromFile<Organizer>(organizerList, "organizers.txt");
+    loadUserFromFile<Vendor>(vendorList, "vendors.txt");
 }
 
-bool login(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, CurrentUser &currentUser)
-{
+bool login(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, CurrentUser &currentUser){
     clearScreen();
     cout << "=== LOGIN ===" << endl;
 
@@ -410,7 +408,7 @@ bool login(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<
     {
         if (adminList[i].baseInfo.email == email && adminList[i].baseInfo.password == password)
         {
-            currentUser.type = ADMIN;
+            currentUser.type = UserType::ADMIN;
             currentUser.userIndex = i;
             currentUser.userId = adminList[i].adminId;
             currentUser.userName = adminList[i].baseInfo.name;
@@ -427,7 +425,7 @@ bool login(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<
     {
         if (organizerList[i].baseInfo.email == email && organizerList[i].baseInfo.password == password)
         {
-            currentUser.type = ORGANIZER;
+            currentUser.type = UserType::ORGANIZER;
             currentUser.userIndex = i;
             currentUser.userId = organizerList[i].organizerId;
             currentUser.userName = organizerList[i].baseInfo.name;
@@ -439,11 +437,9 @@ bool login(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<
     }
 
     // Check vendor
-    for (size_t i = 0; i < vendorList.size(); i++)
-    {
-        if (vendorList[i].baseInfo.email == email && vendorList[i].baseInfo.password == password)
-        {
-            currentUser.type = VENDOR;
+    for (size_t i = 0; i < vendorList.size(); i++){
+        if (vendorList[i].baseInfo.email == email && vendorList[i].baseInfo.password == password){
+            currentUser.type = UserType::VENDOR;
             currentUser.userIndex = i;
             currentUser.userId = vendorList[i].vendorId;
             currentUser.userName = vendorList[i].baseInfo.name;
@@ -466,14 +462,14 @@ void logout(CurrentUser &currentUser)
     cin >> confirmed;
     if (toupper(confirmed) == 'Y')
     {
-        currentUser.type = NONE;
+        currentUser.type =  UserType::NONE;
         currentUser.userIndex = -1;
         currentUser.userId = "";
         currentUser.userName = "";
         cout << "Logged out successfully!" << endl;
         return;
     }
-    else
+    else 
     {
         cout << "Logout Failed. Please try again.";
         return;
@@ -511,16 +507,16 @@ void addService(CurrentUser &currentUser, vector<Vendor> &vendorList)
     vendorList[currentUser.userIndex].serviceHasProvide.push_back(newService);
     vendorList[currentUser.userIndex].totalServicesProvided++;
 
-    saveUserIntoFile(vendorList, "vendors.txt");
+    saveUserIntoFile<Vendor>(vendorList, "vendors.txt");
     cout << "Service added successfully!" << endl;
     pauseScreen();
 }
 
 void saveAllData(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
 {
-    saveUserIntoFile(adminList, "admins.txt");
-    saveUserIntoFile(organizerList, "organizers.txt");
-    saveUserIntoFile(vendorList, "vendors.txt");
+    saveUserIntoFile<Admin>(adminList, "admins.txt");
+    saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
+    saveUserIntoFile<Vendor>(vendorList, "vendors.txt");
 }
 
 void displayUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
@@ -1057,8 +1053,8 @@ void updateOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList)
         return;
     }
 
-    saveUserIntoFile(vendorList, "vendors.txt");
-    loadUserFromFile(vendorList, "vendors.txt");
+    saveUserIntoFile<Vendor>(vendorList, "vendors.txt");
+    loadUserFromFile<Vendor>(vendorList, "vendors.txt");
     pauseScreen();
 }
 
@@ -1505,8 +1501,8 @@ void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList)
         vendor.serviceHasProvide.erase(vendor.serviceHasProvide.begin() + (choice - 1));
         vendor.totalServicesProvided = vendor.serviceHasProvide.size();
 
-        saveUserIntoFile(vendorList, "vendors.txt");
-        loadUserFromFile(vendorList, "vendors.txt");
+        saveUserIntoFile<Vendor>(vendorList, "vendors.txt");
+        loadUserFromFile<Vendor>(vendorList, "vendors.txt");
         cout << "Service deleted successfully!" << endl;
     }
     else
@@ -1609,8 +1605,7 @@ void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList)
     pauseScreen();
 }
 */
-void UpdateWeddingMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
-{
+void UpdateWeddingMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events){
     int choice;
     do
     {
@@ -1628,6 +1623,7 @@ void UpdateWeddingMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vec
         {
         case 1:
             // Booking a new service
+            bookServicesForWedding(currentUser, events, vendorList, organizerList);
             break;
         case 2:
             //Read all the service have be booked for this wedding
@@ -1645,7 +1641,7 @@ void UpdateWeddingMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vec
     } while (choice != 0);
 }
 
-void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
+void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants)
 {
     int choice;
     do
@@ -1672,20 +1668,20 @@ void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<
         switch (choice)
         {
         case 1:
-            // create new wedding
-            // check user typr is organizer and check currentWedding Id is "" or not;
+            createNewWedding(currentUser,events,vendorList, organizerList);
             break;
         case 2:
-            // read a wedding (history and current)
+            viewAllWeddings(currentUser, events, vendorList);
             break;
         case 3:
-            UpdateWeddingMenu(currentUser, vendorList, organizerList, adminList);
+            UpdateWeddingMenu(currentUser, vendorList, organizerList, adminList, events);
             break;
         case 4:
-            // cancel whole wedding - need to cancel all the s/p booking
+            
             break;
         case 5:
             // Monitoring
+            menu(participants);  // Add participants parameter - you'll need to pass it down
             break;
         case 6:
             // Payment
@@ -1703,12 +1699,6 @@ void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<
             break;
         }
     } while (choice != 0 && currentUser.type != NONE);
-}
-// no sure how the structure run
-void AddServiceMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
-{
-
-    cout << "";
 }
 
 void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
@@ -1862,7 +1852,7 @@ void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Org
     } while (choice != 0 && currentUser.type != NONE);
 }
 
-void mainMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
+void mainMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent>& events, vector<Participant> &participants)
 {
     int choice;
 
@@ -1892,7 +1882,7 @@ void mainMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organ
                     adminMenu(currentUser, vendorList, organizerList, adminList);
                     break;
                 case ORGANIZER:
-                    organizerMenu(currentUser, vendorList, organizerList, adminList);
+                    organizerMenu(currentUser, vendorList, organizerList, adminList,events, participants);
                     break;
                 case VENDOR:
                     vendorMenu(currentUser, vendorList, organizerList, adminList);
@@ -1917,25 +1907,4 @@ void mainMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organ
             break;
         }
     } while (choice != 3);
-}
-
-int main()
-{
-    vector<Admin> adminList;
-    vector<Organizer> organizerList;
-    vector<Vendor> vendorList;
-
-    // Variable
-    CurrentUser currentUser;
-
-    // Load existing data from files
-    loadAllData(vendorList, organizerList, adminList);
-
-    // Start the main menu system
-    mainMenu(currentUser, vendorList, organizerList, adminList);
-
-    // Save all data before exiting
-    saveAllData(vendorList, organizerList, adminList);
-
-    return 0;
 }

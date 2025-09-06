@@ -1,13 +1,12 @@
 #ifndef MONITORING_H
 #define MONITORING_H
 
+#include <iostream>
 #include <vector>
 #include <string>
 #include <ctime>
 #include <fstream>
 #include <sstream>
-
-using namespace std;
 
 // Struct definitions
 struct Attendance {
@@ -22,7 +21,7 @@ struct Participant {
 };
 
 // Utility functions
-string returnTime(Participant p);
+std::string returnTime(Participant p);
 bool checkIsExist(vector<Participant> participant, string name);
 
 // Input validation functions
