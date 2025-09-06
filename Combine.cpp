@@ -1907,7 +1907,8 @@ void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<
             UpdateWeddingMenu(currentUser, vendorList, organizerList, adminList, events);
             break;
         case 4:
-            
+            manageMyWeddings(currentUser, events, vendorList, organizerList);
+            saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
             break;
         case 5:
             // Monitoring
