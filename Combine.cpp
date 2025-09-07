@@ -353,11 +353,11 @@ void getVendorInfo(Vendor &vendor, vector<Vendor> &vendorList);
 void getOrganizerInfo(Organizer &organizer, vector<Organizer> &organizerList);
 bool getAdminInfo(Admin &admin, vector<Admin> &adminList);
 template <typename T>
-void saveUserIntoFile(vector<T> &data, string fileName);
+void saveDataIntoFile(vector<T> &data, string fileName);
 template <typename T>
-void loadUserFromFile(vector<T> &data, string fileName);
+void loadDataFromFile(vector<T> &data, string fileName);
 template <typename T>
-void saveUserIntoFile(vector<T> &data, string fileName){
+void saveDataIntoFile(vector<T> &data, string fileName){
     ofstream write(fileName);
 
     if (!write)
@@ -372,12 +372,12 @@ void saveUserIntoFile(vector<T> &data, string fileName){
     }
     write.close();
 }
-template void saveUserIntoFile<Vendor>(vector<Vendor> &data, string fileName);
-template void saveUserIntoFile<Organizer>(vector<Organizer> &data, string fileName);
-template void saveUserIntoFile<Admin>(vector<Admin> &data, string fileName);
+template void saveDataIntoFile<Vendor>(vector<Vendor> &data, string fileName);
+template void saveDataIntoFile<Organizer>(vector<Organizer> &data, string fileName);
+template void saveDataIntoFile<Admin>(vector<Admin> &data, string fileName);
 
 template <typename T>
-void loadUserFromFile(vector<T> &data, string fileName)
+void loadDataFromFile(vector<T> &data, string fileName)
 {
     ifstream read(fileName);
     if (!read)
@@ -401,9 +401,9 @@ void loadUserFromFile(vector<T> &data, string fileName)
     }
     read.close();
 }
-template void loadUserFromFile<Vendor>(vector<Vendor> &data, string fileName);
-template void loadUserFromFile<Organizer>(vector<Organizer> &data, string fileName);
-template void loadUserFromFile<Admin>(vector<Admin> &data, string fileName);
+template void loadDataFromFile<Vendor>(vector<Vendor> &data, string fileName);
+template void loadDataFromFile<Organizer>(vector<Organizer> &data, string fileName);
+template void loadDataFromFile<Admin>(vector<Admin> &data, string fileName);
 
 
 //void loadAllData(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
@@ -414,7 +414,7 @@ void logout(CurrentUser &currentUser);
 void addService(const CurrentUser &currentUser, vector<Vendor> &vendorList);
 //void saveAllData(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
 void displayUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
-void listAllUsers(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
+void displayAllUser(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
 void userRegister(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
 
 void updateBaseInfo(BaseInfo &baseInfo);
@@ -427,10 +427,10 @@ bool deleteOwnAccount(const CurrentUser &currentUser, vector<Vendor> &vendorList
 void deleteOwnService(const CurrentUser &currentUser, vector<Vendor> &vendorList);
 
 void mainMenu(const CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent>& events, vector<Participant>& participants);
-void organizerMenu(const CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants);
-void adminMenu(const CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
-void vendorMenu(const CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
-void updateWeddingMenu(const CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList,vector<WeddingEvent> &events);
+void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants );
+void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
+void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
+void updateWeddingMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList,vector<WeddingEvent> &events);
 
 // Event utility functions
 bool isValidDate(const string& date);
@@ -494,7 +494,7 @@ bool askForTime(Participant participant, tm& t);
 void menu(vector<Participant>& participants);
 
 void viewPaymentSummary(const CurrentUser& currentUser, const WeddingEvent& selectedEvent, const vector<Vendor>& vendorList);
-void processPayment(CurrentUser& currentUser, WeddingEvent* selectedEvent, vector<PaymentTransaction>& transactions);
+void generateReport(const CurrentUser& currentUser, const WeddingEvent& selectedEvent, const vector<Vendor>& vendorList);
 void paymentAndReportingMenu(CurrentUser& currentUser, WeddingEvent* selectedEvent, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<PaymentTransaction>& transactions);
 void viewPaymentHistory(CurrentUser& currentUser);
 
@@ -721,22 +721,22 @@ void addService(CurrentUser &currentUser, vector<Vendor> &vendorList)
     vendorList[currentUser.userIndex].serviceHasProvide.push_back(newService);
     vendorList[currentUser.userIndex].totalServicesProvided++;
 
-    saveUserIntoFile<Vendor>(vendorList, "vendors.txt");
+    saveDataIntoFile<Vendor>(vendorList, "vendors.txt");
     cout << "Service added successfully!" << endl;
     pauseScreen();
 }
 
 // void saveAllData(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
 // {
-//     saveUserIntoFile<Admin>(adminList, "admins.txt");
-//     saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
-//     saveUserIntoFile<Vendor>(vendorList, "vendors.txt");
+//     saveDataIntoFile<Admin>(adminList, "admins.txt");
+//     saveDataIntoFile<Organizer>(organizerList, "organizers.txt");
+//     saveDataIntoFile<Vendor>(vendorList, "vendors.txt");
 // }
 
 // void loadAllData(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList){
-//     loadUserFromFile<Admin>(adminList, "admins.txt");
-//     loadUserFromFile<Organizer>(organizerList, "organizers.txt");
-//     loadUserFromFile<Vendor>(vendorList, "vendors.txt");
+//     loadDataFromFile<Admin>(adminList, "admins.txt");
+//     loadDataFromFile<Organizer>(organizerList, "organizers.txt");
+//     loadDataFromFile<Vendor>(vendorList, "vendors.txt");
 // }
 void displayUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
 {
@@ -798,7 +798,7 @@ void displayUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList, ve
     pauseScreen();
 }
 
-void listAllUsers(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
+void displayAllUser(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
 {
     clearScreen();
     cout << "=== ALL USERS LIST ===" << endl;
@@ -870,9 +870,9 @@ void userRegister(vector<Vendor> &vendorList, vector<Organizer> &organizerList, 
         break;
     }
 
-    saveUserIntoFile<Admin>(adminList, "admins.txt");
-    saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
-    saveUserIntoFile<Vendor>(vendorList, "vendors.txt");
+    saveDataIntoFile<Admin>(adminList, "admins.txt");
+    saveDataIntoFile<Organizer>(organizerList, "organizers.txt");
+    saveDataIntoFile<Vendor>(vendorList, "vendors.txt");
 }
 
 void updateBaseInfo(BaseInfo &baseInfo)
@@ -1151,9 +1151,9 @@ void updateUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList, vec
     if (updated)
     {
         // Save the updated data to files
-        saveUserIntoFile<Admin>(adminList, "admins.txt");
-        saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
-        saveUserIntoFile<Vendor>(vendorList, "vendors.txt");
+        saveDataIntoFile<Admin>(adminList, "admins.txt");
+        saveDataIntoFile<Organizer>(organizerList, "organizers.txt");
+        saveDataIntoFile<Vendor>(vendorList, "vendors.txt");
         cout << "\nProfile changes saved to file!" << endl;
     }
 }
@@ -1276,8 +1276,8 @@ void updateOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList)
         return;
     }
 
-    saveUserIntoFile<Vendor>(vendorList, "vendors.txt");
-    loadUserFromFile<Vendor>(vendorList, "vendors.txt");
+    saveDataIntoFile<Vendor>(vendorList, "vendors.txt");
+    loadDataFromFile<Vendor>(vendorList, "vendors.txt");
     pauseScreen();
 }
 
@@ -1640,12 +1640,12 @@ bool deleteOwnAccount(CurrentUser &currentUser, vector<Vendor> &vendorList, vect
     }
 
     // Save updated data
-    saveUserIntoFile<Admin>(adminList, "admins.txt");
-    saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
-    saveUserIntoFile<Vendor>(vendorList, "vendors.txt");
-    loadUserFromFile<Admin>(adminList, "admins.txt");
-    loadUserFromFile<Organizer>(organizerList, "organizers.txt");
-    loadUserFromFile<Vendor>(vendorList, "vendors.txt");
+    saveDataIntoFile<Admin>(adminList, "admins.txt");
+    saveDataIntoFile<Organizer>(organizerList, "organizers.txt");
+    saveDataIntoFile<Vendor>(vendorList, "vendors.txt");
+    loadDataFromFile<Admin>(adminList, "admins.txt");
+    loadDataFromFile<Organizer>(organizerList, "organizers.txt");
+    loadDataFromFile<Vendor>(vendorList, "vendors.txt");
 
     cout << "Account successfully deleted!" << endl;
     cout << "You will be logged out automatically." << endl;
@@ -1728,8 +1728,8 @@ void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList)
         vendor.serviceHasProvide.erase(vendor.serviceHasProvide.begin() + (choice - 1));
         vendor.totalServicesProvided = vendor.serviceHasProvide.size();
 
-        saveUserIntoFile<Vendor>(vendorList, "vendors.txt");
-        loadUserFromFile<Vendor>(vendorList, "vendors.txt");
+        saveDataIntoFile<Vendor>(vendorList, "vendors.txt");
+        loadDataFromFile<Vendor>(vendorList, "vendors.txt");
         cout << "Service deleted successfully!" << endl;
     }
     else
@@ -1821,7 +1821,7 @@ void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList)
     {
         organizer.bookedServices.erase(organizer.bookedServices.begin() + (choice - 1));
 
-        saveUserIntoFile(organizerList, "organizers.txt");
+        saveDataIntoFile(organizerList, "organizers.txt");
         cout << "Booked service cancelled successfully!" << endl;
     }
     else
@@ -1851,8 +1851,8 @@ void UpdateWeddingMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vec
         case 1:
             // Booking a new service
             bookServicesForWedding(currentUser, events, vendorList, organizerList);
-            saveUserIntoFile<Vendor>(vendorList, "vendors.txt");
-            saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
+            saveDataIntoFile<Vendor>(vendorList, "vendors.txt");
+            saveDataIntoFile<Organizer>(organizerList, "organizers.txt");
             break;
         case 2:
             //Read all the service have be booked for this wedding
@@ -1870,7 +1870,7 @@ void UpdateWeddingMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vec
     } while (choice != 0);
 }
 
-void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants)
+void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants,  vector<PaymentTransaction>& transactions)
 {
     int choice;
     do
@@ -1898,7 +1898,7 @@ void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<
         {
         case 1:
             createNewWedding(currentUser,events,vendorList, organizerList);
-            saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
+            saveDataIntoFile<Organizer>(organizerList, "organizers.txt");
             break;
         case 2:
             viewAllWeddings(currentUser, events, vendorList);
@@ -1908,7 +1908,7 @@ void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<
             break;
         case 4:
             manageMyWeddings(currentUser, events, vendorList, organizerList);
-            saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
+            saveDataIntoFile<Organizer>(organizerList, "organizers.txt");
             break;
         case 5:
             // Monitoring
@@ -1916,6 +1916,7 @@ void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<
             break;
         case 6:
             // Payment
+            paymentAndReportingMenu(currentUser,selectedEvent, events, vendorList);
             break;
         case 7:
             displayUserProfile(currentUser, vendorList, organizerList, adminList);
@@ -1947,13 +1948,13 @@ void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Orga
 
         cout << "Service MANAGEMENT:" << endl;
         cout << "3. View All Services" << endl;
-        cout << "5. View Services by Vendor" << endl;
-        cout << "7. View Services by Type" << endl << endl;
+        cout << "4. View Services by Vendor" << endl;
+        cout << "5. View Services by Type" << endl << endl;
 
         cout << "OWN ACCOUNT MANAGEMENT:" << endl;
-        cout << "8. View My Profile" << endl;
-        cout << "9. Update My Profile" << endl;
-        cout << "10. Delete My Account" << endl;
+        cout << "6. View My Profile" << endl;
+        cout << "7. Update My Profile" << endl;
+        cout << "8. Delete My Account" << endl;
         cout << endl;
         cout << "0. Logout" << endl;
         cout << "==========================================" << endl;
@@ -1964,7 +1965,7 @@ void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Orga
         switch (choice)
         {
         case 1:
-            listAllUsers(vendorList, organizerList, adminList);
+            displayAllUser(vendorList, organizerList, adminList);
             break;
         case 2:
             userRegister(vendorList, organizerList, adminList);
@@ -1973,24 +1974,18 @@ void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Orga
             displayAllServices(vendorList);
             break;
         case 4:
-            
-            break;
-        case 5:
             displayServicesByVendor(vendorList);
             break;
-        case 6:
-            
-            break;
-        case 7:
+        case 5:
             displayServicesByType(vendorList);
             break;
-        case 8:
+        case 6:
             displayUserProfile(currentUser, vendorList, organizerList, adminList);
             break;
-        case 9:
+        case 7:
             updateUserProfile(currentUser, vendorList, organizerList, adminList);
             break;
-        case 10:
+        case 8:
             if (deleteOwnAccount(currentUser, vendorList, organizerList, adminList))
             {
                 return; // Account deleted, exit menu
@@ -2140,7 +2135,7 @@ void mainMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organ
     } while (choice != 3);
 }
 
-// Event utility functions
+// Event
 bool isValidDate(const string& date) {
     if (date.length() != 10) return false;
     if (date[4] != '-' || date[7] != '-') return false;
@@ -2337,7 +2332,7 @@ void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events,vec
         }
     }
 
-    saveUserIntoFile(events, "events.txt");
+    saveDataIntoFile(events, "events.txt");
 
     cout << "Wedding created successfully! Event ID: " << newEvent.eventId << endl;
     pauseScreen();
@@ -2502,7 +2497,7 @@ void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& even
         }
     }
 
-    saveUserIntoFile(events, "events.txt");
+    saveDataIntoFile(events, "events.txt");
 
     cout << "Service booked successfully!" << endl;
     pauseScreen();
@@ -2608,7 +2603,7 @@ void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,vec
                 break;
             }
         }
-        saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
+        saveDataIntoFile<Organizer>(organizerList, "organizers.txt");
         cout << "Wedding set as current wedding." << endl;
         pauseScreen();
         break;
@@ -2621,7 +2616,7 @@ void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,vec
 
         if (confirm == 'y' || confirm == 'Y') {
             selectedEvent->status = "cancelled";
-            saveUserIntoFile(events, "events.txt");
+            saveDataIntoFile(events, "events.txt");
             cout << "Wedding cancelled successfully." << endl;
         }
         else {
@@ -2632,7 +2627,7 @@ void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events,vec
 
     case 3:
         selectedEvent->status = "completed";
-        saveUserIntoFile(events, "events.txt");
+        saveDataIntoFile(events, "events.txt");
         cout << "Wedding marked as completed." << endl;
         pauseScreen();
         break;
@@ -2761,7 +2756,7 @@ bool checkIsExist(vector<Participant> participant, string name)
     }
     return false; // false represent not exist
 }
-
+//Monitoring
 // [Monitoring] return integer after verify
 int returnInt()
 {
@@ -3925,6 +3920,8 @@ void menu(vector<Participant> &participants)
     }
 }
 
+
+//Payment
 void viewPaymentSummary(const CurrentUser& currentUser, const WeddingEvent& selectedEvent, const vector<Vendor>& vendorList) { // Changed to reference
     clearScreen();
     if (selectedEvent.status != "planning") { // Changed to '.'
@@ -3997,7 +3994,7 @@ void generateReport(const CurrentUser& currentUser, const WeddingEvent& selected
     }
 
     vector<PaymentTransaction> transactions;
-    saveUserIntoFile(transactions, "payment_history.txt");
+    saveDataIntoFile(transactions, "payment_history.txt");
     // ifstream file("payment_history.txt");
     // if (file.is_open()) {
     //     string line;
@@ -4150,7 +4147,7 @@ void paymentAndReportingMenu(CurrentUser& currentUser, WeddingEvent* selectedEve
 
             if (paymentSuccess) {
                 selectedEvent->status = "completed";
-                saveUserIntoFile(events, "events.txt");
+                saveDataIntoFile(events, "events.txt");
 
                 time_t now = time(0);
                 tm ltm;
@@ -4202,7 +4199,7 @@ void paymentAndReportingMenu(CurrentUser& currentUser, WeddingEvent* selectedEve
             }
             else {
                 selectedEvent->status = "planning";
-                saveUserIntoFile(events, "events.txt");
+                saveDataIntoFile(events, "events.txt");
             }
         } break;
         case 2:
@@ -4263,23 +4260,24 @@ int main() {
     vector<Admin> adminList;
     vector<WeddingEvent> events;
     vector<Participant> participants;
+    vector<PaymentTransaction> transactions;
     CurrentUser currentUser;
 
     // Load data from files
-    loadUserFromFile<Admin>(adminList, "admins.txt");
-    loadUserFromFile<Organizer>(organizerList, "organizers.txt");
-    loadUserFromFile<Vendor>(vendorList, "vendors.txt");
-    loadUserFromFile(events, "events.txt");
+    loadDataFromFile<Admin>(adminList, "admins.txt");
+    loadDataFromFile<Organizer>(organizerList, "organizers.txt");
+    loadDataFromFile<Vendor>(vendorList, "vendors.txt");
+    loadDataFromFile(events, "events.txt");
     addDefaultParticipants(participants);
 
     // Start main menu
     mainMenu(currentUser, vendorList, organizerList, adminList, events, participants);
 
     // Save data before exit
-    saveUserIntoFile<Admin>(adminList, "admins.txt");
-    saveUserIntoFile<Organizer>(organizerList, "organizers.txt");
-    saveUserIntoFile<Vendor>(vendorList, "vendors.txt");
-    saveUserIntoFile(events, "events.txt");
+    saveDataIntoFile<Admin>(adminList, "admins.txt");
+    saveDataIntoFile<Organizer>(organizerList, "organizers.txt");
+    saveDataIntoFile<Vendor>(vendorList, "vendors.txt");
+    saveDataIntoFile(events, "events.txt");
 
     return 0;
 }

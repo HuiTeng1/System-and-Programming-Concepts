@@ -21,7 +21,7 @@ struct Participant {
 };
 
 // Utility functions
-std::string returnTime(Participant p);
+string returnTime(Participant p);
 bool checkIsExist(vector<Participant> participant, string name);
 
 // Input validation functions
