@@ -108,6 +108,7 @@ void readAllBookedServices(CurrentUser& currentUser, vector<WeddingEvent>& event
 void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList);
 void updateFile(ofstream& outFile, vector<Participant>& participants);
 void participantMenu(vector<Participant>& participants,WeddingEvent currentEvent);
+void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& wedding, string contactNumber);
 
 struct Service {
     string serviceId;
