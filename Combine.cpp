@@ -2985,6 +2985,7 @@ void viewWeddingByStatus(vector<WeddingEvent>& events) {
 
 void generateInvitationCard(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Organizer>& organizerList) {
     int choice;
+    string contactNumber;
     if (currentUser.type != ORGANIZER) {
         cout << "Only organizers can generate invitation cards!" << endl;
         pauseScreen();
@@ -2995,6 +2996,7 @@ void generateInvitationCard(CurrentUser& currentUser, vector<WeddingEvent>& even
     for (auto& organizer : organizerList) {
         if (organizer.organizerId == currentUser.userId) {
             currentWeddingId = organizer.currentWeddingId;
+            contactNumber = organizer.baseInfo.phoneNum;
             break;
         }
     }
@@ -3048,6 +3050,74 @@ void generateInvitationCard(CurrentUser& currentUser, vector<WeddingEvent>& even
                 break;
         }
     } while (choice != 0);
+}
+
+void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& wedding, string contactNumber) {
+    int templateChoice;
+    
+    cout << "\n=== GENERATE YOUR INVITATION CARD ===" << endl;
+    cout << "Current Wedding Details:" << endl;
+    cout << "Bride: " << wedding.brideName << endl;
+    cout << "Groom: " << wedding.groomName << endl;
+    cout << "Date: " << wedding.weddingDate << endl;
+    cout << "Venue: " << wedding.weddingVenue << endl;
+    cout << "Contact: " << contactNumber << endl;
+    cout << "\nSelect your preferred template:" << endl;
+    cout << "1. Classic Elegant" << endl;
+    cout << "2. Modern Minimalist" << endl;
+    cout << "3. Romantic with Hearts" << endl;
+    cout << "4. Formal Traditional" << endl;
+    cout << "5. Fun & Casual" << endl;
+    cout << "0. Cancel" << endl;
+    cout << "Enter your choice: ";
+    cin >> templateChoice;
+    
+    if (templateChoice == 0) {
+        cout << "Generation cancelled." << endl;
+        return;
+    }
+    
+    cout << "\n=== YOUR WEDDING INVITATION ===";
+    
+    switch(templateChoice) {
+        case 1:
+            cout << "\n--- Your Classic Elegant Invitation ---";
+            template1(wedding, contactNumber);
+            break;
+        case 2:
+            cout << "\n--- Your Modern Minimalist Invitation ---";
+            template2(wedding, contactNumber);
+            break;
+        case 3:
+            cout << "\n--- Your Romantic Hearts Invitation ---";
+            template3(wedding, contactNumber);
+            break;
+        case 4:
+            cout << "\n--- Your Formal Traditional Invitation ---";
+            template4(wedding, contactNumber);
+            break;
+        case 5:
+            cout << "\n--- Your Fun & Casual Invitation ---";
+            template5(wedding, contactNumber);
+            break;
+        default:
+            cout << "Invalid template choice!" << endl;
+            pauseScreen();
+            return;
+    }
+    
+    cout << "\n\nInvitation generated successfully!" << endl;
+    cout << "This invitation is ready to be printed or shared." << endl;
+    
+    char generateAnother;
+    cout << "\nWould you like to generate another template? (y/n): ";
+    cin >> generateAnother;
+    
+    if (generateAnother == 'y' || generateAnother == 'Y') {
+        generateCustomInvitation(events, wedding, contactNumber);
+    }
+    
+    pauseScreen();
 }
 
 void invitationTemplate(vector<WeddingEvent>& events, WeddingEvent& wedding, CurrentUser& currentUser) {
