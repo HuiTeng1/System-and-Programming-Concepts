@@ -70,7 +70,7 @@ double calculateServiceCost(const vector<int>& serviceIds, const vector<Vendor>&
 // Monitoring functions
 void menu(vector<Participant>& participants);
 bool addDefaultParticipants(vector<Participant>& participants);
-void addParticipantsMenu(vector<Participant>& participants);
+void addParticipantsMenu(vector<Participant>& participants,string weddingId);
 void searchParticipantsMenu(vector<Participant>& participants);
 void markAttendance(vector<Participant>& participants);
 void updateParticipants(vector<Participant>& participants);
@@ -615,8 +615,37 @@ void addService(CurrentUser& currentUser, vector<Vendor>& vendorList)
     cout << "Description: ";
     getline(cin, newService.description);
 
-    cout << "Type (e.g., catering, photography, decoration): ";
-    getline(cin, newService.type);
+    int categoryChoice;
+    while (true) {
+        cout << "\nChoose Service Category:" << endl;
+        cout << "1. Catering" << endl;
+        cout << "2. Photography" << endl;
+        cout << "3. Decoration" << endl;
+        cout << "4. Music / Entertainment" << endl;
+        cout << "5. Venue" << endl;
+        cout << "Enter your choice (1-5): ";
+        cin >> categoryChoice;
+
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore();
+            cout << "Invalid input. Please enter a number between 1 and 5.\n";
+            continue;
+        }
+
+        switch (categoryChoice)
+        {
+            case 1: newService.type = "Catering"; break;
+            case 2: newService.type = "Photography"; break;
+            case 3: newService.type = "Decoration"; break;
+            case 4: newService.type = "Music / Entertainment"; break;
+            case 5: newService.type = "Venue"; break;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+                continue;
+        }
+        break; // valid choice → exit loop
+    }
 
     cout << "Price: RM";
     cin >> newService.price;
@@ -2127,8 +2156,7 @@ void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<
             saveDataIntoFile<Organizer>(organizerList, "organizers.txt");
             break;
         case 5:
-            // Monitoring
-            menu(participants);  // Add participants parameter - you'll need to pass it down
+            menu(participants);  
             break;
         case 6:
             // Payment
@@ -2446,7 +2474,7 @@ double calculateServiceCost(const vector<int>& serviceIds, const vector<Vendor>&
     return total;
 }
 
-void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
+void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Participant>& participants) {
     if (currentUser.type != ORGANIZER) {
         cout << "Only organizers can create weddings!" << endl;
         pauseScreen();
@@ -2515,6 +2543,16 @@ void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, ve
             break;
         }
     }
+
+    ofstream outFile("participants.txt");
+    if (!outFile)
+    {
+        cerr << "Cant open file. Location: updateParticipants.\n";
+        cout << "Sorry you cant edit now, There some error here.\n\n";
+        return;
+    }
+
+    updateFile(outFile, participants,newEvent.eventId);
 
     saveDataIntoFile(events, "events.txt");
 
@@ -3013,8 +3051,9 @@ char returnUpperChar()
 }
 
 // [Monitoring] update the file after push back the vector
-void updateFile(ofstream& outFile, vector<Participant>& participants)
+void updateFile(ofstream& outFile, vector<Participant>& participants, string weddingId)
 {
+    outFile << weddingId << "|" ;
     for (auto& p : participants)
     {
         outFile << p.name << "|"
@@ -3093,7 +3132,6 @@ void deleteParticipants(vector<Participant>& participants)
     if (participants.empty())
     {
         cout << "There are no participants in the file.\n\n";
-        pauseScreen();
         return;
     }
 
@@ -3184,11 +3222,10 @@ void deleteParticipants(vector<Participant>& participants)
         }
         break;
     }
-    pauseScreen();
 }
 
 //[Monitoring][E]
-void editParticipantsName(vector<Participant>& participants, Participant participant, ofstream& outFile)
+void editParticipantsName(vector<Participant>& participants, Participant participant, ofstream& outFile, string weddingId)
 {
     string newname;
 
@@ -3211,7 +3248,7 @@ void editParticipantsName(vector<Participant>& participants, Participant partici
                 if (p.name == participant.name)
                 {
                     p.name = newname;
-                    updateFile(outFile, participants);
+                    updateFile(outFile, participants,weddingId);
                     cout << "Participant name updated successfully from '" << participant.name << "' to '" << newname << "'.\n\n";
                     break;
                 }
@@ -3226,7 +3263,7 @@ void editParticipantsName(vector<Participant>& participants, Participant partici
 }
 
 //[Monitoring][E]
-void editParticipantsVip(vector<Participant>& participants, Participant participant, ofstream& outFile)
+void editParticipantsVip(vector<Participant>& participants, Participant participant, ofstream& outFile, string weddingId)
 {
     char selection;
 
@@ -3248,7 +3285,7 @@ void editParticipantsVip(vector<Participant>& participants, Participant particip
                 if (p.name == participant.name)
                 {
                     p.isVip = !p.isVip;
-                    updateFile(outFile, participants);
+                    updateFile(outFile, participants,weddingId);
                     cout << "Participant isVip status changes successfully from '" << (!p.isVip ? "Yes" : "No") << "' to '" << (p.isVip ? "Yes" : "No") << "'.\n\n";
                     break;
                 }
@@ -3301,7 +3338,7 @@ bool askForTime(Participant participant, tm& t)
 }
 
 //[Monitoring][E]
-void editParticipantsPresent(vector<Participant>& participants, Participant participant, ofstream& outFile)
+void editParticipantsPresent(vector<Participant>& participants, Participant participant, ofstream& outFile, string weddingId)
 {
     char selection;
     tm t = {};
@@ -3328,7 +3365,7 @@ void editParticipantsPresent(vector<Participant>& participants, Participant part
                     {
                         p.attendance.checkInTime = -1;
                         p.attendance.isPresent = !p.attendance.isPresent;
-                        updateFile(outFile, participants);
+                        updateFile(outFile, participants,weddingId);
                         cout << "Participant check-in time clear successfully.\n";
                         cout << "Participant present status changes successfully from '" << (!p.attendance.isPresent ? "Yes" : "No") << "' to '" << (p.attendance.isPresent ? "Yes" : "No") << "'.\n\n";
                         break;
@@ -3346,7 +3383,7 @@ void editParticipantsPresent(vector<Participant>& participants, Participant part
                         {
                             p.attendance.checkInTime = mktime(&t);
                             p.attendance.isPresent = !p.attendance.isPresent;
-                            updateFile(outFile, participants);
+                            updateFile(outFile, participants,weddingId);
                             cout << "Participant check-in time changes successfully from '" << returnTime(participant) << "' to '" << returnTime(p) << "'.\n";
                             cout << "Participant present status changes successfully from '" << (!p.attendance.isPresent ? "Yes" : "No") << "' to '" << (p.attendance.isPresent ? "Yes" : "No") << "'.\n\n";
                             break;
@@ -3368,7 +3405,7 @@ void editParticipantsPresent(vector<Participant>& participants, Participant part
 }
 
 //[Monitoring][E]
-void editParticipantsCheckInTime(vector<Participant>& participants, Participant participant, ofstream& outFile)
+void editParticipantsCheckInTime(vector<Participant>& participants, Participant participant, ofstream& outFile, string weddingId)
 {
     tm t = {};
 
@@ -3381,7 +3418,7 @@ void editParticipantsCheckInTime(vector<Participant>& participants, Participant 
             {
                 p.attendance.checkInTime = mktime(&t);
                 p.attendance.isPresent = true;
-                updateFile(outFile, participants);
+                updateFile(outFile, participants,weddingId);
                 cout << "Participant check-in time changes successfully from '" << returnTime(participant) << "' to '" << returnTime(p) << "'.\n";
                 cout << "Participant present status set as \"Yes\" successfully.\n\n";
                 break;
@@ -3391,7 +3428,7 @@ void editParticipantsCheckInTime(vector<Participant>& participants, Participant 
 }
 
 //[Monitoring][E]
-void updateParticipants(vector<Participant>& participants)
+void updateParticipants(vector<Participant>& participants, string weddingId)
 {
     // enter the name, if searched then show the information, then ask to edit what
     string name, input;
@@ -3402,7 +3439,6 @@ void updateParticipants(vector<Participant>& participants)
     if (participants.empty())
     {
         cout << "There are no participants in the file.\n\n";
-        pauseScreen();
         return;
     }
 
@@ -3463,19 +3499,19 @@ void updateParticipants(vector<Participant>& participants)
             {
             case 1:
                 cout << "Edit Name selected.\n\n";
-                editParticipantsName(participants, participant, outFile);
+                editParticipantsName(participants, participant, outFile,weddingId);
                 break;
             case 2:
                 cout << "Edit Vip Status selected.\n\n";
-                editParticipantsVip(participants, participant, outFile);
+                editParticipantsVip(participants, participant, outFile,weddingId);
                 break;
             case 3:
                 cout << "Edit Present Status selected.\n\n";
-                editParticipantsPresent(participants, participant, outFile);
+                editParticipantsPresent(participants, participant, outFile,weddingId);
                 break;
             case 4:
                 cout << "Edit Check-in Time selected.\n\n";
-                editParticipantsCheckInTime(participants, participant, outFile);
+                editParticipantsCheckInTime(participants, participant, outFile,weddingId);
                 break;
             case 5:
                 cout << "Exit Monitoring Module selected.\n\n";
@@ -3488,7 +3524,6 @@ void updateParticipants(vector<Participant>& participants)
         }
         break;
     }
-    pauseScreen();
 }
 
 // [Monitoring][C][Mark][D] check user enter participants list
@@ -3536,7 +3571,7 @@ void readBuffer(stringstream& buffer)
 }
 
 // [Mark Attendance][U]
-void markAttendance(vector<Participant>& participants)
+void markAttendance(vector<Participant>& participants, string weddingId)
 {
     string name;
     stringstream buffer;
@@ -3602,8 +3637,7 @@ void markAttendance(vector<Participant>& participants)
 
             if (anyMarked)
             {
-                updateFile(outFile, participants);
-                pauseScreen();
+                updateFile(outFile, participants,weddingId);
             }
             break;
         }
@@ -3621,7 +3655,7 @@ void markAttendance(vector<Participant>& participants)
 }
 
 // [Search][R]
-void searchParticipantOneByOne(vector<Participant> participants)
+void searchParticipantOneByOne(vector<Participant> participants,string weddingId)
 {
     string name, input, compare;
     int found = 0;
@@ -3629,7 +3663,6 @@ void searchParticipantOneByOne(vector<Participant> participants)
     if (participants.empty())
     {
         cout << "There are no participants in the file.\n\n";
-        pauseScreen();
         return;
     }
 
@@ -3683,12 +3716,12 @@ void searchParticipantOneByOne(vector<Participant> participants)
         }
         break;
     }
-    pauseScreen();
 }
 
 // [Monitoring][R] show all the participants
-void showAllParticipants(vector<Participant> participants)
+void showAllParticipants(vector<Participant> participants, string weddingId)
 {
+
     string input;
 
     if (participants.empty())
@@ -3716,19 +3749,21 @@ void showAllParticipants(vector<Participant> participants)
     }
 
     cout << string(115, '-') << "\n";
-    pauseScreen();
+    cout << "Press Enter to continue .... )\n";
+    do
+    {
+        getline(cin, input);
+    } while (!input.empty());
 }
 
 // [Monitoring][R] search participants menu
-void searchParticipantsMenu(vector<Participant>& participants)
+void searchParticipantsMenu(vector<Participant>& participants, string weddingId)
 {
     int selection;
 
     while (true)
     {
-        clearScreen();
-        cout << "\n=== Search Participants Menu ===\n";
-        cout << "1. Show all the participants\n2. Search Participant by name\n0. Exit\n\n";
+        cout << "1. Show all the participants\n2. Search Participant by name\n3. Exit\n\n";
         selection = returnInt();
 
         if (selection == -1)
@@ -3739,12 +3774,12 @@ void searchParticipantsMenu(vector<Participant>& participants)
         switch (selection)
         {
         case 1:
-            showAllParticipants(participants);
+            showAllParticipants(participants,weddingId);
             break;
         case 2:
-            searchParticipantOneByOne(participants);
+            searchParticipantOneByOne(participants,weddingId);
             break;
-        case 0:
+        case 3:
             cout << "Exit successful\nBack To Monitoring Menu\n\n";
             return;
         default:
@@ -3755,7 +3790,7 @@ void searchParticipantsMenu(vector<Participant>& participants)
 }
 
 // [Monitoring][C] add participants to list
-void addParticipantsToList(vector<Participant>& participants, stringstream& buffer, ofstream& outFile)
+void addParticipantsToList(vector<Participant>& participants, stringstream& buffer, ofstream& outFile, string weddingId)
 {
     string name;
     char selection;
@@ -3801,7 +3836,7 @@ void addParticipantsToList(vector<Participant>& participants, stringstream& buff
 
             if (anyAdded)
             {
-                updateFile(outFile, participants);
+                updateFile(outFile, participants,weddingId);
                 cout << "All the name was successfully added.\n\n";
             }
             break;
@@ -3818,7 +3853,7 @@ void addParticipantsToList(vector<Participant>& participants, stringstream& buff
     }
 }
 
-void addParticipantsByList(vector<Participant>& participants)
+void addParticipantsByList(vector<Participant>& participants, string weddingId)
 {
     string name;
     stringstream buffer;
@@ -3876,7 +3911,7 @@ void addParticipantsByList(vector<Participant>& participants)
                         p.attendance.checkInTime = -1;
 
                         participants.push_back(p);
-                        updateFile(outFile, participants);
+                        updateFile(outFile, participants,weddingId);
                         cout << p.name << " was successfully added.\n\n";
                     }
                     else
@@ -3890,7 +3925,7 @@ void addParticipantsByList(vector<Participant>& participants)
                 }
                 else if (selection == 'A')
                 {
-                    addParticipantsToList(participants, buffer, outFile);
+                    addParticipantsToList(participants, buffer, outFile, weddingId);
                 }
                 else if (selection == 'R')
                 {
@@ -3903,7 +3938,7 @@ void addParticipantsByList(vector<Participant>& participants)
         }
         else if (selection == 'N')
         {
-            addParticipantsToList(participants, buffer, outFile);
+            addParticipantsToList(participants, buffer, outFile, weddingId);
             break;
         }
         else
@@ -3912,10 +3947,9 @@ void addParticipantsByList(vector<Participant>& participants)
         }
     }
     outFile.close();
-    pauseScreen();
 }
 
-void addParticipantOneByOne(vector<Participant>& participants)
+void addParticipantOneByOne(vector<Participant>& participants, string weddingId)
 {
     string name;
     char selection;
@@ -3983,28 +4017,25 @@ void addParticipantOneByOne(vector<Participant>& participants)
         p.attendance.checkInTime = -1;
 
         participants.push_back(p);
-        updateFile(outFile, participants);
+        updateFile(outFile, participants,weddingId);
         cout << name << " was successfully added.\n\n";
         break;
     case 'N':
         cout << name << " will not add to the list.\n";
         break;
     default:
-        cout << "Invalid! Please try again." << endl;
-        pauseScreen();        
+        cout << "There was some error occur Location: addParticipantOneByOne\n\n";
         break;
     }
-    pauseScreen();
 }
 
-void addParticipantsMenu(vector<Participant>& participants)
+void addParticipantsMenu(vector<Participant>& participants, string weddingId)
 {
     int selection;
 
     while (true)
-    {   clearScreen();
-        cout << "===Add Participants Menu===\n";
-        cout << "1. Add Participants by list \n2. Add Participant one by one\n0. Exit\n\n";
+    {
+        cout << "1. Add Participants by list \n2. Add Participant one by one\n3. Exit\n\n";
         selection = returnInt();
 
         if (selection == -1)
@@ -4015,21 +4046,19 @@ void addParticipantsMenu(vector<Participant>& participants)
         switch (selection)
         {
         case 1:
-            addParticipantsByList(participants);
+            addParticipantsByList(participants,weddingId);
             break;
         case 2:
-            addParticipantOneByOne(participants);
+            addParticipantOneByOne(participants,weddingId);
             break;
-        case 0:
-            pauseScreen();
+        case 3:
+            cout << "Exit successful\n\n";
             return;
         default:
-            cout << "Invalid choice! Please try again." << endl;
-            pauseScreen();
+            cout << "Please choose only the option given.\n";
             break;
         }
     }
-    
 }
 
 bool addDefaultParticipants(vector<Participant>& participants)
@@ -4069,16 +4098,14 @@ bool addDefaultParticipants(vector<Participant>& participants)
     return true;
 }
 
-void menu(vector<Participant>& participants)
+void menu(vector<Participant>& participants,string weddingId)
 {
     int selection = 0;
     time_t now = time(nullptr); // current time
 
     while (true)
     {
-        clearScreen(); 
-        cout << "=== Monitoring Module ===\n";
-        cout << "1. Add Participants\n2. View all Participiants \n3. Search Participants\n4. Mark Attendance\n5. Edit Participants Information\n6. Delete Participants\n0. Exit Monitoring Module\n\n";
+        cout << "1. Add Participants\n2. Search Participants\n3. Mark Attendance\n4. Edit Participants Information\n5. Delete Participants\n6. Exit Monitoring Module\n\n";
         selection = returnInt();
 
         if (selection == -1)
@@ -4089,22 +4116,19 @@ void menu(vector<Participant>& participants)
         switch (selection)
         {
         case 1:
-            clearScreen();
-            addParticipantsMenu(participants);
+            cout << "Add Participants selected.\n\n";
+            addParticipantsMenu(participants, weddingId);
             break;
         case 2:
-            clearScreen();
-            showAllParticipants(participants);
+            cout << "Search Participants selected.\n\n";
+            searchParticipantsMenu(participants, weddingId);
             break;
         case 3:
-            clearScreen();
-            searchParticipantsMenu(participants);
-            break;
-        case 4:
             if (now > weddingStartDate())
             {
                 if (now < weddingEndDate())
                 {
+                    cout << "Mark Attendance selected.\n\n";
                     markAttendance(participants);
                 }
                 else
@@ -4116,22 +4140,20 @@ void menu(vector<Participant>& participants)
             {
                 cout << "Wedding have not start yet. You are not allowed to mark attendance.\n";
             }
-            pauseScreen();
             break;
-        case 5:
-            clearScreen();
+        case 4:
+            cout << "Update Participants details selected.\n\n";
             updateParticipants(participants);
             break;
-        case 6:
-            clearScreen();
+        case 5:
+            cout << "Delete Monitoring Module selected.\n\n";
             deleteParticipants(participants);
             break;
-        case 0:
-            pauseScreen();
+        case 6:
+            cout << "Exit Monitoring Module selected.\n\n";
             return;
         default:
-            cout << "Invalid choice! Please try again." << endl;
-            pauseScreen();
+            cout << "Invalid selection. Try again.\n\n";
             break;
         }
     }
@@ -4304,7 +4326,7 @@ void paymentAndReportingMenu(CurrentUser& currentUser, vector<WeddingEvent>& eve
         cout << "1. Make Payment" << endl;
         cout << "2. View Payment Summary" << endl;
         cout << "3. Generate Report" << endl;
-        cout << "0. Return to Main Menu" << endl;
+        cout << "4. Return to Main Menu" << endl;
         cout << "Enter your choice: ";
         cin >> paymentChoice;
         cin.ignore();
@@ -4449,7 +4471,7 @@ void paymentAndReportingMenu(CurrentUser& currentUser, vector<WeddingEvent>& eve
         case 3:
             generateReport(currentUser, *selectedEvent, vendorList); // Changed call to use '*'
             break;
-        case 0:
+        case 4:
             return;
         default:
             cout << "Invalid choice! Please try again." << endl;
