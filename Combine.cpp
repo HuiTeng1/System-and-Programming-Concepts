@@ -75,7 +75,7 @@ bool isDateAvailable(const string& date, const vector<WeddingEvent>& events, con
 bool isValidBudget(double budget);
 double calculateServiceCost(const vector<int>& serviceIds, const vector<Vendor>& vendorList);
 void setWeddingToCurrent(CurrentUser &currentUser, vector<Organizer> &organizerList, vector<WeddingEvent> &events);
-void cancelWedding(WeddingEvent* selectedEvent, vector<WeddingEvent>& events, vector<Vendor>& vendorList);
+void cancelWedding(WeddingEvent* selectedEvent, vector<WeddingEvent>& events, vector<Vendor>& vendorList,vector<Participant>& participants);
 
 // Monitoring functions
 void menu(vector<Participant>& participants);
@@ -87,7 +87,7 @@ void updateParticipants(vector<Participant>& participants);
 void deleteParticipants(vector<Participant>& participants);
 void showAllParticipants(vector<Participant> participants,WeddingEvent currentEvent);
 void showAllParticipantsByEvent(vector<Participant>& participants, vector<WeddingEvent>& events);
-
+void deleteAllParticipants(vector<Participant>& participants,string eventId);
 // Payment functions
 void paymentAndReportingMenu(CurrentUser& currentUser, vector<WeddingEvent>& events,  vector<Vendor>& vendorList);
 void viewPaymentSummary( CurrentUser& currentUser,  WeddingEvent& selectedEvent,  vector<Vendor>& vendorList);
@@ -2033,7 +2033,7 @@ void setWeddingToCurrent(CurrentUser &currentUser, vector<Organizer> &organizerL
 
 }
 
-void cancelWedding(string currentWeddingId, vector<WeddingEvent>& events, vector<Vendor>& vendorList) {
+void cancelWedding(string currentWeddingId, vector<WeddingEvent>& events, vector<Vendor>& vendorList,vector<Participant>& participants) {
     WeddingEvent selectedEvent;
     clearScreen();
     cout << "=== CANCEL WEDDING ===" << endl;
@@ -2089,6 +2089,8 @@ void cancelWedding(string currentWeddingId, vector<WeddingEvent>& events, vector
         // Save updates
         saveDataIntoFile(events, "events.txt");
         saveDataIntoFile(vendorList, "vendors.txt");
+
+        deleteAllParticipants(participants,currentWeddingId);
 
         cout << "Wedding cancelled successfully. All booked services were released." << endl;
     } else {
@@ -2235,7 +2237,7 @@ void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<
             saveDataIntoFile<Organizer>(organizerList, "organizers.txt");
             break;
         case 5:
-            cancelWedding(currentUser.currentWeddingId, events, vendorList);
+            cancelWedding(currentUser.currentWeddingId, events, vendorList,participants);
             break;
         case 6:
             for (auto& event : events) {
@@ -3392,6 +3394,28 @@ void printParticipant(Participant p,WeddingEvent currentEvent)
     cout << "|\n";
 }
 
+void deleteAllParticipants(vector<Participant>& participants,string eventId){
+    bool anyRemoved = false;
+    for (int i = 0; i < participants.size(); i++)
+    {
+        if (participants[i].eventId == eventId)
+        {
+            participants.erase(participants.begin() + i);
+            anyRemoved = true;
+        }
+    }
+    if (anyRemoved){
+        ofstream outFile("participants.txt");
+        if (!outFile)
+        {
+            cerr << "Cant open file. Location: addParticipantsToList.\n";
+            return;
+        }
+        updateFile(outFile, participants);
+        outFile.close();
+    }
+}
+
 void deleteParticipants(vector<Participant>& participants,WeddingEvent currentEvent)
 {
     // enter the name, if searched then show the information, then ask to edit what
@@ -4490,6 +4514,58 @@ bool addDefaultParticipants(vector<Participant>& participants)
     return true;
 }
 
+// [Monitoring][R] display attendance statistics
+void displayPresentAmount(vector<Participant> participants, WeddingEvent currentEvent)
+{
+    string input;
+    int totalParticipants = 0;
+    int presentParticipants = 0;
+    double attendancePercentage = 0.0;
+
+    if (participants.empty())
+    {
+        cout << "There are no participants in the file.\n\n";
+        return;
+    }
+
+    // Count participants for current wedding
+    for (const auto& p : participants)
+    {
+        if (p.eventId == currentEvent.eventId)
+        {
+            totalParticipants++;
+            if (p.attendance.isPresent)
+            {
+                presentParticipants++;
+            }
+        }
+    }
+
+    if (totalParticipants == 0)
+    {
+        cout << "No participants found for this wedding.\n\n";
+        return;
+    }
+
+    // Calculate attendance percentage
+    attendancePercentage = (static_cast<double>(presentParticipants) / totalParticipants) * 100.0;
+
+    // Display statistics
+    cout << string(60, '=') << "\n";
+    cout << "         ATTENDANCE STATISTICS REPORT\n";
+    cout << string(60, '=') << "\n";
+    cout << "Wedding Event: " << currentEvent.eventId << "\n";
+    cout << "Wedding Date:  " << currentEvent.weddingDate << "\n";
+    cout << string(60, '-') << "\n";
+    cout << "Present Participants:  " << presentParticipants << "\n";
+    cout << "Total Participants:    " << totalParticipants << "\n";
+    cout << "Attendance Ratio:      " << presentParticipants << "/" << totalParticipants << "\n";
+    cout << "Attendance Percentage: " << fixed << setprecision(1) << attendancePercentage << "%\n";
+    cout << string(60, '=') << "\n";
+
+    pauseScreen();
+}
+
 void participantMenu(vector<Participant>& participants,WeddingEvent currentEvent)
 {
     int selection = 0;
@@ -4547,6 +4623,15 @@ void participantMenu(vector<Participant>& participants,WeddingEvent currentEvent
         case 5:
             cout << "Delete Monitoring Module selected.\n\n";
             deleteParticipants(participants, currentEvent);
+            break;
+        case 6:
+            if (today < weddingDay) {
+                cout << "Wedding has not started yet. You are not allowed to view attendance.\n";
+            }
+            else {
+                cout << "View Attendance Statistics selected.\n\n";
+                displayPresentAmount(participants, currentEvent);
+            }
             break;
         case 0:
             cout << "Exit Monitoring Module selected.\n\n";
