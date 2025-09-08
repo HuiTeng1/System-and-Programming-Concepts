@@ -75,18 +75,17 @@ bool isDateAvailable(const string& date, const vector<WeddingEvent>& events, con
 bool isValidBudget(double budget);
 double calculateServiceCost(const vector<int>& serviceIds, const vector<Vendor>& vendorList);
 void setWeddingToCurrent(CurrentUser &currentUser, vector<Organizer> &organizerList, vector<WeddingEvent> &events);
-void cancelWedding(WeddingEvent* selectedEvent, vector<WeddingEvent>& events, vector<Vendor>& vendorList,vector<Participant>& participants);
+void cancelWedding(string currentWeddingId, vector<WeddingEvent>& events, vector<Vendor>& vendorList,vector<Participant>& participants);
 
 // Monitoring functions
 void menu(vector<Participant>& participants);
 bool addDefaultParticipants(vector<Participant>& participants);
-void addParticipantsMenu(vector<Participant>& participants,string weddingId);
+void addParticipantsMenu(vector<Participant>& participants,WeddingEvent currentEvent);
 void searchParticipantsMenu(vector<Participant>& participants);
 void markAttendance(vector<Participant>& participants,string weddingId);
 void updateParticipants(vector<Participant>& participants);
 void deleteParticipants(vector<Participant>& participants);
 void showAllParticipants(vector<Participant> participants,WeddingEvent currentEvent);
-void showAllParticipantsByEvent(vector<Participant>& participants, vector<WeddingEvent>& events);
 void deleteAllParticipants(vector<Participant>& participants,string eventId);
 // Payment functions
 void paymentAndReportingMenu(CurrentUser& currentUser, vector<WeddingEvent>& events,  vector<Vendor>& vendorList);
