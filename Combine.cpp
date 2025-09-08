@@ -72,7 +72,7 @@ void menu(vector<Participant>& participants);
 bool addDefaultParticipants(vector<Participant>& participants);
 void addParticipantsMenu(vector<Participant>& participants,string weddingId);
 void searchParticipantsMenu(vector<Participant>& participants);
-void markAttendance(vector<Participant>& participants);
+void markAttendance(vector<Participant>& participants,string weddingId);
 void updateParticipants(vector<Participant>& participants);
 void deleteParticipants(vector<Participant>& participants);
 
@@ -92,6 +92,8 @@ void mainMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organ
 // Add these function declarations
 void readAllBookedServices(CurrentUser& currentUser, const vector<WeddingEvent>& events, const vector<Vendor>& vendorList, const vector<Organizer>& organizerList);
 void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList);
+void updateFile(ofstream& outFile, vector<Participant>& participants);
+void participantMenu(vector<Participant>& participants,string weddingId);
 
 struct Service {
     string serviceId;
@@ -352,6 +354,7 @@ struct Attendance {
 };
 
 struct Participant {
+    string eventId;
     string name;
     bool isVip;
     Attendance attendance;
@@ -2177,7 +2180,7 @@ void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<
             saveDataIntoFile<Organizer>(organizerList, "organizers.txt");
             break;
         case 5:
-            menu(participants);  
+            participantMenu(participants,currentUser.currentWeddingId);
             break;
         case 6:
             // Payment
@@ -2564,16 +2567,6 @@ void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, ve
             break;
         }
     }
-
-    ofstream outFile("participants.txt");
-    if (!outFile)
-    {
-        cerr << "Cant open file. Location: updateParticipants.\n";
-        cout << "Sorry you cant edit now, There some error here.\n\n";
-        return;
-    }
-
-    updateFile(outFile, participants,newEvent.eventId);
 
     saveDataIntoFile(events, "events.txt");
 
@@ -3072,12 +3065,12 @@ char returnUpperChar()
 }
 
 // [Monitoring] update the file after push back the vector
-void updateFile(ofstream& outFile, vector<Participant>& participants, string weddingId)
+void updateFile(ofstream& outFile, vector<Participant>& participants)
 {
-    outFile << weddingId << "|" ;
     for (auto& p : participants)
     {
-        outFile << p.name << "|"
+        outFile << p.eventId << "|" 
+            << p.name << "|"
             << (p.isVip ? 1 : 0) << "|"
             << (p.attendance.isPresent ? 1 : 0) << "|"
             << p.attendance.checkInTime
@@ -3142,7 +3135,7 @@ void printParticipant(Participant p)
     cout << "|\n";
 }
 
-void deleteParticipants(vector<Participant>& participants)
+void deleteParticipants(vector<Participant>& participants,string weddingId)
 {
     // enter the name, if searched then show the information, then ask to edit what
     string name, input;
@@ -3178,7 +3171,7 @@ void deleteParticipants(vector<Participant>& participants)
 
         for (auto& p : participants)
         {
-            if (p.name == name)
+            if (p.eventId == weddingId && name == p.name)
             {
                 printParticipant(p);
                 participant.name = p.name;
@@ -3269,7 +3262,7 @@ void editParticipantsName(vector<Participant>& participants, Participant partici
                 if (p.name == participant.name)
                 {
                     p.name = newname;
-                    updateFile(outFile, participants,weddingId);
+                    updateFile(outFile, participants);
                     cout << "Participant name updated successfully from '" << participant.name << "' to '" << newname << "'.\n\n";
                     break;
                 }
@@ -3306,7 +3299,7 @@ void editParticipantsVip(vector<Participant>& participants, Participant particip
                 if (p.name == participant.name)
                 {
                     p.isVip = !p.isVip;
-                    updateFile(outFile, participants,weddingId);
+                    updateFile(outFile, participants);
                     cout << "Participant isVip status changes successfully from '" << (!p.isVip ? "Yes" : "No") << "' to '" << (p.isVip ? "Yes" : "No") << "'.\n\n";
                     break;
                 }
@@ -3386,7 +3379,7 @@ void editParticipantsPresent(vector<Participant>& participants, Participant part
                     {
                         p.attendance.checkInTime = -1;
                         p.attendance.isPresent = !p.attendance.isPresent;
-                        updateFile(outFile, participants,weddingId);
+                        updateFile(outFile, participants);
                         cout << "Participant check-in time clear successfully.\n";
                         cout << "Participant present status changes successfully from '" << (!p.attendance.isPresent ? "Yes" : "No") << "' to '" << (p.attendance.isPresent ? "Yes" : "No") << "'.\n\n";
                         break;
@@ -3404,7 +3397,7 @@ void editParticipantsPresent(vector<Participant>& participants, Participant part
                         {
                             p.attendance.checkInTime = mktime(&t);
                             p.attendance.isPresent = !p.attendance.isPresent;
-                            updateFile(outFile, participants,weddingId);
+                            updateFile(outFile, participants);
                             cout << "Participant check-in time changes successfully from '" << returnTime(participant) << "' to '" << returnTime(p) << "'.\n";
                             cout << "Participant present status changes successfully from '" << (!p.attendance.isPresent ? "Yes" : "No") << "' to '" << (p.attendance.isPresent ? "Yes" : "No") << "'.\n\n";
                             break;
@@ -3439,7 +3432,7 @@ void editParticipantsCheckInTime(vector<Participant>& participants, Participant 
             {
                 p.attendance.checkInTime = mktime(&t);
                 p.attendance.isPresent = true;
-                updateFile(outFile, participants,weddingId);
+                updateFile(outFile, participants);
                 cout << "Participant check-in time changes successfully from '" << returnTime(participant) << "' to '" << returnTime(p) << "'.\n";
                 cout << "Participant present status set as \"Yes\" successfully.\n\n";
                 break;
@@ -3486,7 +3479,7 @@ void updateParticipants(vector<Participant>& participants, string weddingId)
         for (auto& p : participants)
         {
 
-            if (p.name == name)
+            if (p.eventId == weddingId && name == p.name)
             {
                 printParticipant(p);
                 participant.name = p.name;
@@ -3638,7 +3631,7 @@ void markAttendance(vector<Participant>& participants, string weddingId)
                 {
                     for (auto& p : participants)
                     {
-                        if (name == p.name)
+                        if (p.eventId == weddingId && name == p.name)
                         {
                             if (p.attendance.isPresent)
                             {
@@ -3658,7 +3651,7 @@ void markAttendance(vector<Participant>& participants, string weddingId)
 
             if (anyMarked)
             {
-                updateFile(outFile, participants,weddingId);
+                updateFile(outFile, participants);
             }
             break;
         }
@@ -3683,6 +3676,7 @@ void searchParticipantOneByOne(vector<Participant> participants,string weddingId
 
     if (participants.empty())
     {
+        
         cout << "There are no participants in the file.\n\n";
         return;
     }
@@ -3711,6 +3705,9 @@ void searchParticipantOneByOne(vector<Participant> participants,string weddingId
 
         for (auto& p : participants)
         {
+            if (p.eventId != weddingId)
+                continue;
+
             string compare = p.name;
             transform(compare.begin(), compare.end(), compare.begin(), ::tolower);
 
@@ -3744,6 +3741,7 @@ void showAllParticipants(vector<Participant> participants, string weddingId)
 {
 
     string input;
+    bool found = false;
 
     if (participants.empty())
     {
@@ -3761,12 +3759,27 @@ void showAllParticipants(vector<Participant> participants, string weddingId)
     cout << string(115, '-') << "\n";
 
     // Table rows
-    while (!participants.empty())
-    {
+    while (!participants.empty()){
         Participant p = participants.back();
         participants.pop_back();
 
         printParticipant(p);
+    }
+
+        while (!participants.empty())
+    {
+        Participant p = participants.back();
+        participants.pop_back();
+
+        if (p.eventId == weddingId)
+        {
+            printParticipant(p);
+            found = true;
+        }
+    }
+
+    if (!found){
+        cout << "| " << setw(111) << left << "No participants found for this wedding." << "|\n";
     }
 
     cout << string(115, '-') << "\n";
@@ -3839,6 +3852,7 @@ void addParticipantsToList(vector<Participant>& participants, stringstream& buff
                     if (!checkIsExist(participants, name))
                     {
                         Participant p;
+                        p.eventId = p.eventId;
                         p.name = name;
                         p.isVip = false;
                         p.attendance.isPresent = false;
@@ -3857,7 +3871,7 @@ void addParticipantsToList(vector<Participant>& participants, stringstream& buff
 
             if (anyAdded)
             {
-                updateFile(outFile, participants,weddingId);
+                updateFile(outFile, participants);
                 cout << "All the name was successfully added.\n\n";
             }
             break;
@@ -3926,13 +3940,14 @@ void addParticipantsByList(vector<Participant>& participants, string weddingId)
                     if (!checkIsExist(participants, name))
                     {
                         Participant p;
+                        p.eventId = weddingId;
                         p.name = name;
                         p.isVip = false;
                         p.attendance.isPresent = false;
                         p.attendance.checkInTime = -1;
 
                         participants.push_back(p);
-                        updateFile(outFile, participants,weddingId);
+                        updateFile(outFile, participants);
                         cout << p.name << " was successfully added.\n\n";
                     }
                     else
@@ -4032,13 +4047,14 @@ void addParticipantOneByOne(vector<Participant>& participants, string weddingId)
     switch (selection)
     {
     case 'Y':
+        p.eventId = weddingId;
         p.name = name;
         p.isVip = isVip;
         p.attendance.isPresent = false;
         p.attendance.checkInTime = -1;
 
         participants.push_back(p);
-        updateFile(outFile, participants,weddingId);
+        updateFile(outFile, participants);
         cout << name << " was successfully added.\n\n";
         break;
     case 'N':
@@ -4119,7 +4135,7 @@ bool addDefaultParticipants(vector<Participant>& participants)
     return true;
 }
 
-void menu(vector<Participant>& participants,string weddingId)
+void participantMenu(vector<Participant>& participants,string weddingId)
 {
     int selection = 0;
     time_t now = time(nullptr); // current time
@@ -4150,7 +4166,7 @@ void menu(vector<Participant>& participants,string weddingId)
                 if (now < weddingEndDate())
                 {
                     cout << "Mark Attendance selected.\n\n";
-                    markAttendance(participants);
+                    markAttendance(participants,weddingId);
                 }
                 else
                 {
@@ -4164,11 +4180,11 @@ void menu(vector<Participant>& participants,string weddingId)
             break;
         case 4:
             cout << "Update Participants details selected.\n\n";
-            updateParticipants(participants);
+            updateParticipants(participants,weddingId);
             break;
         case 5:
             cout << "Delete Monitoring Module selected.\n\n";
-            deleteParticipants(participants);
+            deleteParticipants(participants,weddingId);
             break;
         case 6:
             cout << "Exit Monitoring Module selected.\n\n";

@@ -6,6 +6,9 @@
         "iostream": "cpp",
         "string": "cpp",
         "iosfwd": "cpp",
-        "ios": "cpp"
+        "ios": "cpp",
+        "system_error": "cpp",
+        "xlocale": "cpp",
+        "algorithm": "cpp"
     }
 }
