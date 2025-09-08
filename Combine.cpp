@@ -319,7 +319,7 @@ struct WeddingEvent {
     // Method to serialize to file string
     string toFileString() {
         string servicesStr;
-        for (size_t i = 0; i < bookedServices.size(); ++i) {
+        for (int i = 0; i < bookedServices.size(); ++i) {
             servicesStr += bookedServices[i];
             if (i < bookedServices.size() - 1) {
                 servicesStr += ",";
@@ -607,7 +607,7 @@ bool login(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<
     getline(cin, password);
 
     // Check admin
-    for (size_t i = 0; i < adminList.size(); i++)
+    for (int i = 0; i < adminList.size(); i++)
     {
         if (adminList[i].baseInfo.email == email && adminList[i].baseInfo.password == password)
         {
@@ -624,7 +624,7 @@ bool login(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<
     }
 
     // Check organizer
-    for (size_t i = 0; i < organizerList.size(); i++)
+    for (int i = 0; i < organizerList.size(); i++)
     {
         if (organizerList[i].baseInfo.email == email && organizerList[i].baseInfo.password == password)
         {
@@ -640,7 +640,7 @@ bool login(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<
     }
 
     // Check vendor
-    for (size_t i = 0; i < vendorList.size(); i++) {
+    for (int i = 0; i < vendorList.size(); i++) {
         if (vendorList[i].baseInfo.email == email && vendorList[i].baseInfo.password == password) {
             currentUser.type = UserType::VENDOR;
             currentUser.userIndex = i;
@@ -1892,7 +1892,7 @@ void deleteBookedService(CurrentUser& currentUser,vector<WeddingEvent>& events,v
     int actualIndex = -1;
 
     // Find the actual index in bookedServices vector
-    for (size_t i = 0; i < currentEvent->bookedServices.size(); i++) {
+    for (int i = 0; i < currentEvent->bookedServices.size(); i++) {
         if (currentEvent->bookedServices[i] == selectedServiceId) {
             actualIndex = static_cast<int>(i);
             break;
@@ -2742,12 +2742,12 @@ void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& even
     clearScreen();
     cout << "=== AVAILABLE SERVICES ===" << endl;
 
-    vector<pair<size_t, size_t>> availableServices;
+    vector<pair<int, int>> availableServices;
     int optionNum = 1;
 
-    for (size_t i = 0; i < vendorList.size(); i++) {
+    for (int i = 0; i < vendorList.size(); i++) {
         const auto& vendor = vendorList[i];
-        for (size_t j = 0; j < vendor.serviceHasProvide.size(); j++) {
+        for (int j = 0; j < vendor.serviceHasProvide.size(); j++) {
             const auto& service = vendor.serviceHasProvide[j];
             if ((serviceType.empty() || service.type == serviceType) &&
                 service.available && service.quantity > 0) {
@@ -2782,7 +2782,7 @@ void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& even
         return;
     }
 
-    auto& selected = availableServices[static_cast<size_t>(serviceChoice - 1)];
+    auto& selected = availableServices[static_cast<int>(serviceChoice - 1)];
     Service& service = vendorList[selected.first].serviceHasProvide[selected.second];
     Vendor& vendor = vendorList[selected.first];
 
