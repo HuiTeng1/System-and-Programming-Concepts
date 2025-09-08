@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cctype>
 #include <limits>
+#include <regex>
 using namespace std;
 
 struct Service;
@@ -31,20 +32,19 @@ void loadDataFromFile(vector<T>& data, string fileName);
 string generateId(const string& prefix, int counter);
 void clearScreen();
 void pauseScreen();
-void getBaseUserInfo(BaseInfo& baseInfo);
-void getVendorInfo(Vendor& vendor, vector<Vendor>& vendorList);
-void getOrganizerInfo(Organizer& organizer, vector<Organizer>& organizerList);
-bool getAdminInfo(Admin& admin, vector<Admin>& adminList);
+void getBaseUserInfo(BaseInfo& baseInfo,vector<Admin>& adminList , vector<Organizer>& organizerList, vector<Vendor>& vendorList);
+void getVendorInfo(Vendor& vendor, vector<Admin>& adminList , vector<Organizer>& organizerList, vector<Vendor>& vendorList);
+void getOrganizerInfo(Organizer& organizer, vector<Admin>& adminList , vector<Organizer>& organizerList, vector<Vendor>& vendorList);
+bool getAdminInfo(Admin& admin, vector<Admin>& adminList , vector<Organizer>& organizerList, vector<Vendor>& vendorList);
 bool login(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList, CurrentUser& currentUser);
 void logout(CurrentUser& currentUser);
 void addService(CurrentUser& currentUser, vector<Vendor>& vendorList);
 void displayUserProfile(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList);
 void displayAllUser(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList);
 void userRegister(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList);
-void updateBaseInfo(BaseInfo& baseInfo);
-void updateAdminInfo(Admin& admin);
-void updateOrganizerInfo(Organizer& organizer);
-void updateVendorInfo(Vendor& vendor);
+void updateBaseInfo(BaseInfo& baseInfo, vector<Admin>& adminList , vector<Organizer>& organizerList, vector<Vendor>& vendorList);
+void updateAdminInfo(Admin& admin, vector<Admin>& adminList , vector<Organizer>& organizerList, vector<Vendor>& vendorList);
+void updateVendorInfo(Vendor& vendor, vector<Admin>& adminList , vector<Organizer>& organizerList, vector<Vendor>& vendorList);
 void updateUserProfile(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList);
 void updateOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList);
 void displayAllServices(vector<Vendor>& vendorList);
@@ -437,6 +437,44 @@ void loadDataFromFile(vector<T>& data, string fileName)
     read.close();
 }
 
+bool isValidEmail(const string& email) {
+    // Simple regex pattern for email validation
+    const regex pattern(R"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})");
+    return regex_match(email, pattern);
+}
+
+bool isValidMalaysianPhone(const string& phone) {
+    // Malaysian phone number regex pattern
+    // Matches: +60xxxxxxxxx, 60xxxxxxxxx, 0xxxxxxxxx, or xxxxxxxxx
+    // Mobile: 01x-xxxx-xxxx (10-11 digits)
+    // Landline: 0x-xxxx-xxxx (9-10 digits)
+    const regex pattern(R"(^(\+?60|0)?[1-9][0-9]{7,9}$)");
+    
+    return regex_match(phone, pattern);
+}
+
+bool isEmailExist(string& email, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList) {
+    // Check in admin list
+    for (auto& admin : adminList) {
+        if (admin.baseInfo.email == email) {
+            return true;
+        }
+    }
+    // Check in organizer list
+    for (auto& organizer : organizerList) {
+        if (organizer.baseInfo.email == email) {
+            return true;
+        }
+    }
+    // Check in vendor list
+    for (auto& vendor : vendorList) {
+        if (vendor.baseInfo.email == email) {
+            return true;
+        }
+    }
+    return false; // Email not found in any list
+}
+
 string generateId(const string& prefix, int counter) {
     return prefix + to_string(10000 + counter);
 }
@@ -452,26 +490,49 @@ void pauseScreen()
     cin.get();
 }
 
-void getBaseUserInfo(BaseInfo& baseInfo)
+void getBaseUserInfo(BaseInfo& baseInfo, vector<Admin>& adminList , vector<Organizer>& organizerList, vector<Vendor>& vendorList )
 {
 
     cout << "Enter name: ";
     getline(cin, baseInfo.name);
 
-    cout << "Enter email: ";
-    getline(cin, baseInfo.email);
+    do {
+        cout << "Enter email: ";
+        getline(cin, baseInfo.email);
+        if(baseInfo.email == "0"){
+            return;
+        }
+        if (!isValidEmail(baseInfo.email)) {
+            cout << "Invalid email format. Please try again. Enter '0' to exit. " << endl;
+            continue;
+        }
+        if(isEmailExist(baseInfo.email, adminList, organizerList, vendorList)) {
+            cout << "Email already exists. Please try again. Enter '0' to exit. " << endl;
+            continue;;
+        }
+        break; // Valid email
+    } while (true);
 
-    cout << "Enter phone: ";
-    getline(cin, baseInfo.phoneNum);
+    do {
+        cout << "Enter phone: ";
+        getline(cin, baseInfo.phoneNum);
+        if(baseInfo.phoneNum == "0"){
+            return;
+        }
+        if (!isValidMalaysianPhone(baseInfo.phoneNum)) {
+            cout << "Invalid Malaysian phone number. Please try again. Enter '0' to exit. " << endl;
+        }
+        break;
+    } while (true);
 
     cout << "Enter password: ";
     getline(cin, baseInfo.password);
 }
 
-void getVendorInfo(Vendor& vendor, vector<Vendor>& vendorList)
+void getVendorInfo(Vendor& vendor, vector<Admin>& adminList , vector<Organizer>& organizerList, vector<Vendor>& vendorList)
 {
     // Get base info
-    getBaseUserInfo(vendor.baseInfo);
+    getBaseUserInfo(vendor.baseInfo,adminList, organizerList, vendorList);
 
     // Get vendor-specific info
     vendor.vendorId = generateId("V", vendorList.size() + 1);
@@ -486,21 +547,21 @@ void getVendorInfo(Vendor& vendor, vector<Vendor>& vendorList)
     getline(cin, vendor.type);
 };
 
-void getOrganizerInfo(Organizer& organizer, vector<Organizer>& organizerList)
+void getOrganizerInfo(Organizer& organizer, vector<Admin>& adminList , vector<Organizer>& organizerList, vector<Vendor>& vendorList)
 {
     string input;
 
     // Get base info
-    getBaseUserInfo(organizer.baseInfo);
+    getBaseUserInfo(organizer.baseInfo,adminList, organizerList, vendorList);
 
     organizer.organizerId = generateId("O", organizerList.size() + 1);
 }
 
-bool getAdminInfo(Admin& admin, vector<Admin>& adminList)
+bool getAdminInfo(Admin& admin, vector<Admin>& adminList , vector<Organizer>& organizerList, vector<Vendor>& vendorList)
 {
     string secretPassword = "Secret";
     string inputPassword;
-    getBaseUserInfo(admin.baseInfo);
+    getBaseUserInfo(admin.baseInfo,adminList, organizerList, vendorList);
 
     admin.adminId = generateId("A", adminList.size() + 1);
 
@@ -771,7 +832,7 @@ void userRegister(vector<Vendor>& vendorList, vector<Organizer>& organizerList, 
     case 1:
     {
         Admin admin;
-        if (getAdminInfo(admin, adminList))
+        if (getAdminInfo(admin,adminList, organizerList, vendorList))
         {
             adminList.push_back(admin);
         }
@@ -780,14 +841,14 @@ void userRegister(vector<Vendor>& vendorList, vector<Organizer>& organizerList, 
     case 2:
     {
         Organizer organizer;
-        getOrganizerInfo(organizer, organizerList);
+        getOrganizerInfo(organizer, adminList, organizerList, vendorList);
         organizerList.push_back(organizer);
         break;
     }
     case 3:
     {
         Vendor vendor;
-        getVendorInfo(vendor, vendorList);
+        getVendorInfo(vendor, adminList, organizerList, vendorList);
         vendorList.push_back(vendor);
         break;
     }
@@ -801,7 +862,7 @@ void userRegister(vector<Vendor>& vendorList, vector<Organizer>& organizerList, 
     saveDataIntoFile<Vendor>(vendorList, "vendors.txt");
 }
 
-void updateBaseInfo(BaseInfo& baseInfo)
+void updateBaseInfo(BaseInfo& baseInfo, vector<Admin>& adminList , vector<Organizer>& organizerList, vector<Vendor>& vendorList)
 {
     int choice;
     cout << "\n=== UPDATE BASE INFORMATION ===" << endl;
@@ -824,13 +885,34 @@ void updateBaseInfo(BaseInfo& baseInfo)
         cout << "Name updated successfully!" << endl;
         break;
     case 2:
-        cout << "Enter new email: ";
-        getline(cin, baseInfo.email);
+        do {
+            cout << "Enter email: ";
+            getline(cin, baseInfo.email);
+            if(baseInfo.email == "0"){
+                return;
+            }
+            if (!isValidEmail(baseInfo.email)) {
+                cout << "Invalid email format. Please try again. Enter '0' to exit. " << endl;
+            }
+            if(isEmailExist(baseInfo.email, adminList, organizerList, vendorList)) {
+                cout << "Email already exists. Please try again. Enter '0' to exit. " << endl;
+            }
+            break;
+        } while (true);
         cout << "Email updated successfully!" << endl;
         break;
     case 3:
-        cout << "Enter new phone: ";
-        getline(cin, baseInfo.phoneNum);
+        do {
+            cout << "Enter phone: ";
+            getline(cin, baseInfo.phoneNum);
+            if(baseInfo.phoneNum == "0"){
+                return;
+            }
+            if (!isValidMalaysianPhone(baseInfo.phoneNum)) {
+                cout << "Invalid Malaysian phone number. Please try again. Enter '0' to exit. " << endl;
+            }
+            break;
+        } while (true);
         cout << "Phone updated successfully!" << endl;
         break;
     case 4:
@@ -839,7 +921,7 @@ void updateBaseInfo(BaseInfo& baseInfo)
         cout << "Password updated successfully!" << endl;
         break;
     case 5:
-        getBaseUserInfo(baseInfo);
+        getBaseUserInfo(baseInfo,adminList, organizerList, vendorList);
         cout << "All base information updated successfully!" << endl;
         break;
     case 0:
@@ -851,7 +933,7 @@ void updateBaseInfo(BaseInfo& baseInfo)
     pauseScreen();
 }
 
-void updateAdminInfo(Admin& admin)
+void updateAdminInfo(Admin& admin, vector<Admin>& adminList , vector<Organizer>& organizerList, vector<Vendor>& vendorList)
 {
     int choice;
     cout << "\n=== UPDATE ADMIN INFORMATION ===" << endl;
@@ -866,7 +948,7 @@ void updateAdminInfo(Admin& admin)
     switch (choice)
     {
     case 1:
-        updateBaseInfo(admin.baseInfo);
+        updateBaseInfo(admin.baseInfo,adminList, organizerList, vendorList);
         break;
     case 0:
         return;
@@ -877,106 +959,8 @@ void updateAdminInfo(Admin& admin)
     }
 }
 
-void updateOrganizerInfo(Organizer& organizer)
-{
-    int choice;
-    string input;
 
-    cout << "\n=== UPDATE ORGANIZER INFORMATION ===" << endl;
-    cout << "Current Information:" << endl;
-    cout << "Organizer ID: " << organizer.organizerId << " (Cannot be changed)" << endl;
-    cout << "1. Update Base Information (Name, Email, Phone, Password)" << endl;
-    cout << "2. Groom Name" << endl;
-    cout << "3. Bride Name" << endl;
-    cout << "4. Wedding Date" << endl;
-    cout << "5. Wedding Venue" << endl;
-    cout << "6. Budget" << endl;
-    cout << "7. Wedding Theme" << endl;
-    cout << "8. Wedding Stage" << endl;
-    cout << "9. Update All Organizer Info" << endl;
-    cout << "0. Back to main menu" << endl;
-    cout << "Choose what to update: ";
-    cin >> choice;
-    cin.ignore();
-
-    switch (choice)
-    {
-    case 1:
-        updateBaseInfo(organizer.baseInfo);
-        break;
-        // case 2:
-        //     cout << "Enter new groom name: ";
-        //     getline(cin, organizer.groomName);
-        //     cout << "Groom name updated successfully!" << endl;
-        //     pauseScreen();
-        //     break;
-        // case 3:
-        //     cout << "Enter new bride name: ";
-        //     getline(cin, organizer.brideName);
-        //     cout << "Bride name updated successfully!" << endl;
-        //     pauseScreen();
-        //     break;
-        // case 4:
-        //     cout << "Enter new wedding date (leave empty to clear): ";
-        //     getline(cin, organizer.weddingDate);
-        //     cout << "Wedding date updated successfully!" << endl;
-        //     pauseScreen();
-        //     break;
-        // case 5:
-        //     cout << "Enter new wedding venue (leave empty to clear): ";
-        //     getline(cin, organizer.weddingVenue);
-        //     cout << "Wedding venue updated successfully!" << endl;
-        //     pauseScreen();
-        //     break;
-        // case 6:
-        //     cout << "Enter new budget (RM): ";
-        //     cin >> organizer.budget;
-        //     cin.ignore();
-        //     cout << "Budget updated successfully!" << endl;
-        //     pauseScreen();
-        //     break;
-        // case 7:
-        //     cout << "Enter new wedding theme (leave empty to clear): ";
-        //     getline(cin, organizer.weddingTheme);
-        //     cout << "Wedding theme updated successfully!" << endl;
-        //     pauseScreen();
-        //     break;
-        // case 8:
-        //     cout << "Enter new wedding stage (e.g., planning, booked, completed): ";
-        //     getline(cin, organizer.weddingStage);
-        //     cout << "Wedding stage updated successfully!" << endl;
-        //     pauseScreen();
-        //     break;
-        // case 9:
-        //     updateBaseInfo(organizer.baseInfo);
-        //     cout << "Enter new groom name: ";
-        //     getline(cin, organizer.groomName);
-        //     cout << "Enter new bride name: ";
-        //     getline(cin, organizer.brideName);
-        //     cout << "Wedding date (leave empty if not set): ";
-        //     getline(cin, organizer.weddingDate);
-        //     cout << "Wedding venue (leave empty if not set): ";
-        //     getline(cin, organizer.weddingVenue);
-        //     cout << "Wedding theme (leave empty if not set): ";
-        //     getline(cin, organizer.weddingTheme);
-        //     cout << "Budget (RM): ";
-        //     cin >> organizer.budget;
-        //     cin.ignore();
-        //     cout << "Wedding stage: ";
-        //     getline(cin, organizer.weddingStage);
-        //     cout << "All organizer information updated successfully!" << endl;
-        //     pauseScreen();
-        //     break;
-    case 0:
-        return;
-    default:
-        cout << "Invalid choice!" << endl;
-        pauseScreen();
-        break;
-    }
-}
-
-void updateVendorInfo(Vendor& vendor)
+void updateVendorInfo(Vendor& vendor, vector<Admin>& adminList , vector<Organizer>& organizerList, vector<Vendor>& vendorList)
 {
     int choice;
 
@@ -996,7 +980,7 @@ void updateVendorInfo(Vendor& vendor)
     switch (choice)
     {
     case 1:
-        updateBaseInfo(vendor.baseInfo);
+        updateBaseInfo(vendor.baseInfo,adminList, organizerList, vendorList);
         break;
     case 2:
         cout << "Enter new company name: ";
@@ -1017,7 +1001,7 @@ void updateVendorInfo(Vendor& vendor)
         pauseScreen();
         break;
     case 5:
-        updateBaseInfo(vendor.baseInfo);
+        updateBaseInfo(vendor.baseInfo,adminList, organizerList, vendorList);
         cout << "Enter new company name: ";
         getline(cin, vendor.companyName);
         cout << "Enter new company contact number: ";
@@ -1056,19 +1040,19 @@ void updateUserProfile(CurrentUser& currentUser, vector<Vendor>& vendorList, vec
     {
     case ADMIN:
     {
-        updateAdminInfo(adminList[currentUser.userIndex]);
+        updateAdminInfo(adminList[currentUser.userIndex], adminList, organizerList, vendorList);
         updated = true;
         break;
     }
     case ORGANIZER:
     {
-        updateOrganizerInfo(organizerList[currentUser.userIndex]);
+        updateBaseInfo(organizerList[currentUser.userIndex].baseInfo,adminList, organizerList, vendorList);
         updated = true;
         break;
     }
     case VENDOR:
     {
-        updateVendorInfo(vendorList[currentUser.userIndex]);
+        updateVendorInfo(vendorList[currentUser.userIndex], adminList, organizerList, vendorList);
         updated = true;
         break;
     }
@@ -1080,7 +1064,6 @@ void updateUserProfile(CurrentUser& currentUser, vector<Vendor>& vendorList, vec
         saveDataIntoFile<Admin>(adminList, "admins.txt");
         saveDataIntoFile<Organizer>(organizerList, "organizers.txt");
         saveDataIntoFile<Vendor>(vendorList, "vendors.txt");
-        cout << "\nProfile changes saved to file!" << endl;
     }
 }
 
@@ -2115,6 +2098,44 @@ void UpdateWeddingMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vec
     } while (choice != 0);
 }
 
+void MyProfileMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList){
+    int choice;
+    do
+    {
+        clearScreen();
+        cout << "=== MY PROFILE ===" << endl;
+        cout << "1. View My Profile" << endl;
+        cout << "2. Update My Profile" << endl;
+        cout << "3. Delete My Account" << endl;
+        cout << "0. Back to Main Menu" << endl;
+        cout << "==========================================" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+        cin.ignore();
+
+        switch (choice)
+        {
+        case 1:
+            displayUserProfile(currentUser, vendorList, organizerList, adminList);
+            break;
+        case 2:
+            updateUserProfile(currentUser, vendorList, organizerList, adminList);
+            pauseScreen();
+            break;
+        case 3:
+            if (deleteOwnAccount(currentUser, vendorList, organizerList, adminList)){
+                return; 
+            }
+        case 0:
+            pauseScreen();
+            return;
+        default:
+            cout << "Invalid choice! Please try again." << endl;
+            pauseScreen();
+            break;
+        }
+    } while (choice != 0);
+}
 void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList, vector<WeddingEvent>& events, vector<Participant>& participants)
 {
     int choice;
@@ -2163,7 +2184,7 @@ void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<
             paymentAndReportingMenu(currentUser, events, vendorList);
             break;
         case 7:
-            displayUserProfile(currentUser, vendorList, organizerList, adminList);
+            MyProfileMenu(currentUser, vendorList, organizerList, adminList);
             break;
         case 0:
             logout(currentUser);
