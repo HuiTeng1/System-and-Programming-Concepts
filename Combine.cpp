@@ -2498,7 +2498,7 @@ double calculateServiceCost(const vector<int>& serviceIds, const vector<Vendor>&
     return total;
 }
 
-void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Participant>& participants) {
+void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
     if (currentUser.type != ORGANIZER) {
         cout << "Only organizers can create weddings!" << endl;
         pauseScreen();
