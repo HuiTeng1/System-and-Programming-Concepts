@@ -3037,7 +3037,7 @@ void generateInvitationCard(CurrentUser& currentUser, vector<WeddingEvent>& even
                 break;
                 
             case 2:
-                generateInvitationCard(currentUser,events, organizerList);
+                generateCustomInvitation(events, wedding, contactNumber);
                 break;
                 
             case 0:
