@@ -3121,6 +3121,7 @@ void deleteParticipants(vector<Participant> &participants)
     if (participants.empty())
     {
         cout << "There are no participants in the file.\n\n";
+        pauseScreen();
         return;
     }
 
@@ -3211,6 +3212,7 @@ void deleteParticipants(vector<Participant> &participants)
         }
         break;
     }
+    pauseScreen();
 }
 
 //[Monitoring][E]
@@ -3428,6 +3430,7 @@ void updateParticipants(vector<Participant> &participants)
     if (participants.empty())
     {
         cout << "There are no participants in the file.\n\n";
+        pauseScreen();
         return;
     }
 
@@ -3513,6 +3516,7 @@ void updateParticipants(vector<Participant> &participants)
         }
         break;
     }
+    pauseScreen();
 }
 
 // [Monitoring][C][Mark][D] check user enter participants list
@@ -3627,6 +3631,7 @@ void markAttendance(vector<Participant> &participants)
             if (anyMarked)
             {
                 updateFile(outFile, participants);
+                pauseScreen();
             }
             break;
         }
@@ -3652,6 +3657,7 @@ void searchParticipantOneByOne(vector<Participant> participants)
     if (participants.empty())
     {
         cout << "There are no participants in the file.\n\n";
+        pauseScreen();
         return;
     }
 
@@ -3705,6 +3711,7 @@ void searchParticipantOneByOne(vector<Participant> participants)
         }
         break;
     }
+    pauseScreen();
 }
 
 // [Monitoring][R] show all the participants
@@ -3737,11 +3744,7 @@ void showAllParticipants(vector<Participant> participants)
     }
 
     cout << string(115, '-') << "\n";
-    cout << "Press Enter to continue .... )\n";
-    do
-    {
-        getline(cin, input);
-    } while (!input.empty());
+    pauseScreen();
 }
 
 // [Monitoring][R] search participants menu
@@ -3751,7 +3754,9 @@ void searchParticipantsMenu(vector<Participant> &participants)
 
     while (true)
     {
-        cout << "1. Show all the participants\n2. Search Participant by name\n3. Exit\n\n";
+        clearScreen();
+        cout << "\n=== Search Participants Menu ===\n";
+        cout << "1. Show all the participants\n2. Search Participant by name\n0. Exit\n\n";
         selection = returnInt();
 
         if (selection == -1)
@@ -3767,7 +3772,7 @@ void searchParticipantsMenu(vector<Participant> &participants)
         case 2:
             searchParticipantOneByOne(participants);
             break;
-        case 3:
+        case 0:
             cout << "Exit successful\nBack To Monitoring Menu\n\n";
             return;
         default:
@@ -3935,6 +3940,7 @@ void addParticipantsByList(vector<Participant> &participants)
         }
     }
     outFile.close();
+    pauseScreen();
 }
 
 void addParticipantOneByOne(vector<Participant> &participants)
@@ -4012,9 +4018,11 @@ void addParticipantOneByOne(vector<Participant> &participants)
         cout << name << " will not add to the list.\n";
         break;
     default:
-        cout << "There was some error occur Location: addParticipantOneByOne\n\n";
+        cout << "Invalid! Please try again." << endl;
+        pauseScreen();        
         break;
     }
+    pauseScreen();
 }
 
 void addParticipantsMenu(vector<Participant> &participants)
@@ -4022,8 +4030,9 @@ void addParticipantsMenu(vector<Participant> &participants)
     int selection;
 
     while (true)
-    {
-        cout << "1. Add Participants by list \n2. Add Participant one by one\n3. Exit\n\n";
+    {   clearScreen();
+        cout << "===Add Participants Menu===\n";
+        cout << "1. Add Participants by list \n2. Add Participant one by one\n0. Exit\n\n";
         selection = returnInt();
 
         if (selection == -1)
@@ -4039,14 +4048,16 @@ void addParticipantsMenu(vector<Participant> &participants)
         case 2:
             addParticipantOneByOne(participants);
             break;
-        case 3:
-            cout << "Exit successful\n\n";
+        case 0:
+            pauseScreen();
             return;
         default:
-            cout << "Please choose only the option given.\n";
+            cout << "Invalid choice! Please try again." << endl;
+            pauseScreen();
             break;
         }
     }
+    
 }
 
 bool addDefaultParticipants(vector<Participant> &participants)
@@ -4093,7 +4104,9 @@ void menu(vector<Participant> &participants)
 
     while (true)
     {
-        cout << "1. Add Participants\n2. Search Participants\n3. Mark Attendance\n4. Edit Participants Information\n5. Delete Participants\n6. Exit Monitoring Module\n\n";
+        clearScreen(); 
+        cout << "=== Monitoring Module ===\n";
+        cout << "1. Add Participants\n2. View all Participiants \n3. Search Participants\n4. Mark Attendance\n5. Edit Participants Information\n6. Delete Participants\n0. Exit Monitoring Module\n\n";
         selection = returnInt();
 
         if (selection == -1)
@@ -4104,19 +4117,22 @@ void menu(vector<Participant> &participants)
         switch (selection)
         {
         case 1:
-            cout << "Add Participants selected.\n\n";
+            clearScreen();
             addParticipantsMenu(participants);
             break;
         case 2:
-            cout << "Search Participants selected.\n\n";
-            searchParticipantsMenu(participants);
+            clearScreen();
+            showAllParticipants(participants);
             break;
         case 3:
+            clearScreen();
+            searchParticipantsMenu(participants);
+            break;
+        case 4:
             if (now > weddingStartDate())
             {
                 if (now < weddingEndDate())
                 {
-                    cout << "Mark Attendance selected.\n\n";
                     markAttendance(participants);
                 }
                 else
@@ -4128,20 +4144,22 @@ void menu(vector<Participant> &participants)
             {
                 cout << "Wedding have not start yet. You are not allowed to mark attendance.\n";
             }
-            break;
-        case 4:
-            cout << "Update Participants details selected.\n\n";
-            updateParticipants(participants);
+            pauseScreen();
             break;
         case 5:
-            cout << "Delete Monitoring Module selected.\n\n";
-            deleteParticipants(participants);
+            clearScreen();
+            updateParticipants(participants);
             break;
         case 6:
-            cout << "Exit Monitoring Module selected.\n\n";
+            clearScreen();
+            deleteParticipants(participants);
+            break;
+        case 0:
+            pauseScreen();
             return;
         default:
-            cout << "Invalid selection. Try again.\n\n";
+            cout << "Invalid choice! Please try again." << endl;
+            pauseScreen();
             break;
         }
     }
@@ -4314,7 +4332,7 @@ void paymentAndReportingMenu(CurrentUser& currentUser, vector<WeddingEvent>& eve
         cout << "1. Make Payment" << endl;
         cout << "2. View Payment Summary" << endl;
         cout << "3. Generate Report" << endl;
-        cout << "4. Return to Main Menu" << endl;
+        cout << "0. Return to Main Menu" << endl;
         cout << "Enter your choice: ";
         cin >> paymentChoice;
         cin.ignore();
@@ -4459,7 +4477,7 @@ void paymentAndReportingMenu(CurrentUser& currentUser, vector<WeddingEvent>& eve
         case 3:
             generateReport(currentUser, *selectedEvent, vendorList); // Changed call to use '*'
             break;
-        case 4:
+        case 0:
             return;
         default:
             cout << "Invalid choice! Please try again." << endl;
