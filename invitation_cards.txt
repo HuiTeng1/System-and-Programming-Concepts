@@ -1,33 +1,69 @@
-O10001|W10005|
-********************************************************||
-*                                                      *||
-*              WEDDING INVITATION                      *||
-*                                                      *||
-*        HI & HI||
-*                                                      *||
-*    Together with their families request the          *||
-*    pleasure of your company at their wedding         *||
-*                                                      *||
-*    Date: 2025-12-12||
-*    Venue: ||
-*                                                      *||
-*    RSVP by calling: o||
-*                                                      *||
-********************************************************||
-O10001|W10005|
-========================================
-           SAVE THE DATE
-========================================
-
-HI + HI
-
-are getting married!
-
-WHEN: 2025-12-12
-WHERE: 
-
-Join us for a celebration of love
-
-Contact: o
-========================================
+O10001&W10005%%%
+********************************************************&%%
+*                                                      *&%%
+*              WEDDING INVITATION                      *&%%
+*                                                      *&%%
+*        HI & HI%%
+*                                                      *&%%
+*    Together with their families request the          *&%%
+*    pleasure of your company at their wedding         *&%%
+*                                                      *&%%
+*    Date: 2025-12-12&%%
+*    Venue: &%%
+*                                                      *&%%
+*    RSVP by calling: o&%%
+*                                                      *&%%
+********************************************************&%%
+O10001&W10005%%
+<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3&%%
+<3                                                <3&%%
+<3           Two Hearts Becoming One              <3&%%
+<3                                                <3&%%
+<3               HI&%%
+<3                    &                           <3%%
+<3               HI&%%
+<3                                                <3&%%
+<3        invite you to share in their           <3&%%
+<3             wedding celebration               <3&%%
+<3                                                <3&%%
+<3  On: 2025-12-12&%%
+<3  Venue: &%%
+<3                                                <3&%%
+<3  Please RSVP: o&%%
+<3                                                <3&%%
+<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3&%%
+O10001&W10005%%
++======================================================+%%
+|                                                      |%%
+|              WEDDING ANNOUNCEMENT                    |%%
+|                                                      |%%
+|        Mr. HI%%
+|                      and                             |%%
+|        Ms. HI%%
+|                                                      |%%
+|    request the honor of your presence at their      |%%
+|                  wedding ceremony                   |%%
+|                                                      |%%
+|    Date: 2025-12-12%%
+|    Location: %%
+|                                                      |%%
+|    Kindly respond by contacting: o%%
+|                                                      |%%
++======================================================+%%
+O10001%W10005%
+********************************************************
+*                                                      *
+*              WEDDING INVITATION                      *
+*                                                      *
+*        HI & HI
+*                                                      *
+*    Together with their families request the          *
+*    pleasure of your company at their wedding         *
+*                                                      *
+*    Date: 2025-12-12
+*    Venue: 
+*                                                      *
+*    RSVP by calling: o
+*                                                      *
+********************************************************
 

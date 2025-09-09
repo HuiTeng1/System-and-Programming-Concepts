@@ -62,6 +62,8 @@ string template2( WeddingEvent& wedding, string& contactNumber);
 string template3( WeddingEvent& wedding, string& contactNumber);
 string template4( WeddingEvent& wedding, string& contactNumber);
 string template5( WeddingEvent& wedding, string& contactNumber);
+void showInvitationCards(CurrentUser &currentUser, vector<InvitationCard> &existingCards);
+void deleteInvitationCard(CurrentUser &currentUser, vector<InvitationCard> &existingCards);
 // Event related functions
 void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList);
 void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList);
@@ -418,14 +420,14 @@ struct InvitationCard {
     string cardContent;   
 
     string toFileString() const {
-        return userId + "|" + weddingId + "|" + cardContent;
+        return userId + "%" + weddingId + "%" + cardContent;
     }
 
     static InvitationCard fromFileString(const string& str) {
         InvitationCard card;
         stringstream ss(str);
-        getline(ss, card.userId, '|');
-        getline(ss, card.weddingId, '|');
+        getline(ss, card.userId, '%');
+        getline(ss, card.weddingId, '%');
         getline(ss, card.cardContent);
         return card;
     }
@@ -3040,8 +3042,8 @@ void showInvitationCards(CurrentUser &currentUser) {
                 break;
             }
         }
+        pauseScreen();
     }
-    pauseScreen();
 }
 void deleteInvitationCard(CurrentUser &currentUser) {
         vector<InvitationCard> existingCards;
@@ -3118,6 +3120,7 @@ void deleteInvitationCard(CurrentUser &currentUser) {
     
     pauseScreen();
 }
+
 void generateInvitationCardMenu(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Organizer>& organizerList) {
     int choice;
     string contactNumber;
