@@ -1132,7 +1132,7 @@ bool login(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<
 bool logout(CurrentUser &currentUser)
 {
     char confirmed;
-    cout << "Are you sure you want to logout (Y/N)";
+    cout << "Are you sure you want to logout (Y/N): ";
     cin >> confirmed;
     if (toupper(confirmed) == 'Y')
     {
@@ -1141,11 +1141,12 @@ bool logout(CurrentUser &currentUser)
         currentUser.userId = "";
         currentUser.userName = "";
         cout << "Logged out successfully!" << endl;
+        pauseScreen();
         return true;
     }
-    else
-    {
+    else{
         cout << "Logout Failed. Please try again.";
+        pauseScreen();
         return false;
     }
 }
@@ -2948,12 +2949,8 @@ void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<
             break;
         case 0:
             if (logout(currentUser)) {
-            pauseScreen();
             break; // Exit the menu loop
             }
-            // If logout returns false, continue the loop (no break)
-            pauseScreen();
-            break;
         default:
             cout << "Invalid choice! Please try again." << endl;
             pauseScreen();
@@ -3061,8 +3058,7 @@ void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Orga
             if (logout(currentUser)) {
                 pauseScreen(); // <-- Add this
             }
-            pauseScreen();
-            break;
+            continue;
         default:
             cout << "Invalid choice! Please try again." << endl;
             pauseScreen();
@@ -3138,8 +3134,7 @@ void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Org
                 break; // Exit the menu loop
             }
             // If logout returns false, continue the loop (no break)
-            pauseScreen();
-            break;
+            continue;
         default:
             cout << "Invalid choice! Please try again." << endl;
             pauseScreen();
