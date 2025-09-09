@@ -54,6 +54,7 @@ void displayServicesByType(vector<Vendor>& vendorList);
 void displayBookedServices(CurrentUser& currentUser, vector<Organizer>& organizerList, vector<Vendor>& vendorList);
 bool deleteOwnAccount(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList);
 void deleteOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList);
+<<<<<<< Updated upstream
 void generateInvitationCardMenu(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Organizer>& organizerList);
 void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& wedding, string contactNumber, CurrentUser& currentUser);
 void invitationTemplate(vector<WeddingEvent>& events, WeddingEvent& wedding, CurrentUser& currentUser);
@@ -64,6 +65,25 @@ string template4(WeddingEvent& wedding, string& contactNumber);
 string template5(WeddingEvent& wedding, string& contactNumber);
 void showInvitationCards(CurrentUser& currentUser, vector<InvitationCard>& existingCards);
 void deleteInvitationCard(CurrentUser& currentUser, vector<InvitationCard>& existingCards);
+=======
+bool isValidEmail(const string& email);
+bool isValidMalaysianPhone(const string& phone);
+bool isEmailExist(string& email, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList);
+// Invitation related functions
+void invitationTemplate(vector<WeddingEvent>& events, WeddingEvent& wedding, CurrentUser& currentUser);
+void loadInvitationCards(vector<InvitationCard>& existingCards);
+void saveInvitationCards( vector<InvitationCard>& cards);
+string generateInvitationByChoice(int choice, InvitationCard& card);
+void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& wedding, string contactNumber, CurrentUser &currentUser);
+void generateInvitationCardMenu(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Organizer>& organizerList);
+string template1( InvitationCard& card);
+string template2( InvitationCard& card);
+string template3( InvitationCard& card);
+string template4( InvitationCard& card);
+string template5( InvitationCard& card);
+void showInvitationCards(CurrentUser& currentUser);
+void deleteInvitationCard(CurrentUser& currentUser);
+>>>>>>> Stashed changes
 // Event related functions
 void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList);
 void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList);
@@ -415,20 +435,51 @@ struct PaymentTransaction {
 };
 
 struct InvitationCard {
+<<<<<<< Updated upstream
     string userId;
     string weddingId;
     string cardContent;
+=======
+    string cardId;
+    string userId;
+    string weddingId;
+    int templateChoice;
+    string brideName;
+    string groomName;
+    string weddingDate;
+    string weddingVenue;
+    string contactNumber;
+>>>>>>> Stashed changes
 
     string toFileString() const {
-        return userId + "%" + weddingId + "%" + cardContent + "$";
+        return  cardId +  "%" + userId + "%" + weddingId + "%" + to_string(templateChoice) + "%" +
+               brideName + "%" + groomName + "%" + weddingDate + "%" +
+               weddingVenue + "%" + contactNumber + "$";
     }
 
     static InvitationCard fromFileString(const string& str) {
         InvitationCard card;
         stringstream ss(str);
+        string tempStr;
+        getline(ss, card.cardId, '%');
         getline(ss, card.userId, '%');
         getline(ss, card.weddingId, '%');
+<<<<<<< Updated upstream
         getline(ss, card.cardContent, '$');
+=======
+        getline(ss, tempStr, '%');
+        try {
+            card.templateChoice = stoi(tempStr);
+        } catch (...) {
+            // Handle error, e.g., assign default or print warning
+            card.templateChoice = 0; // or 0, or handle as needed
+        }
+        getline(ss, card.brideName, '%');
+        getline(ss, card.groomName, '%');
+        getline(ss, card.weddingDate, '%');
+        getline(ss, card.weddingVenue, '%');
+        getline(ss, card.contactNumber, '$');
+>>>>>>> Stashed changes
         return card;
     }
 };
@@ -476,6 +527,7 @@ void loadDataFromFile(vector<T>& data, string fileName)
     read.close();
 }
 
+<<<<<<< Updated upstream
 void loadInvitationCard(vector<InvitationCard>& existingCards) {
     existingCards.clear();
 
@@ -484,15 +536,294 @@ void loadInvitationCard(vector<InvitationCard>& existingCards) {
         return;
     }
 
+=======
+void invitationTemplate(vector<WeddingEvent>& events, WeddingEvent& wedding, CurrentUser& currentUser) {
+    int templateChoice;
+    
+    do {
+        cout << "\n=== INVITATION TEMPLATES ===" << endl;
+        cout << "Choose a template to preview:" << endl;
+        cout << "1. Classic Elegant" << endl;
+        cout << "2. Modern Minimalist" << endl;
+        cout << "3. Romantic with Hearts" << endl;
+        cout << "4. Formal Traditional" << endl;
+        cout << "5. Fun & Casual" << endl;
+        cout << "0. Back to Previous Menu" << endl;
+        cout << "Enter your choice: ";
+        cin >> templateChoice;
+        
+        // Create sample InvitationCard for preview
+        InvitationCard sampleCard;
+        sampleCard.brideName = "Sarah Johnson";
+        sampleCard.groomName = "Michael Davis";
+        sampleCard.weddingDate = "June 15, 2024";
+        sampleCard.weddingVenue = "Rose Garden Chapel";
+        sampleCard.contactNumber = "(555) 123-4567";
+        sampleCard.templateChoice = templateChoice;
+        
+        cout << "\n=== TEMPLATE PREVIEW ===";
+        
+        switch(templateChoice) {
+            case 1:
+                cout << "\n--- Classic Elegant Template ---";
+                cout << template1(sampleCard);
+                pauseScreen();
+                break;
+            case 2:
+                cout << "\n--- Modern Minimalist Template ---";
+                cout << template2(sampleCard);
+                pauseScreen();
+                break;
+            case 3:
+                cout << "\n--- Romantic with Hearts Template ---";
+                cout << template3(sampleCard);
+                pauseScreen();
+                break;
+            case 4:
+                cout << "\n--- Formal Traditional Template ---";
+                cout << template4(sampleCard);
+                pauseScreen();
+                break;
+            case 5:
+                cout << "\n--- Fun & Casual Template ---";
+                cout << template5(sampleCard);
+                pauseScreen();
+                break;
+            case 0:
+                pauseScreen();
+                return;
+            default:
+                cout << "Invalid choice! Please try again." << endl;
+                pauseScreen();
+                continue;
+        }
+        
+        if (templateChoice >= 1 && templateChoice <= 5) {
+            cout << "\nThis is just a sample preview." << endl;
+            cout << "Your actual invitation will use your wedding details." << endl;
+            pauseScreen();
+        }
+        
+    } while (templateChoice != 0);
+}
+
+// Load all invitation cards from file
+void loadInvitationCards(vector<InvitationCard>& cards) {
+    cards.clear();
+    ifstream fin("invitation_cards.txt");
+    if (!fin.is_open()) return;
+>>>>>>> Stashed changes
     string line;
-    while (getline(file, line)) {
+    while (getline(fin, line)) {
         if (!line.empty()) {
-            InvitationCard card = InvitationCard::fromFileString(line);
-            existingCards.push_back(card);
+            cards.push_back(InvitationCard::fromFileString(line));
+        }
+    }
+<<<<<<< Updated upstream
+
+    file.close();
+=======
+    fin.close();
+}
+
+// Save all invitation cards to file
+void saveInvitationCards(vector<InvitationCard>& cards) {
+    ofstream fout("invitation_cards.txt");
+    if (!fout.is_open()) {
+        cout << "Error saving invitation cards.\n";
+        return;
+    }
+    for (const auto& c : cards) {
+        fout << c.toFileString() << endl;
+    }
+    fout.close();
+}
+
+// Generate invitation text based on template choice
+string generateInvitationText(const InvitationCard& card) {
+    switch (card.templateChoice) {
+        case 1:
+            return "**********\nWedding Invitation\n" +
+                   card.brideName + " & " + card.groomName + "\n" +
+                   "Date: " + card.weddingDate + "\nVenue: " + card.weddingVenue + "\nRSVP: " + card.contactNumber + "\n**********\n";
+        case 2:
+            return "Save the Date!\n" + card.brideName + " + " + card.groomName + "\n" +
+                   "Date: " + card.weddingDate + "\nVenue: " + card.weddingVenue + "\nContact: " + card.contactNumber + "\n";
+        case 3:
+            return "Two Hearts\nJoin " + card.brideName + " & " + card.groomName + "\n" +
+                   "on " + card.weddingDate + " at " + card.weddingVenue + "\nRSVP: " + card.contactNumber + "\n";
+        case 4:
+            return "Formal Invitation\nMr. & Ms.\n" + card.brideName + " & " + card.groomName + "\n" +
+                   "Date: " + card.weddingDate + "\nVenue: " + card.weddingVenue + "\nRSVP: " + card.contactNumber + "\n";
+        case 5:
+            return "Casual Wedding\n" + card.brideName + " & " + card.groomName + "\n" +
+                   "Come celebrate on " + card.weddingDate + " at " + card.weddingVenue + "\nRSVP: " + card.contactNumber + "\n";
+        default:
+            return "Invalid template";
+    }
+}
+
+// Create a new invitation card
+void createInvitation(vector<InvitationCard>& cards, const string& userId, const string& weddingId, vector<WeddingEvent>& events, vector<Organizer>& organizerList) {
+    InvitationCard newCard;
+    newCard.userId = userId;
+    newCard.weddingId = weddingId;
+
+    cout << "Select template (1-5): ";
+    cin >> newCard.templateChoice;
+    cin.ignore();
+
+    newCard.cardId = generateId("C", cards.size() + 1);
+    for(auto & event: events) {
+        if(event.eventId == weddingId) {
+            newCard.groomName = event.groomName;
+            newCard.brideName = event.brideName;
+            newCard.weddingDate = event.weddingDate;
+            newCard.weddingVenue = event.weddingVenue;
+            break;
+        }
+    }
+    for(auto & user: organizerList) {
+        if(user.organizerId == userId) {
+            newCard.contactNumber = user.baseInfo.phoneNum;
+            break;
         }
     }
 
-    file.close();
+    // Save the card
+    cards.push_back(newCard);
+    saveInvitationCards(cards);
+    cout << "Invitation card saved.\n";
+}
+
+// View all saved cards for a user and wedding
+void viewInvitationCards( vector<InvitationCard>& cards,  string& userId,  string& weddingId) {
+    bool found = false;
+    for (const auto& c : cards) {
+        if (c.userId == userId && c.weddingId == weddingId) {
+            cout << "Template: " << c.templateChoice << endl;
+            cout << generateInvitationText(c) << endl;
+            found = true;
+        }
+    }
+    if (!found) cout << "No invitation cards found for this wedding.\n";
+}
+
+// Make sure all template functions accept InvitationCard parameter
+string template1(InvitationCard& card) {
+    stringstream ss;
+    ss << 
+        "************************************************\n" <<
+        "*                                              *\n" <<
+        "*              WEDDING INVITATION              *\n" <<
+        "*                                              *\n" <<
+        "*        " + card.brideName + " & " + card.groomName + "\n" +
+        "*                                              *\n" +
+        "*    Together with their families request      *\n" +
+        "*    the pleasure of your company at their     *\n" +
+        "*                  wedding                     *\n" +
+        "*                                              *\n" +
+        "*    Date: " + card.weddingDate + "\n" +
+        "*    Venue: " + card.weddingVenue + "\n" +
+        "*                                              *\n" +
+        "*    RSVP by calling: " + card.contactNumber + "\n" +
+        "*                                              *\n" +
+        "************************************************\n";
+    return ss.str();
+}
+
+string template2( InvitationCard& card) {
+        stringstream ss;
+        ss << 
+        "\n========================================\n" <<
+        "           SAVE THE DATE\n" <<
+        "========================================\n" <<
+        "\n" +
+        card.brideName + " + " + card.groomName + "\n" +
+        "\n" +
+        "are getting married!\n" +
+        "\n" +
+        "WHEN: " + card.weddingDate + "\n" +
+        "WHERE: " + card.weddingVenue + "\n" +
+        "\n" +
+        "Join us for a celebration of love\n" +
+        "\n" +
+        "Contact: " + card.contactNumber + "\n" +
+        "========================================\n";
+    return ss.str();
+}
+
+string template3( InvitationCard& card) {
+        stringstream ss;
+        ss << 
+        "oooooooooooooooooooooooooooooooooooooooooooooo\n" <<
+        "o                                            o\n" <<
+        "o           Two Hearts Becoming One          o\n" <<
+        "o                                            o\n" <<
+        "o               " + card.brideName + "\n" +
+        "o                    &                       o\n" +
+        "o               " + card.groomName + "\n" +
+        "o                                            o\n" +
+        "o        invite you to share in their       o\n" +
+        "o             wedding celebration           o\n" +
+        "o                                            o\n" +
+        "o  On: " + card.weddingDate + "\n" +
+        "o  Venue: " + card.weddingVenue + "\n" +
+        "o                                            o\n" +
+        "o  Please RSVP: " + card.contactNumber + "\n" +
+        "o                                            o\n" +
+        "oooooooooooooooooooooooooooooooooooooooooooooo\n";
+    return ss.str();
+}
+
+string template4( InvitationCard& card) {
+    stringstream ss;
+    ss << 
+        "\n+======================================================+\n" <<
+        "|                                                      |\n" <<
+        "|              WEDDING ANNOUNCEMENT                    |\n" <<
+        "|                                                      |\n" <<
+        "|        Mr. " + card.groomName + "\n" +
+        "|                      and                             |\n" +
+        "|        Ms. " + card.brideName + "\n" +
+        "|                                                      |\n" +
+        "|    request the honor of your presence at their      |\n" +
+        "|                  wedding ceremony                   |\n" +
+        "|                                                      |\n" +
+        "|    Date: " + card.weddingDate + "\n" +
+        "|    Location: " + card.weddingVenue + "\n" +
+        "|                                                      |\n" +
+        "|    Kindly respond by contacting: " + card.contactNumber + "\n" +
+        "|                                                      |\n" +
+        "+======================================================+\n";
+    return ss.str();
+}
+
+string template5( InvitationCard& card) {
+        stringstream ss;
+        ss << 
+        "\n-----------------------------------------------\n" <<
+        "                                               \n" <<
+        "        ** WEDDING PARTY INVITATION **        \n" <<
+        "                                               \n" <<
+        "    " + card.brideName + " & " + card.groomName + " are tying the knot!\n" +
+        "                                               \n" +
+        "    Come party with us as we say 'I DO!'      \n" +
+        "                                               \n" +
+        "    DATE: " + card.weddingDate + "\n" +
+        "    TIME: Coming Soon!\n" +
+        "    PLACE: " + card.weddingVenue + "\n" +
+        "                                               \n" +
+        "    There will be good food, great music,     \n" +
+        "    and lots of dancing!                      \n" +
+        "                                               \n" +
+        "    RSVP: " + card.contactNumber + "\n" +
+        "                                               \n" +
+        "    Can't wait to celebrate with you!         \n" +
+        "                                               \n" +
+        "-----------------------------------------------\n";
+    return ss.str();
+>>>>>>> Stashed changes
 }
 
 bool isValidEmail(const string& email) {
@@ -1350,7 +1681,7 @@ void displayServicesByVendor(vector<Vendor>& vendorList)
 
     pauseScreen();
 }
-
+//Bug here - cannot print out by type
 void displayServicesByType(vector<Vendor>& vendorList)
 {
     clearScreen();
@@ -1666,7 +1997,11 @@ void cancelBookedService(CurrentUser& currentUser, vector<Organizer>& organizerL
             pauseScreen();
             return;
         }
+<<<<<<< Updated upstream
         if (cancelChoice < 1 || cancelChoice >(int)events[i].bookedServices.size()) {
+=======
+        if (cancelChoice < 1 || cancelChoice > events[i].bookedServices.size()){
+>>>>>>> Stashed changes
             cout << "Invalid selection!" << endl;
             pauseScreen();
             return;
@@ -3028,10 +3363,18 @@ void viewWeddingByStatus(vector<WeddingEvent>& events) {
 void showInvitationCards(CurrentUser& currentUser) {
     vector<InvitationCard> existingCards;
     vector<InvitationCard> userCards;
+<<<<<<< Updated upstream
 
     clearScreen();
     loadInvitationCard(existingCards);
 
+=======
+    int counter = 1;
+    
+    clearScreen();
+    loadInvitationCards(existingCards);
+    
+>>>>>>> Stashed changes
     // Filter cards by current user's ID and wedding ID
     for (auto& card : existingCards) {
         if (card.userId == currentUser.userId && card.weddingId == currentUser.currentWeddingId) {
@@ -3044,6 +3387,7 @@ void showInvitationCards(CurrentUser& currentUser) {
         cout << "|      NO INVITATION CARDS FOUND     |" << endl;
         cout << "+-------------------------------------+" << endl;
         cout << "You haven't created any invitation cards for this wedding yet." << endl;
+        cin.ignore();
         pauseScreen();
         return;
     }
@@ -3052,6 +3396,7 @@ void showInvitationCards(CurrentUser& currentUser) {
     cout << "|           YOUR SAVED INVITATION CARDS          |" << endl;
     cout << "+-------------------------------------------------+" << endl;
     cout << "Found " << userCards.size() << " invitation card(s) for this wedding:" << endl;
+<<<<<<< Updated upstream
 
     for (size_t i = 0; i < userCards.size(); i++) {
         cout << "\n+===================================================+" << endl;
@@ -3067,20 +3412,52 @@ void showInvitationCards(CurrentUser& currentUser) {
             cin.ignore(); // Clear input buffer
             continueChoice = cin.get();
             if (tolower(continueChoice) == 'q') {
+=======
+    
+    for (InvitationCard& card : userCards) {
+        cout << "Invitation Card #" << counter << endl;
+        switch(card.templateChoice){
+            case 1:
+                cout << template1(card);
                 break;
-            }
+            case 2:
+                cout << template2(card);
+                break;
+            case 3:
+                cout <<  template3(card);
+                break;
+            case 4:
+                cout <<  template4(card);
+                break;
+            case 5:
+                cout <<  template5(card);
+                break;
+            default:
+                cout << "Unknown template!" << endl;
+>>>>>>> Stashed changes
+                break;
         }
+        counter++;
     }
+    cin.ignore();
     pauseScreen();
 }
 
 void deleteInvitationCard(CurrentUser& currentUser) {
     vector<InvitationCard> existingCards;
     vector<InvitationCard> userCards;
+<<<<<<< Updated upstream
 
     clearScreen();
     loadInvitationCard(existingCards);
 
+=======
+    
+    int counter = 1;
+    clearScreen();
+    loadInvitationCards(existingCards);
+    
+>>>>>>> Stashed changes
     // Filter cards by current user's ID and wedding ID
     for (auto& card : existingCards) {
         if (card.userId == currentUser.userId && card.weddingId == currentUser.currentWeddingId) {
@@ -3092,6 +3469,7 @@ void deleteInvitationCard(CurrentUser& currentUser) {
         cout << "\n+-------------------------------------+" << endl;
         cout << "|         NO CARDS TO DELETE          |" << endl;
         cout << "+-------------------------------------+" << endl;
+        cin.ignore();
         pauseScreen();
         return;
     }
@@ -3101,6 +3479,7 @@ void deleteInvitationCard(CurrentUser& currentUser) {
     cout << "+-------------------------------------------------+" << endl;
     cout << "Select card to delete:" << endl;
     cout << "=================================================" << endl;
+<<<<<<< Updated upstream
 
     for (size_t i = 0; i < userCards.size(); i++) {
         cout << "\n" << (i + 1) << ". Card #" << (i + 1) << endl;
@@ -3109,6 +3488,33 @@ void deleteInvitationCard(CurrentUser& currentUser) {
         string preview = userCards[i].cardContent.substr(0, 100);
         cout << "   | " << preview << "..." << endl;
         cout << "   +----------------------------------------+" << endl;
+=======
+    
+    for (InvitationCard& card : userCards) {
+        cout << "Invitation Card #" << counter << endl;
+        switch(card.templateChoice){
+            case 1:
+                cout << template1(card);
+                break;
+            case 2:
+                cout << template2(card);
+                break;
+            case 3:
+                cout <<  template3(card);
+                break;
+            case 4:
+                cout <<  template4(card);
+                break;
+            case 5:
+                cout <<  template5(card);
+                break;
+            default:
+                cout << "Unknown template!" << endl;
+                break;
+
+        }            
+        counter++;
+>>>>>>> Stashed changes
     }
     cout << "\n0. <- Cancel" << endl;
     cout << "=================================================" << endl;
@@ -3122,20 +3528,26 @@ void deleteInvitationCard(CurrentUser& currentUser) {
         pauseScreen();
         return;
     }
+<<<<<<< Updated upstream
 
     if (deleteChoice < 1 || deleteChoice > static_cast<int>(userCards.size())) {
+=======
+    
+    if (deleteChoice < 1 || deleteChoice > userCards.size()) {
+>>>>>>> Stashed changes
         cout << "\nInvalid choice!" << endl;
         pauseScreen();
         return;
     }
 
     // Confirm deletion
-    cout << "\nAre you sure you want to delete this card? (y/n): ";
+    cout << "\nAre you sure want to delete this card? (y/n): ";
     char confirm;
     cin >> confirm;
 
     if (toupper(confirm) == 'Y') {
         InvitationCard cardToDelete = userCards[deleteChoice - 1];
+<<<<<<< Updated upstream
 
         // Remove from main vector
         auto it = remove_if(existingCards.begin(), existingCards.end(),
@@ -3147,6 +3559,18 @@ void deleteInvitationCard(CurrentUser& currentUser) {
 
         existingCards.erase(it, existingCards.end());
 
+=======
+       
+        for(auto& card : existingCards) {
+            if (card.cardId == cardToDelete.cardId){
+                swap(card, existingCards.back());
+                existingCards.pop_back();
+                cout << "\nInvitation card deleted successfully!" << endl;
+                break;
+            }
+        }
+        
+>>>>>>> Stashed changes
         // Save updated data
         saveDataIntoFile<InvitationCard>(existingCards, "invitation_cards.txt");
 
@@ -3198,7 +3622,6 @@ void generateInvitationCardMenu(CurrentUser& currentUser, vector<WeddingEvent>& 
     }
 
     do {
-        clearScreen();
         cout << "\n=== GENERATE INVITATION CARD ===" << endl;
         cout << "Bride: " << wedding.brideName << " | Groom: " << wedding.groomName << endl;
         cout << "=====================================" << endl;
@@ -3211,6 +3634,7 @@ void generateInvitationCardMenu(CurrentUser& currentUser, vector<WeddingEvent>& 
         cin >> choice;
 
         switch (choice) {
+<<<<<<< Updated upstream
         case 1:
             invitationTemplate(events, wedding, currentUser);
             break;
@@ -3232,6 +3656,28 @@ void generateInvitationCardMenu(CurrentUser& currentUser, vector<WeddingEvent>& 
             cout << "Invalid choice! Please try again." << endl;
             pauseScreen();
             break;
+=======
+            case 1:
+                invitationTemplate(events, wedding, currentUser);
+                break;
+            case 2:
+                generateCustomInvitation(events, wedding, contactNumber,currentUser);
+                break;
+            case 3:
+                showInvitationCards(currentUser);
+                break;
+            case 4:
+                deleteInvitationCard(currentUser);
+                break;
+            case 0:
+                cout << "Returning to main menu..." << endl;
+                break;
+                
+            default:
+                cout << "Invalid choice! Please try again." << endl;
+                pauseScreen();
+                break;
+>>>>>>> Stashed changes
         }
     } while (choice != 0);
 }
@@ -3244,9 +3690,15 @@ void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& weddin
     vector<InvitationCard> existingCards;
 
     do {
+<<<<<<< Updated upstream
         clearScreen();
         loadInvitationCard(existingCards);
 
+=======
+
+        loadInvitationCards(existingCards); 
+        
+>>>>>>> Stashed changes
         cout << "\n=== GENERATE YOUR INVITATION CARD ===" << endl;
         cout << "Current Wedding Details:" << endl;
         cout << "Bride: " << wedding.brideName << endl;
@@ -3264,19 +3716,26 @@ void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& weddin
         cout << "0. Back to Menu" << endl;
         cout << "Enter your choice: ";
         cin >> templateChoice;
+<<<<<<< Updated upstream
 
+=======
+        cin.ignore();
+        
+>>>>>>> Stashed changes
         if (templateChoice == 0) {
             cout << "Generation cancelled." << endl;
+            pauseScreen();
             return;
         }
 
         if (templateChoice < 1 || templateChoice > 5) {
             cout << "Invalid template choice!" << endl;
             pauseScreen();
-            continue;  // Fixed: Single semicolon
+            continue;
         }
 
         cout << "\n=== YOUR WEDDING INVITATION ===" << endl;
+<<<<<<< Updated upstream
 
         switch (templateChoice) {
         case 1:
@@ -3306,14 +3765,29 @@ void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& weddin
             break;
         }
 
+=======
+        
+        // Generate invitation text based on template choice
+        string invitationText = generateInvitationByChoice(templateChoice, card);
+        cout << invitationText << endl;
+        
+>>>>>>> Stashed changes
         cout << "\nDo you want to save this invitation card? (y/n): ";
         cin >> saveChoice;
 
         if (toupper(saveChoice) == 'Y') {
+            // Fill the card data
             card.userId = currentUser.userId;
             card.weddingId = currentUser.currentWeddingId;
+            card.templateChoice = templateChoice;
+            card.brideName = wedding.brideName;
+            card.groomName = wedding.groomName;
+            card.weddingDate = wedding.weddingDate;
+            card.weddingVenue = wedding.weddingVenue;
+            card.contactNumber = contactNumber;
+            
             existingCards.push_back(card);
-            saveDataIntoFile<InvitationCard>(existingCards, "invitation_cards.txt");
+            saveInvitationCards(existingCards);
             cout << "Invitation card saved successfully!" << endl;
         }
         else {
@@ -3326,6 +3800,7 @@ void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& weddin
     } while (toupper(generateAnother) == 'Y');
 }
 
+<<<<<<< Updated upstream
 void invitationTemplate(vector<WeddingEvent>& events, WeddingEvent& wedding, CurrentUser& currentUser) {
     int templateChoice;
 
@@ -3508,6 +3983,23 @@ string template5(WeddingEvent& wedding, string& contactNumber) {
     ss << "                                                   \n";
     ss << "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~\n";
     return ss.str();
+=======
+string generateInvitationByChoice(int choice, InvitationCard& card) {
+    switch (choice) {
+        case 1:
+            return template1(card);
+        case 2:
+            return template2(card);
+        case 3:
+            return template3(card);
+        case 4:
+            return template4(card);
+        case 5:
+            return template5(card);
+        default:
+            return "Invalid template choice!";
+    }
+>>>>>>> Stashed changes
 }
 
 string returnTime(Participant& p)
