@@ -1,2 +1,2 @@
 
-            catch (...)
+                        // Mark as completed and save
