@@ -54,7 +54,7 @@ void displayServicesByType(vector<Vendor>& vendorList);
 void displayBookedServices(CurrentUser& currentUser, vector<Organizer>& organizerList, vector<Vendor>& vendorList);
 bool deleteOwnAccount(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList);
 void deleteOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList);
-void generateInvitationCard(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Organizer>& organizerList) ;
+void generateInvitationCardMenu(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Organizer>& organizerList) ;
 void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& wedding, string contactNumber, CurrentUser &currentUser);
 void invitationTemplate(vector<WeddingEvent>& events, WeddingEvent& wedding, CurrentUser& currentUser);
 string template1( WeddingEvent& wedding, string& contactNumber);
@@ -110,7 +110,6 @@ void readAllBookedServices(CurrentUser& currentUser, vector<WeddingEvent>& event
 void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList);
 void updateFile(ofstream& outFile, vector<Participant>& participants);
 void participantMenu(vector<Participant>& participants,WeddingEvent currentEvent);
-void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& wedding, string contactNumber);
 
 struct Service {
     string serviceId;
@@ -2131,7 +2130,6 @@ void UpdateWeddingMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vec
 
         cout << "=== WEDDING MANAGEMENT ===" << endl;
         cout << "4. Mark as Completed" << endl;
-        cout << "5. Generate Invitation Card" << endl;
         cout << "0. Back to Main Menu" << endl;
         cout << "==========================================" << endl;
         cout << "Enter your choice: ";
@@ -2162,8 +2160,6 @@ void UpdateWeddingMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vec
             cout << "Wedding marked as completed." << endl;
             pauseScreen();
             break;
-        case 5:
-            generateInvitationCard(currentUser, events, organizerList);
         case 0:
             return;
         default:
@@ -2231,9 +2227,10 @@ void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<
         cout << "3. Update My Current Wedding Detail" << endl;
         cout << "4. Set as Current Wedding" << endl;
         cout << "5. Cancel Wedding" << endl;
-        cout << "6. Monitoring" << endl;
-        cout << "7. Payment for Current Wedding" << endl;
-        cout << "8. My Profile" << endl;
+        cout << "6. Generate Invitation Card" << endl;
+        cout << "7. Monitoring" << endl;
+        cout << "8. Payment for Current Wedding" << endl;
+        cout << "9. My Profile" << endl;
         cout << "0. Logout" << endl;
         cout << "==========================================" << endl;
         cout << "Enter your choice: ";
@@ -2260,6 +2257,9 @@ void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<
             cancelWedding(currentUser.currentWeddingId, events, vendorList,participants);
             break;
         case 6:
+            generateInvitationCardMenu(currentUser, events,organizerList);
+            break;
+        case 7:
             for (auto& event : events) {
                 if (event.eventId == currentUser.currentWeddingId) {
                     currentEvent = &event;
@@ -2275,11 +2275,11 @@ void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<
 
             participantMenu(participants,*currentEvent);
             break;
-        case 7:
+        case 8:
             // Payment
             paymentAndReportingMenu(currentUser, events, vendorList);
             break;
-        case 8:
+        case 9:
             MyProfileMenu(currentUser, vendorList, organizerList, adminList);
             break;
         case 0:
@@ -3002,8 +3002,123 @@ void viewWeddingByStatus(vector<WeddingEvent>& events) {
 
     pauseScreen();
 }
+void showInvitationCards(CurrentUser &currentUser) {
+    vector<InvitationCard> existingCards;
+    vector<InvitationCard> userCards;
+    
+    clearScreen();
+    loadDataFromFile<InvitationCard>(existingCards, "invitation_cards.txt");
+    
+    // Filter cards by current user's ID and wedding ID
+    for (const auto& card : existingCards) {
+        if (card.userId == currentUser.userId && card.weddingId == currentUser.currentWeddingId) {
+            userCards.push_back(card);
+        }
+    }
+    
+    if (userCards.empty()) {
+        cout << "\n=== NO INVITATION CARDS FOUND ===" << endl;
+        cout << "You haven't created any invitation cards for this wedding yet." << endl;
+    }
+    
+    cout << "\n=== YOUR SAVED INVITATION CARDS ===" << endl;
+    cout << "Found " << userCards.size() << " invitation card(s) for this wedding:" << endl;
+    cout << "==========================================" << endl;
+    
+    for (size_t i = 0; i < userCards.size(); i++) {
+        cout << "\n--- Invitation Card #" << (i + 1) << " ---" << endl;
+        cout << userCards[i].cardContent << endl;
+        cout << "=========================================" << endl;
+        
+        // Ask if user wants to continue viewing more cards (if multiple exist)
+        if (i < userCards.size() - 1) {
+            cout << "\nPress Enter to view next card or 'q' to quit viewing: ";
+            char continueChoice;
+            cin.ignore(); // Clear input buffer
+            continueChoice = cin.get();
+            if (tolower(continueChoice) == 'q') {
+                break;
+            }
+        }
+    }
+    pauseScreen();
+}
+void deleteInvitationCard(CurrentUser &currentUser) {
+        vector<InvitationCard> existingCards;
+    vector<InvitationCard> userCards;
+    
+    clearScreen();
+    loadDataFromFile<InvitationCard>(existingCards, "invitation_cards.txt");
+    
+    // Filter cards by current user's ID and wedding ID
+    for (const auto& card : existingCards) {
+        if (card.userId == currentUser.userId && card.weddingId == currentUser.currentWeddingId) {
+            userCards.push_back(card);
+        }
+    }
 
-void generateInvitationCard(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Organizer>& organizerList) {
+    if (userCards.empty()) {
+        cout << "No cards to delete!" << endl;
+        pauseScreen();
+        return;
+    }
+    
+    cout << "\n=== DELETE INVITATION CARD ===" << endl;
+    cout << "Select card to delete:" << endl;
+    
+    for (size_t i = 0; i < userCards.size(); i++) {
+        cout << (i + 1) << ". Card #" << (i + 1) << endl;
+        // Show a preview of the card (first few lines)
+        string preview = userCards[i].cardContent.substr(0, 100);
+        cout << "   Preview: " << preview << "..." << endl;
+    }
+    cout << "0. Cancel" << endl;
+    cout << "Enter choice: ";
+    
+    int deleteChoice;
+    cin >> deleteChoice;
+    
+    if (deleteChoice == 0) {
+        cout << "Deletion cancelled." << endl;
+        pauseScreen();
+        return;
+    }
+    
+    if (deleteChoice < 1 || deleteChoice > userCards.size()) {
+        cout << "Invalid choice!" << endl;
+        pauseScreen();
+        return;
+    }
+    
+    // Confirm deletion
+    cout << "Are you sure you want to delete this card? (y/n): ";
+    char confirm;
+    cin >> confirm;
+    
+    if (toupper(confirm) == 'Y') {
+        InvitationCard cardToDelete = userCards[deleteChoice - 1];
+        
+        // Remove from main vector
+        auto it = remove_if(existingCards.begin(), existingCards.end(),
+            [&cardToDelete, &currentUser](const InvitationCard& card) {
+                return card.userId == cardToDelete.userId && 
+                       card.weddingId == cardToDelete.weddingId &&
+                       card.cardContent == cardToDelete.cardContent;
+            });
+        
+        existingCards.erase(it, existingCards.end());
+        
+        // Save updated data
+        saveDataIntoFile<InvitationCard>(existingCards, "invitation_cards.txt");
+        
+        cout << "Invitation card deleted successfully!" << endl;
+    } else {
+        cout << "Deletion cancelled." << endl;
+    }
+    
+    pauseScreen();
+}
+void generateInvitationCardMenu(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Organizer>& organizerList) {
     int choice;
     string contactNumber;
     if (currentUser.type != ORGANIZER) {
@@ -3042,11 +3157,14 @@ void generateInvitationCard(CurrentUser& currentUser, vector<WeddingEvent>& even
     }
 
     do {
+        clearScreen();
         cout << "\n=== GENERATE INVITATION CARD ===" << endl;
         cout << "Bride: " << wedding.brideName << " | Groom: " << wedding.groomName << endl;
         cout << "=====================================" << endl;
         cout << "1. View Template Samples" << endl;
         cout << "2. Generate Your Own Invitation Card" << endl;
+        cout << "3. View Saved Invitation Cards" << endl;
+        cout << "4. Delete Saved Invitation Cards" << endl;
         cout << "0. Back to Main Menu" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
@@ -3057,9 +3175,14 @@ void generateInvitationCard(CurrentUser& currentUser, vector<WeddingEvent>& even
                 break;
                 
             case 2:
-                generateCustomInvitation(events, wedding, contactNumber);
+                generateCustomInvitation(events, wedding, contactNumber,currentUser);
                 break;
-                
+            case 3:
+                showInvitationCards(currentUser);
+                break;
+            case 4:
+                deleteInvitationCard(currentUser);
+                break;
             case 0:
                 cout << "Returning to main menu..." << endl;
                 break;
@@ -3074,7 +3197,7 @@ void generateInvitationCard(CurrentUser& currentUser, vector<WeddingEvent>& even
 
 void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& wedding, string contactNumber, CurrentUser &currentUser) {
     int templateChoice;
-    int saveChoice;
+    char saveChoice;
     char generateAnother;
     InvitationCard card;
     vector<InvitationCard> existingCards;
@@ -3153,7 +3276,6 @@ void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& weddin
             cout << "Invitation card not saved." << endl;
             pauseScreen();
         }
-        
         cout << "\nWould you like to generate another template? (y/n): ";
         cin >> generateAnother;
     }while (toupper(generateAnother) == 'Y');
