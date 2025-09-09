@@ -21,6 +21,7 @@ struct WeddingEvent;
 struct Attendance;
 struct Participant;
 struct PaymentTransaction;
+struct InvitationCard;
 
 // Function declarations
 template <typename T>
@@ -54,12 +55,13 @@ void displayBookedServices(CurrentUser& currentUser, vector<Organizer>& organize
 bool deleteOwnAccount(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList);
 void deleteOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList);
 void generateInvitationCard(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Organizer>& organizerList) ;
+void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& wedding, string contactNumber, CurrentUser &currentUser);
 void invitationTemplate(vector<WeddingEvent>& events, WeddingEvent& wedding, CurrentUser& currentUser);
-void template1(WeddingEvent& wedding, string contactNumber);
-void template2(WeddingEvent& wedding, string contactNumber);
-void template3(WeddingEvent& wedding, string contactNumber);
-void template4(WeddingEvent& wedding, string contactNumber);
-void template5(WeddingEvent& wedding, string contactNumber);
+string template1( WeddingEvent& wedding, string& contactNumber);
+string template2( WeddingEvent& wedding, string& contactNumber);
+string template3( WeddingEvent& wedding, string& contactNumber);
+string template4( WeddingEvent& wedding, string& contactNumber);
+string template5( WeddingEvent& wedding, string& contactNumber);
 // Event related functions
 void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList);
 void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList);
@@ -411,6 +413,24 @@ struct PaymentTransaction {
     }
 };
 
+struct InvitationCard {
+    string userId; 
+    string weddingId;    
+    string cardContent;   
+
+    string toFileString() const {
+        return userId + "|" + weddingId + "|" + cardContent;
+    }
+
+    static InvitationCard fromFileString(const string& str) {
+        InvitationCard card;
+        stringstream ss(str);
+        getline(ss, card.userId, '|');
+        getline(ss, card.weddingId, '|');
+        getline(ss, card.cardContent);
+        return card;
+    }
+};
 
 template <typename T>
 void saveDataIntoFile(vector<T>& data, string fileName) {
@@ -3052,71 +3072,91 @@ void generateInvitationCard(CurrentUser& currentUser, vector<WeddingEvent>& even
     } while (choice != 0);
 }
 
-void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& wedding, string contactNumber) {
+void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& wedding, string contactNumber, CurrentUser &currentUser) {
     int templateChoice;
-    
-    cout << "\n=== GENERATE YOUR INVITATION CARD ===" << endl;
-    cout << "Current Wedding Details:" << endl;
-    cout << "Bride: " << wedding.brideName << endl;
-    cout << "Groom: " << wedding.groomName << endl;
-    cout << "Date: " << wedding.weddingDate << endl;
-    cout << "Venue: " << wedding.weddingVenue << endl;
-    cout << "Contact: " << contactNumber << endl;
-    cout << "\nSelect your preferred template:" << endl;
-    cout << "1. Classic Elegant" << endl;
-    cout << "2. Modern Minimalist" << endl;
-    cout << "3. Romantic with Hearts" << endl;
-    cout << "4. Formal Traditional" << endl;
-    cout << "5. Fun & Casual" << endl;
-    cout << "0. Cancel" << endl;
-    cout << "Enter your choice: ";
-    cin >> templateChoice;
-    
-    if (templateChoice == 0) {
-        cout << "Generation cancelled." << endl;
-        return;
-    }
-    
-    cout << "\n=== YOUR WEDDING INVITATION ===";
-    
-    switch(templateChoice) {
-        case 1:
-            cout << "\n--- Your Classic Elegant Invitation ---";
-            template1(wedding, contactNumber);
-            break;
-        case 2:
-            cout << "\n--- Your Modern Minimalist Invitation ---";
-            template2(wedding, contactNumber);
-            break;
-        case 3:
-            cout << "\n--- Your Romantic Hearts Invitation ---";
-            template3(wedding, contactNumber);
-            break;
-        case 4:
-            cout << "\n--- Your Formal Traditional Invitation ---";
-            template4(wedding, contactNumber);
-            break;
-        case 5:
-            cout << "\n--- Your Fun & Casual Invitation ---";
-            template5(wedding, contactNumber);
-            break;
-        default:
-            cout << "Invalid template choice!" << endl;
-            pauseScreen();
-            return;
-    }
-    
-    cout << "\n\nInvitation generated successfully!" << endl;
-    cout << "This invitation is ready to be printed or shared." << endl;
-    
+    int saveChoice;
     char generateAnother;
-    cout << "\nWould you like to generate another template? (y/n): ";
-    cin >> generateAnother;
-    
-    if (generateAnother == 'y' || generateAnother == 'Y') {
-        generateCustomInvitation(events, wedding, contactNumber);
-    }
-    
+    InvitationCard card;
+    vector<InvitationCard> existingCards;
+    do{
+        clearScreen();
+        loadDataFromFile<InvitationCard>(existingCards, "invitation_cards.txt");
+        cout << "\n=== GENERATE YOUR INVITATION CARD ===" << endl;
+        cout << "Current Wedding Details:" << endl;
+        cout << "Bride: " << wedding.brideName << endl;
+        cout << "Groom: " << wedding.groomName << endl;
+        cout << "Date: " << wedding.weddingDate << endl;
+        cout << "Venue: " << wedding.weddingVenue << endl;
+        cout << "Contact: " << contactNumber << endl << endl;
+        cout << "=================================" << endl;
+        cout << "Select your preferred template:" << endl;
+        cout << "1. Classic Elegant" << endl;
+        cout << "2. Modern Minimalist" << endl;
+        cout << "3. Romantic with Hearts" << endl;
+        cout << "4. Formal Traditional" << endl;
+        cout << "5. Fun & Casual" << endl;
+        cout << "0. Back to Menu" << endl;
+        cout << "Enter your choice: ";
+        cin >> templateChoice;
+        
+        if (templateChoice == 0) {
+            cout << "Generation cancelled." << endl;
+            return;
+        }
+        
+        cout << "\n=== YOUR WEDDING INVITATION ===";
+        
+        switch(templateChoice) {
+            case 1:
+                card.cardContent = template1(wedding, contactNumber);
+                cout << template1(wedding, contactNumber);
+                break;
+            case 2:
+                cout << "\n--- Your Modern Minimalist Invitation ---";
+                card.cardContent = template2(wedding, contactNumber);
+                cout << template2(wedding, contactNumber);
+                break;
+            case 3:
+                cout << "\n--- Your Romantic Hearts Invitation ---";
+                card.cardContent = template3(wedding, contactNumber);
+                cout << template3(wedding, contactNumber);
+                break;
+            case 4:
+                cout << "\n--- Your Formal Traditional Invitation ---";
+                card.cardContent = template4(wedding, contactNumber);
+                cout << template4(wedding, contactNumber);
+                break;
+            case 5:
+                cout << "\n--- Your Fun & Casual Invitation ---";
+                card.cardContent = template5(wedding, contactNumber);
+                cout << template5(wedding, contactNumber);
+                break;
+            case 0:
+                cout << "Generation cancelled." << endl;
+                pauseScreen();
+                return;
+            default:
+                cout << "Invalid template choice!" << endl;
+                pauseScreen();
+                continue;;
+        }
+        cout << "You want to save this invitation card? (y/n): ";
+        cin >> saveChoice;
+        if(toupper(saveChoice) == 'Y') {
+            card.userId = currentUser.userId;
+            card.weddingId = currentUser.currentWeddingId;
+            existingCards.push_back(card);
+            saveDataIntoFile<InvitationCard>(existingCards, "invitation_cards.txt");
+            cout << "Invitation card saved successfully!" << endl;
+            pauseScreen();
+        } else {
+            cout << "Invitation card not saved." << endl;
+            pauseScreen();
+        }
+        
+        cout << "\nWould you like to generate another template? (y/n): ";
+        cin >> generateAnother;
+    }while (toupper(generateAnother) == 'Y');
     pauseScreen();
 }
 
@@ -3149,25 +3189,31 @@ void invitationTemplate(vector<WeddingEvent>& events, WeddingEvent& wedding, Cur
         switch(templateChoice) {
             case 1:
                 cout << "\n--- Classic Elegant Template ---";
-                template1(sampleWedding,contactNumber);
+                cout << template1(sampleWedding,contactNumber);
+                pauseScreen();
                 break;
             case 2:
                 cout << "\n--- Modern Minimalist Template ---";
-                template2(sampleWedding, contactNumber);
+                cout << template2(sampleWedding, contactNumber);
+                pauseScreen();
                 break;
             case 3:
                 cout << "\n--- Romantic with Hearts Template ---";
-                template3(sampleWedding, contactNumber);
+                cout << template3(sampleWedding, contactNumber);
+                pauseScreen();
                 break;
             case 4:
                 cout << "\n--- Formal Traditional Template ---";
-                template4(sampleWedding, contactNumber);
+                cout << template4(sampleWedding, contactNumber);
+                pauseScreen();
                 break;
             case 5:
                 cout << "\n--- Fun & Casual Template ---";
-                template5(sampleWedding, contactNumber);
+                cout << template5(sampleWedding, contactNumber);
+                pauseScreen();
                 break;
             case 0:
+                pauseScreen();
                 return;
             default:
                 cout << "Invalid choice! Please try again." << endl;
@@ -3184,128 +3230,118 @@ void invitationTemplate(vector<WeddingEvent>& events, WeddingEvent& wedding, Cur
     } while (templateChoice != 0);
 }
 
-void template1(WeddingEvent& wedding, string contactNumber) {
-    cout << "\n";
-    cout << "********************************************************\n";
-    cout << "*                                                      *\n";
-    cout << "*              WEDDING INVITATION                      *\n";
-    cout << "*                                                      *\n";
-    cout << "*        " << wedding.brideName << " & " << wedding.groomName << "\n";
-    cout << "*                                                      *\n";
-    cout << "*    Together with their families request the          *\n";
-    cout << "*    pleasure of your company at their wedding         *\n";
-    cout << "*                                                      *\n";
-    cout << "*    Date: " << wedding.weddingDate << "\n";
-    cout << "*    Venue: " << wedding.weddingVenue << "\n";
-    cout << "*                                                      *\n";
-    cout << "*    RSVP by calling: " << contactNumber << "\n";
-    cout << "*                                                      *\n";
-    cout << "********************************************************\n";
+string template1( WeddingEvent& wedding,  string& contactNumber) {
+    stringstream ss;
+    ss << "\n";
+    ss << "********************************************************\n";
+    ss << "*                                                      *\n";
+    ss << "*              WEDDING INVITATION                      *\n";
+    ss << "*                                                      *\n";
+    ss << "*        " << wedding.brideName << " & " << wedding.groomName << "\n";
+    ss << "*                                                      *\n";
+    ss << "*    Together with their families request the          *\n";
+    ss << "*    pleasure of your company at their wedding         *\n";
+    ss << "*                                                      *\n";
+    ss << "*    Date: " << wedding.weddingDate << "\n";
+    ss << "*    Venue: " << wedding.weddingVenue << "\n";
+    ss << "*                                                      *\n";
+    ss << "*    RSVP by calling: " << contactNumber << "\n";
+    ss << "*                                                      *\n";
+    ss << "********************************************************\n";
+    return ss.str();
 }
 
-void template2(WeddingEvent& wedding, string contactNumber) {
-    cout << "\n";
-    cout << "========================================\n";
-    cout << "           SAVE THE DATE\n";
-    cout << "========================================\n";
-    cout << "\n";
-    cout << wedding.brideName << " + " << wedding.groomName << "\n";
-    cout << "\n";
-    cout << "are getting married!\n";
-    cout << "\n";
-    cout << "WHEN: " << wedding.weddingDate << "\n";
-    cout << "WHERE: " << wedding.weddingVenue << "\n";
-    cout << "\n";
-    cout << "Join us for a celebration of love\n";
-    cout << "\n";
-    cout << "Contact: " << contactNumber << "\n";
-    cout << "========================================\n";
+string template2( WeddingEvent& wedding,  string& contactNumber) {
+    stringstream ss;
+    ss << "\n";
+    ss << "========================================\n";
+    ss << "           SAVE THE DATE\n";
+    ss << "========================================\n";
+    ss << "\n";
+    ss << wedding.brideName << " + " << wedding.groomName << "\n";
+    ss << "\n";
+    ss << "are getting married!\n";
+    ss << "\n";
+    ss << "WHEN: " << wedding.weddingDate << "\n";
+    ss << "WHERE: " << wedding.weddingVenue << "\n";
+    ss << "\n";
+    ss << "Join us for a celebration of love\n";
+    ss << "\n";
+    ss << "Contact: " << contactNumber << "\n";
+    ss << "========================================\n";
+    return ss.str();
 }
 
-void template3(WeddingEvent& wedding, string contactNumber) {
-    cout << "\n";
-    cout << "<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3\n";
-    cout << "<3                                                <3\n";
-    cout << "<3           Two Hearts Becoming One              <3\n";
-    cout << "<3                                                <3\n";
-    cout << "<3               " << wedding.brideName << "\n";
-    cout << "<3                    &                           <3\n";
-    cout << "<3               " << wedding.groomName << "\n";
-    cout << "<3                                                <3\n";
-    cout << "<3        invite you to share in their           <3\n";
-    cout << "<3             wedding celebration               <3\n";
-    cout << "<3                                                <3\n";
-    cout << "<3  On: " << wedding.weddingDate << "\n";
-    cout << "<3  Venue: " << wedding.weddingVenue << "\n";
-    cout << "<3                                                <3\n";
-    cout << "<3  Please RSVP: " << contactNumber << "\n";
-    cout << "<3                                                <3\n";
-    cout << "<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3\n";
+string template3( WeddingEvent& wedding, string& contactNumber) {
+    stringstream ss;
+    ss << "\n";
+    ss << "<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3\n";
+    ss << "<3                                                <3\n";
+    ss << "<3           Two Hearts Becoming One              <3\n";
+    ss << "<3                                                <3\n";
+    ss << "<3               " << wedding.brideName << "\n";
+    ss << "<3                    &                           <3\n";
+    ss << "<3               " << wedding.groomName << "\n";
+    ss << "<3                                                <3\n";
+    ss << "<3        invite you to share in their           <3\n";
+    ss << "<3             wedding celebration               <3\n";
+    ss << "<3                                                <3\n";
+    ss << "<3  On: " << wedding.weddingDate << "\n";
+    ss << "<3  Venue: " << wedding.weddingVenue << "\n";
+    ss << "<3                                                <3\n";
+    ss << "<3  Please RSVP: " << contactNumber << "\n";
+    ss << "<3                                                <3\n";
+    ss << "<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3<3\n";
+    return ss.str();
 }
 
-void template4(WeddingEvent& wedding, string contactNumber) {
-    cout << "\n";
-    cout << "+======================================================+\n";
-    cout << "|                                                      |\n";
-    cout << "|              WEDDING ANNOUNCEMENT                    |\n";
-    cout << "|                                                      |\n";
-    cout << "|        Mr. " << wedding.groomName << "\n";
-    cout << "|                      and                             |\n";
-    cout << "|        Ms. " << wedding.brideName << "\n";
-    cout << "|                                                      |\n";
-    cout << "|    request the honor of your presence at their      |\n";
-    cout << "|                  wedding ceremony                   |\n";
-    cout << "|                                                      |\n";
-    cout << "|    Date: " << wedding.weddingDate << "\n";
-    cout << "|    Location: " << wedding.weddingVenue << "\n";
-    cout << "|                                                      |\n";
-    cout << "|    Kindly respond by contacting: " << contactNumber << "\n";
-    cout << "|                                                      |\n";
-    cout << "+======================================================+\n";
+string template4( WeddingEvent& wedding, string& contactNumber) {
+    stringstream ss;
+    ss << "\n";
+    ss << "+======================================================+\n";
+    ss << "|                                                      |\n";
+    ss << "|              WEDDING ANNOUNCEMENT                    |\n";
+    ss << "|                                                      |\n";
+    ss << "|        Mr. " << wedding.groomName << "\n";
+    ss << "|                      and                             |\n";
+    ss << "|        Ms. " << wedding.brideName << "\n";
+    ss << "|                                                      |\n";
+    ss << "|    request the honor of your presence at their      |\n";
+    ss << "|                  wedding ceremony                   |\n";
+    ss << "|                                                      |\n";
+    ss << "|    Date: " << wedding.weddingDate << "\n";
+    ss << "|    Location: " << wedding.weddingVenue << "\n";
+    ss << "|                                                      |\n";
+    ss << "|    Kindly respond by contacting: " << contactNumber << "\n";
+    ss << "|                                                      |\n";
+    ss << "+======================================================+\n";
+    return ss.str();
 }
 
-void template5(WeddingEvent& wedding, string contactNumber) {
-    cout << "\n";
-    cout << "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~\n";
-    cout << "                                                   \n";
-    cout << "        ** WEDDING PARTY INVITATION **           \n";
-    cout << "                                                   \n";
-    cout << "    " << wedding.brideName << " & " << wedding.groomName << " are tying the knot!\n";
-    cout << "                                                   \n";
-    cout << "    Come party with us as we say 'I DO!'          \n";
-    cout << "                                                   \n";
-    cout << "    DATE: " << wedding.weddingDate << "\n";
-    cout << "    TIME: Coming Soon!\n";
-    cout << "    PLACE: " << wedding.weddingVenue << "\n";
-    cout << "                                                   \n";
-    cout << "    There will be good food, great music,         \n";
-    cout << "    and lots of dancing!                          \n";
-    cout << "                                                   \n";
-    cout << "    RSVP: " << contactNumber << "\n";
-    cout << "                                                   \n";
-    cout << "    Can't wait to celebrate with you! <3          \n";
-    cout << "                                                   \n";
-    cout << "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~\n";
-    cout << "\n";
-    cout << "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~\n";
-    cout << "                                                   \n";
-    cout << "        🎉 WEDDING PARTY INVITATION 🎉           \n";
-    cout << "                                                   \n";
-    cout << "    " << wedding.brideName << " & " << wedding.groomName << " are tying the knot!\n";
-    cout << "                                                   \n";
-    cout << "    Come party with us as we say 'I DO!'          \n";
-    cout << "                                                   \n";
-    cout << "    📅 DATE: " << wedding.weddingDate << "\n";
-    cout << "    📍 PLACE: " << wedding.weddingVenue<< "\n";
-    cout << "                                                   \n";
-    cout << "    There will be good food, great music,         \n";
-    cout << "    and lots of dancing!                          \n";
-    cout << "                                                   \n";
-    cout << "    📞 RSVP: " << contactNumber << "\n";
-    cout << "                                                   \n";
-    cout << "    Can't wait to celebrate with you! 💕          \n";
-    cout << "                                                   \n";
-    cout << "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~\n";
+string template5( WeddingEvent& wedding, string& contactNumber) {
+    stringstream ss;
+    ss << "\n";
+    ss << "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~\n";
+    ss << "                                                   \n";
+    ss << "        ** WEDDING PARTY INVITATION **           \n";
+    ss << "                                                   \n";
+    ss << "    " << wedding.brideName << " & " << wedding.groomName << " are tying the knot!\n";
+    ss << "                                                   \n";
+    ss << "    Come party with us as we say 'I DO!'          \n";
+    ss << "                                                   \n";
+    ss << "    DATE: " << wedding.weddingDate << "\n";
+    ss << "    TIME: Coming Soon!\n";
+    ss << "    PLACE: " << wedding.weddingVenue << "\n";
+    ss << "                                                   \n";
+    ss << "    There will be good food, great music,         \n";
+    ss << "    and lots of dancing!                          \n";
+    ss << "                                                   \n";
+    ss << "    RSVP: " << contactNumber << "\n";
+    ss << "                                                   \n";
+    ss << "    Can't wait to celebrate with you! <3          \n";
+    ss << "                                                   \n";
+    ss << "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~\n";
+    return ss.str();
 }
 
 string returnTime(Participant& p)
@@ -3317,7 +3353,6 @@ string returnTime(Participant& p)
     char buf[20];
     tm timeinfo{};
 
-    // ✅ Windows safe version
     localtime_s(&timeinfo, &p.attendance.checkInTime);
 
     strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &timeinfo);
@@ -5140,7 +5175,8 @@ int main() {
     loadDataFromFile<Admin>(adminList, "admins.txt");
     loadDataFromFile<Organizer>(organizerList, "organizers.txt");
     loadDataFromFile<Vendor>(vendorList, "vendors.txt");
-    loadDataFromFile(events, "events.txt");
+    loadDataFromFile<PaymentTransaction>(transactions, "payment_history.txt");
+    loadDataFromFile<WeddingEvent>(events, "events.txt");
     addDefaultParticipants(participants);
 
     // Start main menu
