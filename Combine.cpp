@@ -37,7 +37,7 @@ void getVendorInfo(Vendor &vendor, vector<Admin> &adminList, vector<Organizer> &
 void getOrganizerInfo(Organizer &organizer, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
 bool getAdminInfo(Admin &admin, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
 bool login(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, CurrentUser &currentUser);
-void logout(CurrentUser &currentUser);
+bool logout(CurrentUser &currentUser);
 void addService(CurrentUser &currentUser, vector<Vendor> &vendorList);
 void displayUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
 void displayAllUser(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
@@ -1129,7 +1129,7 @@ bool login(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<
     return false;
 }
 
-void logout(CurrentUser &currentUser)
+bool logout(CurrentUser &currentUser)
 {
     char confirmed;
     cout << "Are you sure you want to logout (Y/N)";
@@ -1141,12 +1141,12 @@ void logout(CurrentUser &currentUser)
         currentUser.userId = "";
         currentUser.userName = "";
         cout << "Logged out successfully!" << endl;
-        return;
+        return true;
     }
     else
     {
         cout << "Logout Failed. Please try again.";
-        return;
+        return false;
     }
 }
 
@@ -2619,7 +2619,7 @@ void setWeddingToCurrent(CurrentUser &currentUser, vector<Organizer> &organizerL
     vector<WeddingEvent> myEvents;
     for (auto &event : events)
     {
-        if (event.organizerId == currentUser.userId && event.status != "planning")
+        if (event.organizerId == currentUser.userId && event.status != "cancelled")
         {
             myEvents.push_back(event);
         }
@@ -2665,6 +2665,13 @@ void setWeddingToCurrent(CurrentUser &currentUser, vector<Organizer> &organizerL
     // Set the selected wedding as current
     currentUser.currentWeddingId = myEvents[choice - 1].eventId;
     currentUser.currentWeddingId = currentUser.currentWeddingId;
+
+    for (auto &organizer : organizerList) {
+        if (organizer.organizerId == currentUser.userId) {
+            organizer.currentWeddingId = myEvents[choice - 1].eventId;
+            break;
+        }
+    }
 
     saveDataIntoFile<Organizer>(organizerList, "organizers.txt");
     cout << "Current wedding set to: " << myEvents[choice - 1].groomName << " & " << myEvents[choice - 1].brideName << endl;
@@ -2940,7 +2947,11 @@ void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<
             MyProfileMenu(currentUser, vendorList, organizerList, adminList);
             break;
         case 0:
-            logout(currentUser);
+            if (logout(currentUser)) {
+            pauseScreen();
+            break; // Exit the menu loop
+            }
+            // If logout returns false, continue the loop (no break)
             pauseScreen();
             break;
         default:
@@ -3047,7 +3058,9 @@ void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Orga
             MyProfileMenu(currentUser, vendorList, organizerList, adminList);
             break;
         case 0:
-            logout(currentUser);
+            if (logout(currentUser)) {
+                pauseScreen(); // <-- Add this
+            }
             pauseScreen();
             break;
         default:
@@ -3115,11 +3128,17 @@ void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Org
             break;
         case 7:
             displayServicesByVendor(vendorList);
+            break;
         case 8:
             MyProfileMenu(currentUser, vendorList, organizerList, adminList);
             break;
         case 0:
-            logout(currentUser);
+            if (logout(currentUser)) {
+                pauseScreen();
+                break; // Exit the menu loop
+            }
+            // If logout returns false, continue the loop (no break)
+            pauseScreen();
             break;
         default:
             cout << "Invalid choice! Please try again." << endl;
@@ -5920,9 +5939,9 @@ void participantMenu(vector<Participant> &participants, WeddingEvent currentEven
 void viewPaymentSummary(CurrentUser &currentUser, WeddingEvent &selectedEvent, vector<Vendor> &vendorList)
 { // Changed to reference
     clearScreen();
-    if (selectedEvent.status != "planning")
+    if (selectedEvent.status == "cancelled")
     {
-        cout << "Payment summary is only available for weddings in the 'complete' state." << endl;
+        cout << "Payment summary is not available for cancelled weddings." << endl;
         pauseScreen();
         return;
     }
@@ -5955,11 +5974,9 @@ void viewPaymentSummary(CurrentUser &currentUser, WeddingEvent &selectedEvent, v
             cout << "Checking vendor: " << vendor.vendorId << endl;
             for (const auto &service : vendor.serviceHasProvide)
             {
-                cout << "Service ID: '" << service.serviceId << "' vs '" << searchId << "'" << endl;
-
                 if (service.serviceId == searchId)
                 {
-                    cout << left << setw(30) << service.serviceName << right << setw(10) << fixed << setprecision(2) << service.price << endl;
+                    cout << left << setw(25) << service.serviceName << right << setw(12) << fixed << setprecision(2) << service.price << endl;
                     subtotal += service.price;
                     found = true;
                     break;
@@ -6018,7 +6035,7 @@ void generateReport(CurrentUser &currentUser, WeddingEvent &selectedEvent, vecto
     }
 
     vector<PaymentTransaction> transactions;
-    saveDataIntoFile(transactions, "payment_history.txt");
+    loadDataFromFile(transactions, "payment_history.txt");
 
     PaymentTransaction *transaction = nullptr;
     for (auto &pt : transactions)
@@ -6145,7 +6162,7 @@ bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, Wedd
     clearScreen();
     if (selectedEvent.totalCost <= 0)
     {
-        cout << "No services booked yet. Nothing to pay." << endl;
+        cout << "No services booked yet for Wedding " << selectedEvent.eventId << " . Nothing to pay." << endl;
         pauseScreen();
         return false;
     }
@@ -6428,25 +6445,31 @@ void receipt(CurrentUser &currentUser, WeddingEvent &selectedEvent, string payme
     pauseScreen();
 }
 
-void paymentAndReportingMenu(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList)
-{
-    WeddingEvent selectedEvent;
-    string paymentMethod;
-    // find out the current wedding
+void paymentAndReportingMenu(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList){
+    int eventIndex = -1;
+    
+    // Find the current wedding index
     for (int i = 0; i < events.size(); i++)
     {
         if (events[i].eventId == currentUser.currentWeddingId)
         {
-            selectedEvent = events[i];
+            eventIndex = i;
             break;
         }
     }
-    if (currentUser.currentWeddingId.empty() || selectedEvent.eventId.empty())
+    
+    if (currentUser.currentWeddingId.empty() || eventIndex == -1)
     {
         cout << "No active wedding found!" << endl;
+        cout << "Current wedding ID: " << currentUser.currentWeddingId << endl;
         pauseScreen();
         return;
     }
+
+    // Work with reference to the actual event, not a copy
+    WeddingEvent &selectedEvent = events[eventIndex];
+    string paymentMethod;
+
 
     int paymentChoice;
     do
