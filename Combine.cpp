@@ -4689,7 +4689,7 @@ bool checkParticipantsList(stringstream &buffer)
         {
             cout << "Back to previous page.";
             pauseScreen();
-            return;
+            return false;
         }
 
         if (name == "done")
@@ -5725,7 +5725,7 @@ bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, Wedd
         {
             cout << "Back to previous page.";
             pauseScreen();
-            return;
+            return false;
         }
 
         switch (methodChoice)
@@ -5749,7 +5749,7 @@ bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, Wedd
                 {
                     cout << "Back to previous page.";
                     pauseScreen();
-                    return;
+                    return false;
                 }
 
                 cout << "Enter 3-digit security code (0 to Exit): ";
@@ -5763,7 +5763,7 @@ bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, Wedd
                 {
                     cout << "Back to previous page.";
                     pauseScreen();
-                    return;
+                    return false;
                 }
 
                 cout << "Enter expiry date (MM/YY) (0 to Exit): ";
@@ -5779,7 +5779,7 @@ bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, Wedd
                 {
                     cout << "Back to previous page.";
                     pauseScreen();
-                    return;
+                    return false;
                 }
 
                 bool isCardNumberValid = cardNumber.length() == 16 && all_of(cardNumber.begin(), cardNumber.end(), ::isdigit);
@@ -5829,7 +5829,7 @@ bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, Wedd
                 {
                     cout << "Back to previous page.";
                     pauseScreen();
-                    return;
+                    return false;
                 }
 
                 cout << "Enter bank password (0 to exit): ";
@@ -5845,7 +5845,7 @@ bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, Wedd
                 {
                     cout << "Back to previous page.";
                     pauseScreen();
-                    return;
+                    return false;
                 }
             }
             cout << "Payment processing..." << endl;
@@ -5872,7 +5872,7 @@ bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, Wedd
                 {
                     cout << "Back to previous page.";
                     pauseScreen();
-                    return;
+                    return false;
                 }
 
                 if (phoneNumber.length() == 11 && all_of(phoneNumber.begin(), phoneNumber.end(), ::isdigit))
@@ -5905,7 +5905,7 @@ bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, Wedd
                 {
                     cout << "Back to previous page.";
                     pauseScreen();
-                    return;
+                    return false;
                 }
             }
             cout << "Payment processing..." << endl;
