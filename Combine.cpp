@@ -2208,7 +2208,7 @@ void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<
         cout << "==========================================" << endl;
         cout << "1. Book a New Wedding" << endl;
         cout << "2. View My All Wedding" << endl;
-        cout << "3. Update My Current Wedding / Add new service for current wedding" << endl;
+        cout << "3. Update My Current Wedding Detail" << endl;
         cout << "4. Set as Current Wedding" << endl;
         cout << "5. Cancel Wedding" << endl;
         cout << "6. Monitoring" << endl;
