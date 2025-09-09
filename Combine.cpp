@@ -3407,7 +3407,11 @@ time_t parseDate(const string& dateStr) {
 
 // Strip time (keep only date part)
 time_t toDateOnly(time_t t) {
-    tm temp = *localtime(&t);
+    tm temp;
+    if (localtime_s(&temp, &t) != 0) {
+        // Handle error - return original time or some error value
+        return t; // or return -1 or throw exception depending on your error handling strategy
+    }
     temp.tm_hour = 0;
     temp.tm_min = 0;
     temp.tm_sec = 0;
