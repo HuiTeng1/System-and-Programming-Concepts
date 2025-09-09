@@ -24,56 +24,64 @@ struct PaymentTransaction;
 struct InvitationCard;
 
 // Function declarations
-template <typename T>
-void saveDataIntoFile(vector<T> &data, string fileName);
-template <typename T>
-void loadDataFromFile(vector<T> &data, string fileName);
-void loadingTime();
-string generateId(const string &prefix, int counter);
+struct Service;
+struct BaseInfo;
+struct Vendor;
+struct Organizer;
+struct Admin;
+struct CurrentUser;
+struct WeddingEvent;
+struct Attendance;
+struct Participant;
+struct PaymentTransaction;
+struct InvitationCard;
+
+// Utility functions
+int returnInt();
+double returnDouble();
+char returnUpperChar();
+template <typename T> void saveDataIntoFile(vector<T> &data, string fileName);
+template <typename T> void loadDataFromFile(vector<T> &data, string fileName);
 void clearScreen();
 void pauseScreen();
+void loadingTime();
+
+// Validation functions
+bool isValidEmail(const string &email);
+bool isValidMalaysianPhone(const string &phone);
+bool isEmailExist(string &email, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
+string generateId(const string &prefix, int counter);
+bool isValidDate(const string &date);
+bool isValidWeddingDate(const string &date);
+bool isDateAvailable(const string &date, const vector<WeddingEvent> &events, const string &venue);
+bool isValidBudget(double budget);
+
+// User management functions
 void getBaseUserInfo(BaseInfo &baseInfo, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
 void getVendorInfo(Vendor &vendor, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
 void getOrganizerInfo(Organizer &organizer, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
 bool getAdminInfo(Admin &admin, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
 bool login(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, CurrentUser &currentUser);
 bool logout(CurrentUser &currentUser);
-void addService(CurrentUser &currentUser, vector<Vendor> &vendorList);
+void userRegister(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
 void displayUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
 void displayAllUser(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
-void userRegister(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
 void updateBaseInfo(BaseInfo &baseInfo, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
 void updateAdminInfo(Admin &admin, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
 void updateVendorInfo(Vendor &vendor, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
 void updateUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
-void updateOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList);
+bool deleteOwnAccount(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
+
+// Service management functions
+void addService(CurrentUser &currentUser, vector<Vendor> &vendorList);
 void displayAllServices(vector<Vendor> &vendorList);
 void displayServicesByVendor(vector<Vendor> &vendorList);
 void displayServicesByType(vector<Vendor> &vendorList);
-void dispayOwnServices(CurrentUser &currentUser, vector<Vendor> &vendorList);
-void displayBookedServices(CurrentUser &currentUser, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
-bool deleteOwnAccount(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
+void displayOwnServices(CurrentUser &currentUser, vector<Vendor> &vendorList);
+void updateOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList);
 void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList);
-bool isValidEmail(const string &email);
-bool isValidMalaysianPhone(const string &phone);
-bool isEmailExist(string &email, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
 
-// Invitation related functions
-void invitationTemplate(vector<WeddingEvent> &events, WeddingEvent &wedding, CurrentUser &currentUser);
-void loadInvitationCards(vector<InvitationCard> &existingCards);
-void saveInvitationCards(vector<InvitationCard> &cards);
-string generateInvitationByChoice(int choice, InvitationCard &card);
-void generateCustomInvitation(vector<WeddingEvent> &events, WeddingEvent &wedding, string contactNumber, CurrentUser &currentUser);
-void generateInvitationCardMenu(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Organizer> &organizerList);
-string template1(InvitationCard &card);
-string template2(InvitationCard &card);
-string template3(InvitationCard &card);
-string template4(InvitationCard &card);
-string template5(InvitationCard &card);
-void showInvitationCards(CurrentUser &currentUser);
-void deleteInvitationCard(CurrentUser &currentUser);
-
-// Event related functions
+// Wedding event functions
 void createNewWedding(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList);
 void updateWeddingDetails(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Organizer> &organizerList);
 void bookServicesForWedding(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList);
@@ -81,48 +89,73 @@ void viewAllWeddings(CurrentUser &currentUser, const vector<WeddingEvent> &event
 void viewAllMyWeddings(CurrentUser &currentUser, const vector<WeddingEvent> &events, const vector<Vendor> &vendorList);
 void viewWeddingsByOrganizer(vector<WeddingEvent> &events, vector<Organizer> &organizerList);
 void viewWeddingByStatus(vector<WeddingEvent> &events);
-void generateInvitationCard(CurrentUser &currentUser, const vector<WeddingEvent> &events, const vector<Organizer> &organizerList);
-bool isValidDate(const string &date);
-bool isValidWeddingDate(const string &date);
-bool isDateAvailable(const string &date, const vector<WeddingEvent> &events, const string &venue);
-bool isValidBudget(double budget);
-double calculateServiceCost(const vector<int> &serviceIds, const vector<Vendor> &vendorList);
 void setWeddingToCurrent(CurrentUser &currentUser, vector<Organizer> &organizerList, vector<WeddingEvent> &events);
 void cancelWedding(string currentWeddingId, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Participant> &participants);
+void readAllBookedServices(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList);
 void cancelBookedService(CurrentUser &currentUser, vector<Organizer> &organizerList, vector<Vendor> &vendorList, vector<WeddingEvent> &events);
+void deleteBookedService(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList);
 
-// Monitoring functions
-void menu(vector<Participant> &participants);
-bool addDefaultParticipants(vector<Participant> &participants);
-void addParticipantsMenu(vector<Participant> &participants, WeddingEvent currentEvent);
-void searchParticipantsMenu(vector<Participant> &participants);
-void markAttendance(vector<Participant> &participants, string weddingId);
-void updateParticipants(vector<Participant> &participants);
-void deleteParticipants(vector<Participant> &participants);
-void showAllParticipants(vector<Participant> participants, WeddingEvent currentEvent);
+// Invitation card functions
+void invitationTemplate(vector<WeddingEvent> &events, WeddingEvent &wedding, CurrentUser &currentUser);
+void loadInvitationCards(vector<InvitationCard> &cards);
+void saveInvitationCards(vector<InvitationCard> &cards);
+string generateInvitationText(const InvitationCard &card);
+void createInvitation(vector<InvitationCard> &cards, const string &userId, const string &weddingId, vector<WeddingEvent> &events, vector<Organizer> &organizerList);
+void viewInvitationCards(vector<InvitationCard> &cards, string &userId, string &weddingId);
+string template1(InvitationCard &card);
+string template2(InvitationCard &card);
+string template3(InvitationCard &card);
+string template4(InvitationCard &card);
+string template5(InvitationCard &card);
+void generateInvitationCardMenu(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Organizer> &organizerList);
+void generateCustomInvitation(vector<WeddingEvent> &events, WeddingEvent &wedding, string contactNumber, CurrentUser &currentUser);
+string generateInvitationByChoice(int choice, InvitationCard &card);
+void showInvitationCards(CurrentUser &currentUser);
+void deleteInvitationCard(CurrentUser &currentUser);
+
+// Participant/Attendance functions
+string returnTime(Participant &p);
+bool checkIsExist(vector<Participant> participant, string name, string eventId);
+void updateFile(ofstream &outFile, vector<Participant> &participants);
+time_t parseDate(const string &dateStr);
+time_t toDateOnly(time_t t);
+void printParticipant(Participant p, WeddingEvent currentEvent);
 void deleteAllParticipants(vector<Participant> &participants, string eventId);
+void deleteParticipants(vector<Participant> &participants, WeddingEvent currentEvent);
+void editParticipantsName(vector<Participant> &participants, Participant participant, string weddingId);
+void editParticipantsVip(vector<Participant> &participants, Participant participant, string weddingId);
+bool askForTime(Participant participant, tm &t, string &weddingDateStr);
+void editParticipantsPresent(vector<Participant> &participants, Participant participant, WeddingEvent currentEvent);
+void editParticipantsCheckInTime(vector<Participant> &participants, Participant participant, WeddingEvent currentEvent);
+void updateParticipants(vector<Participant> &participants, WeddingEvent currentEvent);
+void markAttendance(vector<Participant> &participants, string weddingId);
+void searchParticipantOneByOne(vector<Participant> participants, WeddingEvent currentEvent);
+void showAllParticipants(vector<Participant> participants, WeddingEvent currentEvent);
+void searchParticipantsMenu(vector<Participant> &participants, WeddingEvent currentEvent);
+void addParticipantsToList(vector<Participant> &participants, stringstream &buffer, string weddingId);
+void addParticipantsByList(vector<Participant> &participants, string weddingId);
+void addParticipantOneByOne(vector<Participant> &participants, string weddingId);
+void addParticipantsMenu(vector<Participant> &participants, WeddingEvent currentEvent);
+bool addDefaultParticipants(vector<Participant> &participants);
+void displayPresentAmount(vector<Participant> participants, WeddingEvent currentEvent);
+void participantMenu(vector<Participant> &participants, WeddingEvent currentEvent);
 
 // Payment functions
-void paymentAndReportingMenu(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList);
 void viewPaymentSummary(CurrentUser &currentUser, WeddingEvent &selectedEvent, vector<Vendor> &vendorList);
+void generateReport(CurrentUser &currentUser, WeddingEvent &selectedEvent, vector<Vendor> &vendorList);
+void generateAllPaidReports(vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<PaymentTransaction> &transactions);
 bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, WeddingEvent &selectedEvent);
 void receipt(CurrentUser &currentUser, WeddingEvent &selectedEvent, string paymentMethod);
-void generateReport(CurrentUser &currentUser, WeddingEvent &selectedEvent, vector<Vendor> &vendorList);
+void paymentAndReportingMenu(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList);
 void viewPaymentHistory(CurrentUser &currentUser);
-void generateAllPaidReports(vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<PaymentTransaction> &transactions);
 
 // Menu functions
 void UpdateWeddingMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events);
+void MyProfileMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
 void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants);
 void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants, vector<PaymentTransaction> &transactions);
 void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
 void mainMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants, vector<PaymentTransaction> &transactions);
-
-// Add these function declarations
-void readAllBookedServices(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList);
-void deleteBookedService(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList);
-void updateFile(ofstream &outFile, vector<Participant> &participants);
-void participantMenu(vector<Participant> &participants, WeddingEvent currentEvent);
 
 struct Service
 {
