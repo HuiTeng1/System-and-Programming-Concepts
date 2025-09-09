@@ -9,6 +9,7 @@
         "ios": "cpp",
         "system_error": "cpp",
         "xlocale": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "istream": "cpp"
     }
 }

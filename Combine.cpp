@@ -25,102 +25,103 @@ struct InvitationCard;
 
 // Function declarations
 template <typename T>
-void saveDataIntoFile(vector<T>& data, string fileName);
+void saveDataIntoFile(vector<T> &data, string fileName);
 
 template <typename T>
-void loadDataFromFile(vector<T>& data, string fileName);
+void loadDataFromFile(vector<T> &data, string fileName);
 void loadingTime();
-string generateId(const string& prefix, int counter);
+string generateId(const string &prefix, int counter);
 void clearScreen();
 void pauseScreen();
-void getBaseUserInfo(BaseInfo& baseInfo, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList);
-void getVendorInfo(Vendor& vendor, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList);
-void getOrganizerInfo(Organizer& organizer, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList);
-bool getAdminInfo(Admin& admin, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList);
-bool login(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList, CurrentUser& currentUser);
-void logout(CurrentUser& currentUser);
-void addService(CurrentUser& currentUser, vector<Vendor>& vendorList);
-void displayUserProfile(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList);
-void displayAllUser(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList);
-void userRegister(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList);
-void updateBaseInfo(BaseInfo& baseInfo, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList);
-void updateAdminInfo(Admin& admin, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList);
-void updateVendorInfo(Vendor& vendor, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList);
-void updateUserProfile(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList);
-void updateOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList);
-void displayAllServices(vector<Vendor>& vendorList);
-void displayServicesByVendor(vector<Vendor>& vendorList);
-void displayServicesByType(vector<Vendor>& vendorList);
-void displayBookedServices(CurrentUser& currentUser, vector<Organizer>& organizerList, vector<Vendor>& vendorList);
-bool deleteOwnAccount(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList);
-void deleteOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList);
-bool isValidEmail(const string& email);
-bool isValidMalaysianPhone(const string& phone);
-bool isEmailExist(string& email, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList);
+void getBaseUserInfo(BaseInfo &baseInfo, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
+void getVendorInfo(Vendor &vendor, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
+void getOrganizerInfo(Organizer &organizer, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
+bool getAdminInfo(Admin &admin, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
+bool login(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, CurrentUser &currentUser);
+void logout(CurrentUser &currentUser);
+void addService(CurrentUser &currentUser, vector<Vendor> &vendorList);
+void displayUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
+void displayAllUser(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
+void userRegister(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
+void updateBaseInfo(BaseInfo &baseInfo, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
+void updateAdminInfo(Admin &admin, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
+void updateVendorInfo(Vendor &vendor, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
+void updateUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
+void updateOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList);
+void displayAllServices(vector<Vendor> &vendorList);
+void displayServicesByVendor(vector<Vendor> &vendorList);
+void displayServicesByType(vector<Vendor> &vendorList);
+void displayBookedServices(CurrentUser &currentUser, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
+bool deleteOwnAccount(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
+void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList);
+bool isValidEmail(const string &email);
+bool isValidMalaysianPhone(const string &phone);
+bool isEmailExist(string &email, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
 // Invitation related functions
-void invitationTemplate(vector<WeddingEvent>& events, WeddingEvent& wedding, CurrentUser& currentUser);
-void loadInvitationCards(vector<InvitationCard>& existingCards);
-void saveInvitationCards( vector<InvitationCard>& cards);
-string generateInvitationByChoice(int choice, InvitationCard& card);
-void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& wedding, string contactNumber, CurrentUser &currentUser);
-void generateInvitationCardMenu(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Organizer>& organizerList);
-string template1( InvitationCard& card);
-string template2( InvitationCard& card);
-string template3( InvitationCard& card);
-string template4( InvitationCard& card);
-string template5( InvitationCard& card);
-void showInvitationCards(CurrentUser& currentUser);
-void deleteInvitationCard(CurrentUser& currentUser);
+void invitationTemplate(vector<WeddingEvent> &events, WeddingEvent &wedding, CurrentUser &currentUser);
+void loadInvitationCards(vector<InvitationCard> &existingCards);
+void saveInvitationCards(vector<InvitationCard> &cards);
+string generateInvitationByChoice(int choice, InvitationCard &card);
+void generateCustomInvitation(vector<WeddingEvent> &events, WeddingEvent &wedding, string contactNumber, CurrentUser &currentUser);
+void generateInvitationCardMenu(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Organizer> &organizerList);
+string template1(InvitationCard &card);
+string template2(InvitationCard &card);
+string template3(InvitationCard &card);
+string template4(InvitationCard &card);
+string template5(InvitationCard &card);
+void showInvitationCards(CurrentUser &currentUser);
+void deleteInvitationCard(CurrentUser &currentUser);
 // Event related functions
-void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList);
-void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList);
-void viewAllWeddings(CurrentUser& currentUser, const vector<WeddingEvent>& events, const vector<Vendor>& vendorList);
-void viewAllMyWeddings(CurrentUser& currentUser, const vector<WeddingEvent>& events, const vector<Vendor>& vendorList);
-void viewWeddingsByOrganizer(vector<WeddingEvent>& events, vector<Organizer>& organizerList);
-void viewWeddingByStatus(vector<WeddingEvent>& events);
-void manageMyWeddings(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList);
-void generateInvitationCard(CurrentUser& currentUser, const vector<WeddingEvent>& events, const vector<Organizer>& organizerList);
-bool isValidDate(const string& date);
-bool isValidWeddingDate(const string& date);
-bool isDateAvailable(const string& date, const vector<WeddingEvent>& events, const string& venue);
+void createNewWedding(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList);
+void bookServicesForWedding(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList);
+void viewAllWeddings(CurrentUser &currentUser, const vector<WeddingEvent> &events, const vector<Vendor> &vendorList);
+void viewAllMyWeddings(CurrentUser &currentUser, const vector<WeddingEvent> &events, const vector<Vendor> &vendorList);
+void viewWeddingsByOrganizer(vector<WeddingEvent> &events, vector<Organizer> &organizerList);
+void viewWeddingByStatus(vector<WeddingEvent> &events);
+void manageMyWeddings(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList);
+void generateInvitationCard(CurrentUser &currentUser, const vector<WeddingEvent> &events, const vector<Organizer> &organizerList);
+bool isValidDate(const string &date);
+bool isValidWeddingDate(const string &date);
+bool isDateAvailable(const string &date, const vector<WeddingEvent> &events, const string &venue);
 bool isValidBudget(double budget);
-double calculateServiceCost(const vector<int>& serviceIds, const vector<Vendor>& vendorList);
-void setWeddingToCurrent(CurrentUser& currentUser, vector<Organizer>& organizerList, vector<WeddingEvent>& events);
-void cancelWedding(string currentWeddingId, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Participant>& participants);
+double calculateServiceCost(const vector<int> &serviceIds, const vector<Vendor> &vendorList);
+void setWeddingToCurrent(CurrentUser &currentUser, vector<Organizer> &organizerList, vector<WeddingEvent> &events);
+void cancelWedding(string currentWeddingId, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Participant> &participants);
 
 // Monitoring functions
-void menu(vector<Participant>& participants);
-bool addDefaultParticipants(vector<Participant>& participants);
-void addParticipantsMenu(vector<Participant>& participants, WeddingEvent currentEvent);
-void searchParticipantsMenu(vector<Participant>& participants);
-void markAttendance(vector<Participant>& participants, string weddingId);
-void updateParticipants(vector<Participant>& participants);
-void deleteParticipants(vector<Participant>& participants);
+void menu(vector<Participant> &participants);
+bool addDefaultParticipants(vector<Participant> &participants);
+void addParticipantsMenu(vector<Participant> &participants, WeddingEvent currentEvent);
+void searchParticipantsMenu(vector<Participant> &participants);
+void markAttendance(vector<Participant> &participants, string weddingId);
+void updateParticipants(vector<Participant> &participants);
+void deleteParticipants(vector<Participant> &participants);
 void showAllParticipants(vector<Participant> participants, WeddingEvent currentEvent);
-void deleteAllParticipants(vector<Participant>& participants, string eventId);
+void deleteAllParticipants(vector<Participant> &participants, string eventId);
 // Payment functions
-void paymentAndReportingMenu(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList);
-void viewPaymentSummary(CurrentUser& currentUser, WeddingEvent& selectedEvent, vector<Vendor>& vendorList);
-bool processPayment(CurrentUser& currentUser, vector<WeddingEvent>& events, WeddingEvent& selectedEvent);
-void receipt(CurrentUser& currentUser, WeddingEvent& selectedEvent, string paymentMethod);
-void generateReport(CurrentUser& currentUser, WeddingEvent& selectedEvent, vector<Vendor>& vendorList);
-void viewPaymentHistory(CurrentUser& currentUser);
-void generateAllPaidReports(vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<PaymentTransaction>& transactions);
+void paymentAndReportingMenu(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList);
+void viewPaymentSummary(CurrentUser &currentUser, WeddingEvent &selectedEvent, vector<Vendor> &vendorList);
+bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, WeddingEvent &selectedEvent);
+void receipt(CurrentUser &currentUser, WeddingEvent &selectedEvent, string paymentMethod);
+void generateReport(CurrentUser &currentUser, WeddingEvent &selectedEvent, vector<Vendor> &vendorList);
+void viewPaymentHistory(CurrentUser &currentUser);
+void generateAllPaidReports(vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<PaymentTransaction> &transactions);
 
 // Menu functions
-void UpdateWeddingMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList, vector<WeddingEvent>& events);
-void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList, vector<WeddingEvent>& events, vector<Participant>& participants);
-void adminMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList, vector<WeddingEvent>& events, vector<Participant>& participants, vector<PaymentTransaction>& transactions);
-void vendorMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList);
-void mainMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList, vector<WeddingEvent>& events, vector<Participant>& participants, vector<PaymentTransaction>& transactions);
+void UpdateWeddingMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events);
+void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants);
+void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants, vector<PaymentTransaction> &transactions);
+void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
+void mainMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants, vector<PaymentTransaction> &transactions);
 
 // Add these function declarations
-void readAllBookedServices(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList);
-void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList);
-void updateFile(ofstream& outFile, vector<Participant>& participants);
-void participantMenu(vector<Participant>& participants, WeddingEvent currentEvent);
+void readAllBookedServices(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList);
+void deleteBookedService(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList);
+void updateFile(ofstream &outFile, vector<Participant> &participants);
+void participantMenu(vector<Participant> &participants, WeddingEvent currentEvent);
 
-struct Service {
+struct Service
+{
     string serviceId;
     string serviceName;
     string description;
@@ -128,12 +129,14 @@ struct Service {
     double price;
     int quantity;
     bool available;
-    string toFileString() {
+    string toFileString()
+    {
         return serviceId + "|" + serviceName + "|" + description + "|" + type + "|" +
-            to_string(price) + "|" + to_string(quantity) + "|" + (available ? "1" : "0");
+               to_string(price) + "|" + to_string(quantity) + "|" + (available ? "1" : "0");
     }
 
-    static Service fromFileString(string& str) {
+    static Service fromFileString(string &str)
+    {
         Service s;
         stringstream ss(str);
         string temp;
@@ -163,7 +166,7 @@ struct BaseInfo
         return name + "|" + email + "|" + phoneNum + "|" + password;
     }
 
-    static BaseInfo fromFileString(string& str)
+    static BaseInfo fromFileString(string &str)
     {
         BaseInfo b;
         stringstream ss(str);
@@ -193,7 +196,7 @@ struct Vendor
         string vendorStr = vendorId + "|" + companyName + "|" + companyContactNum + "|" + type + "|" + to_string(totalServicesProvided);
         // service
         string servicesStr;
-        for (auto& s : serviceHasProvide)
+        for (auto &s : serviceHasProvide)
         {
             if (!servicesStr.empty())
                 servicesStr += "##";
@@ -203,7 +206,7 @@ struct Vendor
         return baseStr + "|" + vendorStr + "|" + servicesStr;
     }
 
-    static Vendor fromFileString(string& str)
+    static Vendor fromFileString(string &str)
     {
         Vendor v;
         stringstream ss(str);
@@ -255,7 +258,7 @@ struct Organizer
         return baseInfo.toFileString() + "|" + organizerId + "|" + currentWeddingId + "|";
     }
 
-    static Organizer fromFileString(string& str)
+    static Organizer fromFileString(string &str)
     {
         Organizer o;
         stringstream ss(str);
@@ -281,7 +284,7 @@ struct Admin
         return baseInfo.toFileString() + "|" + adminId;
     }
 
-    static Admin fromFileString(string& str)
+    static Admin fromFileString(string &str)
     {
         Admin a;
         stringstream ss(str);
@@ -297,7 +300,8 @@ struct Admin
     }
 };
 // Current User Management
-enum UserType {
+enum UserType
+{
     NONE,
     ADMIN,
     ORGANIZER,
@@ -310,10 +314,10 @@ struct CurrentUser
     string userId;
     string userName;
     string currentWeddingId;
-
 };
 
-struct WeddingEvent {
+struct WeddingEvent
+{
     string eventId;
     string organizerId;
     string groomName;
@@ -327,20 +331,24 @@ struct WeddingEvent {
     vector<string> bookedServices;
 
     // Method to serialize to file string
-    string toFileString() {
+    string toFileString()
+    {
         string servicesStr;
-        for (int i = 0; i < bookedServices.size(); ++i) {
+        for (int i = 0; i < bookedServices.size(); ++i)
+        {
             servicesStr += bookedServices[i];
-            if (i < bookedServices.size() - 1) {
+            if (i < bookedServices.size() - 1)
+            {
                 servicesStr += ",";
             }
         }
         return eventId + "|" + organizerId + "|" + groomName + "|" + brideName + "|" +
-            weddingDate + "|" + weddingVenue + "|" + weddingTheme + "|" +
-            to_string(budget) + "|" + to_string(totalCost) + "|" + status + "|" + servicesStr;
+               weddingDate + "|" + weddingVenue + "|" + weddingTheme + "|" +
+               to_string(budget) + "|" + to_string(totalCost) + "|" + status + "|" + servicesStr;
     }
 
-    static WeddingEvent fromFileString(const string& str) {
+    static WeddingEvent fromFileString(const string &str)
+    {
         WeddingEvent event;
         stringstream ss(str);
         string temp;
@@ -353,18 +361,23 @@ struct WeddingEvent {
         getline(ss, event.weddingVenue, '|');
         getline(ss, event.weddingTheme, '|');
 
-        getline(ss, temp, '|'); event.budget = stod(temp);
-        getline(ss, temp, '|'); event.totalCost = stod(temp);
+        getline(ss, temp, '|');
+        event.budget = stod(temp);
+        getline(ss, temp, '|');
+        event.totalCost = stod(temp);
         getline(ss, event.status, '|');
 
         string servicesStr;
         getline(ss, servicesStr);
         event.bookedServices.clear();
-        if (!servicesStr.empty()) {
+        if (!servicesStr.empty())
+        {
             stringstream ssServices(servicesStr);
             string serviceIdStr;
-            while (getline(ssServices, serviceIdStr, ',')) {
-                if (!serviceIdStr.empty()) {
+            while (getline(ssServices, serviceIdStr, ','))
+            {
+                if (!serviceIdStr.empty())
+                {
                     event.bookedServices.push_back(serviceIdStr);
                 }
             }
@@ -373,19 +386,22 @@ struct WeddingEvent {
     }
 };
 
-struct Attendance {
+struct Attendance
+{
     bool isPresent;
     time_t checkInTime;
 };
 
-struct Participant {
+struct Participant
+{
     string eventId;
     string name;
     bool isVip;
     Attendance attendance;
 };
 
-struct PaymentTransaction {
+struct PaymentTransaction
+{
     string transactionId;
     string userId;
     string userName;
@@ -397,13 +413,15 @@ struct PaymentTransaction {
     string transactionTime;
 
     // Serialize to string
-    string toFileString() {
+    string toFileString()
+    {
         return transactionId + "|" + userId + "|" + userName + "|" + weddingId + "|" + to_string(amount) + "|" +
-            paymentMethod + "|" + paymentStatus + "|" + transactionDate + "|" + transactionTime;
+               paymentMethod + "|" + paymentStatus + "|" + transactionDate + "|" + transactionTime;
     }
 
     // Deserialize from string
-    static PaymentTransaction fromFileString(const string& str) {
+    static PaymentTransaction fromFileString(const string &str)
+    {
         PaymentTransaction pt;
         stringstream ss(str);
         string temp;
@@ -421,7 +439,8 @@ struct PaymentTransaction {
     }
 };
 
-struct InvitationCard {
+struct InvitationCard
+{
     string cardId;
     string userId;
     string weddingId;
@@ -432,13 +451,15 @@ struct InvitationCard {
     string weddingVenue;
     string contactNumber;
 
-    string toFileString() const {
-        return  cardId +  "%" + userId + "%" + weddingId + "%" + to_string(templateChoice) + "%" +
+    string toFileString() const
+    {
+        return cardId + "%" + userId + "%" + weddingId + "%" + to_string(templateChoice) + "%" +
                brideName + "%" + groomName + "%" + weddingDate + "%" +
                weddingVenue + "%" + contactNumber + "$";
     }
 
-    static InvitationCard fromFileString(const string& str) {
+    static InvitationCard fromFileString(const string &str)
+    {
         InvitationCard card;
         stringstream ss(str);
         string tempStr;
@@ -446,9 +467,12 @@ struct InvitationCard {
         getline(ss, card.userId, '%');
         getline(ss, card.weddingId, '%');
         getline(ss, tempStr, '%');
-        try {
+        try
+        {
             card.templateChoice = stoi(tempStr);
-        } catch (...) {
+        }
+        catch (...)
+        {
             // Handle error, e.g., assign default or print warning
             card.templateChoice = 0; // or 0, or handle as needed
         }
@@ -461,8 +485,67 @@ struct InvitationCard {
     }
 };
 
+int returnInt()
+{
+    int selection;
+
+    cout << "Enter your choice > ";
+    cin >> selection;
+
+    if (cin.fail())
+    {
+        cin.clear();
+        cin.ignore();
+        cout << "Invalid input. Please enter a number.\n\n";
+        return -1;
+    }
+
+    cin.ignore();
+    return selection;
+}
+
+double returnDouble()
+{
+    double selection;
+
+    cout << "Enter your choice > ";
+    cin >> selection;
+
+    if (cin.fail())
+    {
+        cin.clear();
+        cin.ignore();
+        cout << "Invalid input. Please enter a number.\n\n";
+        return -1;
+    }
+
+    cin.ignore();
+    return selection;
+}
+
+char returnUpperChar()
+{
+
+    char selection;
+    cout << "Enter your choice > ";
+    cin >> selection;
+
+    if (cin.fail())
+    {
+        cin.clear();
+        cin.ignore();
+        //(numeric_limits<streamsize>::max(), '\n');
+        cout << "Invalid input. Please enter a character.\n\n";
+        return '\0'; // special value meaning "invalid"
+    }
+
+    cin.ignore(); // clean up buffer
+    return toupper(selection);
+}
+
 template <typename T>
-void saveDataIntoFile(vector<T>& data, string fileName) {
+void saveDataIntoFile(vector<T> &data, string fileName)
+{
     ofstream write(fileName);
 
     if (!write)
@@ -471,7 +554,7 @@ void saveDataIntoFile(vector<T>& data, string fileName) {
         return;
     }
     // 'auto' means the compiler will automatically figure out the type of this variable based on its value
-    for (auto& obj : data)
+    for (auto &obj : data)
     {
         write << obj.toFileString() << endl;
     }
@@ -479,7 +562,7 @@ void saveDataIntoFile(vector<T>& data, string fileName) {
 }
 
 template <typename T>
-void loadDataFromFile(vector<T>& data, string fileName)
+void loadDataFromFile(vector<T> &data, string fileName)
 {
     ifstream read(fileName);
     if (!read)
@@ -504,10 +587,12 @@ void loadDataFromFile(vector<T>& data, string fileName)
     read.close();
 }
 
-void invitationTemplate(vector<WeddingEvent>& events, WeddingEvent& wedding, CurrentUser& currentUser) {
+void invitationTemplate(vector<WeddingEvent> &events, WeddingEvent &wedding, CurrentUser &currentUser)
+{
     int templateChoice;
-    
-    do {
+
+    do
+    {
         cout << "\n=== INVITATION TEMPLATES ===" << endl;
         cout << "Choose a template to preview:" << endl;
         cout << "1. Classic Elegant" << endl;
@@ -518,7 +603,7 @@ void invitationTemplate(vector<WeddingEvent>& events, WeddingEvent& wedding, Cur
         cout << "0. Back to Previous Menu" << endl;
         cout << "Enter your choice: ";
         cin >> templateChoice;
-        
+
         // Create sample InvitationCard for preview
         InvitationCard sampleCard;
         sampleCard.brideName = "Sarah Johnson";
@@ -527,61 +612,67 @@ void invitationTemplate(vector<WeddingEvent>& events, WeddingEvent& wedding, Cur
         sampleCard.weddingVenue = "Rose Garden Chapel";
         sampleCard.contactNumber = "(555) 123-4567";
         sampleCard.templateChoice = templateChoice;
-        
+
         cout << "\n=== TEMPLATE PREVIEW ===";
-        
-        switch(templateChoice) {
-            case 1:
-                cout << "\n--- Classic Elegant Template ---";
-                cout << template1(sampleCard);
-                pauseScreen();
-                break;
-            case 2:
-                cout << "\n--- Modern Minimalist Template ---";
-                cout << template2(sampleCard);
-                pauseScreen();
-                break;
-            case 3:
-                cout << "\n--- Romantic with Hearts Template ---";
-                cout << template3(sampleCard);
-                pauseScreen();
-                break;
-            case 4:
-                cout << "\n--- Formal Traditional Template ---";
-                cout << template4(sampleCard);
-                pauseScreen();
-                break;
-            case 5:
-                cout << "\n--- Fun & Casual Template ---";
-                cout << template5(sampleCard);
-                pauseScreen();
-                break;
-            case 0:
-                pauseScreen();
-                return;
-            default:
-                cout << "Invalid choice! Please try again." << endl;
-                pauseScreen();
-                continue;
+
+        switch (templateChoice)
+        {
+        case 1:
+            cout << "\n--- Classic Elegant Template ---";
+            cout << template1(sampleCard);
+            pauseScreen();
+            break;
+        case 2:
+            cout << "\n--- Modern Minimalist Template ---";
+            cout << template2(sampleCard);
+            pauseScreen();
+            break;
+        case 3:
+            cout << "\n--- Romantic with Hearts Template ---";
+            cout << template3(sampleCard);
+            pauseScreen();
+            break;
+        case 4:
+            cout << "\n--- Formal Traditional Template ---";
+            cout << template4(sampleCard);
+            pauseScreen();
+            break;
+        case 5:
+            cout << "\n--- Fun & Casual Template ---";
+            cout << template5(sampleCard);
+            pauseScreen();
+            break;
+        case 0:
+            pauseScreen();
+            return;
+        default:
+            cout << "Invalid choice! Please try again." << endl;
+            pauseScreen();
+            continue;
         }
-        
-        if (templateChoice >= 1 && templateChoice <= 5) {
+
+        if (templateChoice >= 1 && templateChoice <= 5)
+        {
             cout << "\nThis is just a sample preview." << endl;
             cout << "Your actual invitation will use your wedding details." << endl;
             pauseScreen();
         }
-        
+
     } while (templateChoice != 0);
 }
 
 // Load all invitation cards from file
-void loadInvitationCards(vector<InvitationCard>& cards) {
+void loadInvitationCards(vector<InvitationCard> &cards)
+{
     cards.clear();
     ifstream fin("invitation_cards.txt");
-    if (!fin.is_open()) return;
+    if (!fin.is_open())
+        return;
     string line;
-    while (getline(fin, line)) {
-        if (!line.empty()) {
+    while (getline(fin, line))
+    {
+        if (!line.empty())
+        {
             cards.push_back(InvitationCard::fromFileString(line));
         }
     }
@@ -589,44 +680,50 @@ void loadInvitationCards(vector<InvitationCard>& cards) {
 }
 
 // Save all invitation cards to file
-void saveInvitationCards(vector<InvitationCard>& cards) {
+void saveInvitationCards(vector<InvitationCard> &cards)
+{
     ofstream fout("invitation_cards.txt");
-    if (!fout.is_open()) {
+    if (!fout.is_open())
+    {
         cout << "Error saving invitation cards.\n";
         return;
     }
-    for (const auto& c : cards) {
+    for (const auto &c : cards)
+    {
         fout << c.toFileString() << endl;
     }
     fout.close();
 }
 
 // Generate invitation text based on template choice
-string generateInvitationText(const InvitationCard& card) {
-    switch (card.templateChoice) {
-        case 1:
-            return "**********\nWedding Invitation\n" +
-                   card.brideName + " & " + card.groomName + "\n" +
-                   "Date: " + card.weddingDate + "\nVenue: " + card.weddingVenue + "\nRSVP: " + card.contactNumber + "\n**********\n";
-        case 2:
-            return "Save the Date!\n" + card.brideName + " + " + card.groomName + "\n" +
-                   "Date: " + card.weddingDate + "\nVenue: " + card.weddingVenue + "\nContact: " + card.contactNumber + "\n";
-        case 3:
-            return "Two Hearts\nJoin " + card.brideName + " & " + card.groomName + "\n" +
-                   "on " + card.weddingDate + " at " + card.weddingVenue + "\nRSVP: " + card.contactNumber + "\n";
-        case 4:
-            return "Formal Invitation\nMr. & Ms.\n" + card.brideName + " & " + card.groomName + "\n" +
-                   "Date: " + card.weddingDate + "\nVenue: " + card.weddingVenue + "\nRSVP: " + card.contactNumber + "\n";
-        case 5:
-            return "Casual Wedding\n" + card.brideName + " & " + card.groomName + "\n" +
-                   "Come celebrate on " + card.weddingDate + " at " + card.weddingVenue + "\nRSVP: " + card.contactNumber + "\n";
-        default:
-            return "Invalid template";
+string generateInvitationText(const InvitationCard &card)
+{
+    switch (card.templateChoice)
+    {
+    case 1:
+        return "**********\nWedding Invitation\n" +
+               card.brideName + " & " + card.groomName + "\n" +
+               "Date: " + card.weddingDate + "\nVenue: " + card.weddingVenue + "\nRSVP: " + card.contactNumber + "\n**********\n";
+    case 2:
+        return "Save the Date!\n" + card.brideName + " + " + card.groomName + "\n" +
+               "Date: " + card.weddingDate + "\nVenue: " + card.weddingVenue + "\nContact: " + card.contactNumber + "\n";
+    case 3:
+        return "Two Hearts\nJoin " + card.brideName + " & " + card.groomName + "\n" +
+               "on " + card.weddingDate + " at " + card.weddingVenue + "\nRSVP: " + card.contactNumber + "\n";
+    case 4:
+        return "Formal Invitation\nMr. & Ms.\n" + card.brideName + " & " + card.groomName + "\n" +
+               "Date: " + card.weddingDate + "\nVenue: " + card.weddingVenue + "\nRSVP: " + card.contactNumber + "\n";
+    case 5:
+        return "Casual Wedding\n" + card.brideName + " & " + card.groomName + "\n" +
+               "Come celebrate on " + card.weddingDate + " at " + card.weddingVenue + "\nRSVP: " + card.contactNumber + "\n";
+    default:
+        return "Invalid template";
     }
 }
 
 // Create a new invitation card
-void createInvitation(vector<InvitationCard>& cards, const string& userId, const string& weddingId, vector<WeddingEvent>& events, vector<Organizer>& organizerList) {
+void createInvitation(vector<InvitationCard> &cards, const string &userId, const string &weddingId, vector<WeddingEvent> &events, vector<Organizer> &organizerList)
+{
     InvitationCard newCard;
     newCard.userId = userId;
     newCard.weddingId = weddingId;
@@ -636,8 +733,10 @@ void createInvitation(vector<InvitationCard>& cards, const string& userId, const
     cin.ignore();
 
     newCard.cardId = generateId("C", cards.size() + 1);
-    for(auto & event: events) {
-        if(event.eventId == weddingId) {
+    for (auto &event : events)
+    {
+        if (event.eventId == weddingId)
+        {
             newCard.groomName = event.groomName;
             newCard.brideName = event.brideName;
             newCard.weddingDate = event.weddingDate;
@@ -645,8 +744,10 @@ void createInvitation(vector<InvitationCard>& cards, const string& userId, const
             break;
         }
     }
-    for(auto & user: organizerList) {
-        if(user.organizerId == userId) {
+    for (auto &user : organizerList)
+    {
+        if (user.organizerId == userId)
+        {
             newCard.contactNumber = user.baseInfo.phoneNum;
             break;
         }
@@ -659,141 +760,147 @@ void createInvitation(vector<InvitationCard>& cards, const string& userId, const
 }
 
 // View all saved cards for a user and wedding
-void viewInvitationCards( vector<InvitationCard>& cards,  string& userId,  string& weddingId) {
+void viewInvitationCards(vector<InvitationCard> &cards, string &userId, string &weddingId)
+{
     bool found = false;
-    for (const auto& c : cards) {
-        if (c.userId == userId && c.weddingId == weddingId) {
+    for (const auto &c : cards)
+    {
+        if (c.userId == userId && c.weddingId == weddingId)
+        {
             cout << "Template: " << c.templateChoice << endl;
             cout << generateInvitationText(c) << endl;
             found = true;
         }
     }
-    if (!found) cout << "No invitation cards found for this wedding.\n";
+    if (!found)
+        cout << "No invitation cards found for this wedding.\n";
 }
 
 // Make sure all template functions accept InvitationCard parameter
-string template1(InvitationCard& card) {
+string template1(InvitationCard &card)
+{
     stringstream ss;
-    ss << 
-        "************************************************\n" <<
-        "*                                              *\n" <<
-        "*              WEDDING INVITATION              *\n" <<
-        "*                                              *\n" <<
-        "*        " + card.brideName + " & " + card.groomName + "\n" +
-        "*                                              *\n" +
-        "*    Together with their families request      *\n" +
-        "*    the pleasure of your company at their     *\n" +
-        "*                  wedding                     *\n" +
-        "*                                              *\n" +
-        "*    Date: " + card.weddingDate + "\n" +
-        "*    Venue: " + card.weddingVenue + "\n" +
-        "*                                              *\n" +
-        "*    RSVP by calling: " + card.contactNumber + "\n" +
-        "*                                              *\n" +
-        "************************************************\n";
+    ss << "************************************************\n"
+       << "*                                              *\n"
+       << "*              WEDDING INVITATION              *\n"
+       << "*                                              *\n"
+       << "*        " + card.brideName + " & " + card.groomName + "\n" +
+              "*                                              *\n" +
+              "*    Together with their families request      *\n" +
+              "*    the pleasure of your company at their     *\n" +
+              "*                  wedding                     *\n" +
+              "*                                              *\n" +
+              "*    Date: " + card.weddingDate + "\n" +
+              "*    Venue: " + card.weddingVenue + "\n" +
+              "*                                              *\n" +
+              "*    RSVP by calling: " + card.contactNumber + "\n" +
+              "*                                              *\n" +
+              "************************************************\n";
     return ss.str();
 }
 
-string template2( InvitationCard& card) {
-        stringstream ss;
-        ss << 
-        "\n========================================\n" <<
-        "           SAVE THE DATE\n" <<
-        "========================================\n" <<
-        "\n" +
-        card.brideName + " + " + card.groomName + "\n" +
-        "\n" +
-        "are getting married!\n" +
-        "\n" +
-        "WHEN: " + card.weddingDate + "\n" +
-        "WHERE: " + card.weddingVenue + "\n" +
-        "\n" +
-        "Join us for a celebration of love\n" +
-        "\n" +
-        "Contact: " + card.contactNumber + "\n" +
-        "========================================\n";
-    return ss.str();
-}
-
-string template3( InvitationCard& card) {
-        stringstream ss;
-        ss << 
-        "oooooooooooooooooooooooooooooooooooooooooooooo\n" <<
-        "o                                            o\n" <<
-        "o           Two Hearts Becoming One          o\n" <<
-        "o                                            o\n" <<
-        "o               " + card.brideName + "\n" +
-        "o                    &                       o\n" +
-        "o               " + card.groomName + "\n" +
-        "o                                            o\n" +
-        "o        invite you to share in their       o\n" +
-        "o             wedding celebration           o\n" +
-        "o                                            o\n" +
-        "o  On: " + card.weddingDate + "\n" +
-        "o  Venue: " + card.weddingVenue + "\n" +
-        "o                                            o\n" +
-        "o  Please RSVP: " + card.contactNumber + "\n" +
-        "o                                            o\n" +
-        "oooooooooooooooooooooooooooooooooooooooooooooo\n";
-    return ss.str();
-}
-
-string template4( InvitationCard& card) {
+string template2(InvitationCard &card)
+{
     stringstream ss;
-    ss << 
-        "\n+======================================================+\n" <<
-        "|                                                      |\n" <<
-        "|              WEDDING ANNOUNCEMENT                    |\n" <<
-        "|                                                      |\n" <<
-        "|        Mr. " + card.groomName + "\n" +
-        "|                      and                             |\n" +
-        "|        Ms. " + card.brideName + "\n" +
-        "|                                                      |\n" +
-        "|    request the honor of your presence at their      |\n" +
-        "|                  wedding ceremony                   |\n" +
-        "|                                                      |\n" +
-        "|    Date: " + card.weddingDate + "\n" +
-        "|    Location: " + card.weddingVenue + "\n" +
-        "|                                                      |\n" +
-        "|    Kindly respond by contacting: " + card.contactNumber + "\n" +
-        "|                                                      |\n" +
-        "+======================================================+\n";
+    ss << "\n========================================\n"
+       << "           SAVE THE DATE\n"
+       << "========================================\n"
+       << "\n" +
+              card.brideName + " + " + card.groomName + "\n" +
+              "\n" +
+              "are getting married!\n" +
+              "\n" +
+              "WHEN: " + card.weddingDate + "\n" +
+              "WHERE: " + card.weddingVenue + "\n" +
+              "\n" +
+              "Join us for a celebration of love\n" +
+              "\n" +
+              "Contact: " + card.contactNumber + "\n" +
+              "========================================\n";
     return ss.str();
 }
 
-string template5( InvitationCard& card) {
-        stringstream ss;
-        ss << 
-        "\n-----------------------------------------------\n" <<
-        "                                               \n" <<
-        "        ** WEDDING PARTY INVITATION **        \n" <<
-        "                                               \n" <<
-        "    " + card.brideName + " & " + card.groomName + " are tying the knot!\n" +
-        "                                               \n" +
-        "    Come party with us as we say 'I DO!'      \n" +
-        "                                               \n" +
-        "    DATE: " + card.weddingDate + "\n" +
-        "    TIME: Coming Soon!\n" +
-        "    PLACE: " + card.weddingVenue + "\n" +
-        "                                               \n" +
-        "    There will be good food, great music,     \n" +
-        "    and lots of dancing!                      \n" +
-        "                                               \n" +
-        "    RSVP: " + card.contactNumber + "\n" +
-        "                                               \n" +
-        "    Can't wait to celebrate with you!         \n" +
-        "                                               \n" +
-        "-----------------------------------------------\n";
+string template3(InvitationCard &card)
+{
+    stringstream ss;
+    ss << "oooooooooooooooooooooooooooooooooooooooooooooo\n"
+       << "o                                            o\n"
+       << "o           Two Hearts Becoming One          o\n"
+       << "o                                            o\n"
+       << "o               " + card.brideName + "\n" +
+              "o                    &                       o\n" +
+              "o               " + card.groomName + "\n" +
+              "o                                            o\n" +
+              "o        invite you to share in their       o\n" +
+              "o             wedding celebration           o\n" +
+              "o                                            o\n" +
+              "o  On: " + card.weddingDate + "\n" +
+              "o  Venue: " + card.weddingVenue + "\n" +
+              "o                                            o\n" +
+              "o  Please RSVP: " + card.contactNumber + "\n" +
+              "o                                            o\n" +
+              "oooooooooooooooooooooooooooooooooooooooooooooo\n";
     return ss.str();
 }
 
-bool isValidEmail(const string& email) {
+string template4(InvitationCard &card)
+{
+    stringstream ss;
+    ss << "\n+======================================================+\n"
+       << "|                                                      |\n"
+       << "|              WEDDING ANNOUNCEMENT                    |\n"
+       << "|                                                      |\n"
+       << "|        Mr. " + card.groomName + "\n" +
+              "|                      and                             |\n" +
+              "|        Ms. " + card.brideName + "\n" +
+              "|                                                      |\n" +
+              "|    request the honor of your presence at their      |\n" +
+              "|                  wedding ceremony                   |\n" +
+              "|                                                      |\n" +
+              "|    Date: " + card.weddingDate + "\n" +
+              "|    Location: " + card.weddingVenue + "\n" +
+              "|                                                      |\n" +
+              "|    Kindly respond by contacting: " + card.contactNumber + "\n" +
+              "|                                                      |\n" +
+              "+======================================================+\n";
+    return ss.str();
+}
+
+string template5(InvitationCard &card)
+{
+    stringstream ss;
+    ss << "\n-----------------------------------------------\n"
+       << "                                               \n"
+       << "        ** WEDDING PARTY INVITATION **        \n"
+       << "                                               \n"
+       << "    " + card.brideName + " & " + card.groomName + " are tying the knot!\n" +
+              "                                               \n" +
+              "    Come party with us as we say 'I DO!'      \n" +
+              "                                               \n" +
+              "    DATE: " + card.weddingDate + "\n" +
+              "    TIME: Coming Soon!\n" +
+              "    PLACE: " + card.weddingVenue + "\n" +
+              "                                               \n" +
+              "    There will be good food, great music,     \n" +
+              "    and lots of dancing!                      \n" +
+              "                                               \n" +
+              "    RSVP: " + card.contactNumber + "\n" +
+              "                                               \n" +
+              "    Can't wait to celebrate with you!         \n" +
+              "                                               \n" +
+              "-----------------------------------------------\n";
+    return ss.str();
+}
+
+bool isValidEmail(const string &email)
+{
     // Simple regex pattern for email validation
     const regex pattern(R"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})");
     return regex_match(email, pattern);
 }
 
-bool isValidMalaysianPhone(const string& phone) {
+bool isValidMalaysianPhone(const string &phone)
+{
     // Malaysian phone number regex pattern
     // Matches: +60xxxxxxxxx, 60xxxxxxxxx, 0xxxxxxxxx, or xxxxxxxxx
     // Mobile: 01x-xxxx-xxxx (10-11 digits)
@@ -803,29 +910,37 @@ bool isValidMalaysianPhone(const string& phone) {
     return regex_match(phone, pattern);
 }
 
-bool isEmailExist(string& email, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList) {
+bool isEmailExist(string &email, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList)
+{
     // Check in admin list
-    for (auto& admin : adminList) {
-        if (admin.baseInfo.email == email) {
+    for (auto &admin : adminList)
+    {
+        if (admin.baseInfo.email == email)
+        {
             return true;
         }
     }
     // Check in organizer list
-    for (auto& organizer : organizerList) {
-        if (organizer.baseInfo.email == email) {
+    for (auto &organizer : organizerList)
+    {
+        if (organizer.baseInfo.email == email)
+        {
             return true;
         }
     }
     // Check in vendor list
-    for (auto& vendor : vendorList) {
-        if (vendor.baseInfo.email == email) {
+    for (auto &vendor : vendorList)
+    {
+        if (vendor.baseInfo.email == email)
+        {
             return true;
         }
     }
     return false; // Email not found in any list
 }
 
-string generateId(const string& prefix, int counter) {
+string generateId(const string &prefix, int counter)
+{
     return prefix + to_string(10000 + counter);
 }
 
@@ -840,36 +955,44 @@ void pauseScreen()
     cin.get();
 }
 
-void getBaseUserInfo(BaseInfo& baseInfo, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList)
+void getBaseUserInfo(BaseInfo &baseInfo, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList)
 {
 
     cout << "Enter name: ";
     getline(cin, baseInfo.name);
 
-    do {
+    do
+    {
         cout << "Enter email: ";
         getline(cin, baseInfo.email);
-        if (baseInfo.email == "0") {
+        if (baseInfo.email == "0")
+        {
             return;
         }
-        if (!isValidEmail(baseInfo.email)) {
+        if (!isValidEmail(baseInfo.email))
+        {
             cout << "Invalid email format. Please try again. Enter '0' to exit. " << endl;
             continue;
         }
-        if (isEmailExist(baseInfo.email, adminList, organizerList, vendorList)) {
+        if (isEmailExist(baseInfo.email, adminList, organizerList, vendorList))
+        {
             cout << "Email already exists. Please try again. Enter '0' to exit. " << endl;
-            continue;;
+            continue;
+            ;
         }
         break; // Valid email
     } while (true);
 
-    do {
+    do
+    {
         cout << "Enter phone: ";
         getline(cin, baseInfo.phoneNum);
-        if (baseInfo.phoneNum == "0") {
+        if (baseInfo.phoneNum == "0")
+        {
             return;
         }
-        if (!isValidMalaysianPhone(baseInfo.phoneNum)) {
+        if (!isValidMalaysianPhone(baseInfo.phoneNum))
+        {
             cout << "Invalid Malaysian phone number. Please try again. Enter '0' to exit. " << endl;
         }
         break;
@@ -879,7 +1002,7 @@ void getBaseUserInfo(BaseInfo& baseInfo, vector<Admin>& adminList, vector<Organi
     getline(cin, baseInfo.password);
 }
 
-void getVendorInfo(Vendor& vendor, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList)
+void getVendorInfo(Vendor &vendor, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList)
 {
     // Get base info
     getBaseUserInfo(vendor.baseInfo, adminList, organizerList, vendorList);
@@ -897,7 +1020,7 @@ void getVendorInfo(Vendor& vendor, vector<Admin>& adminList, vector<Organizer>& 
     getline(cin, vendor.type);
 };
 
-void getOrganizerInfo(Organizer& organizer, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList)
+void getOrganizerInfo(Organizer &organizer, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList)
 {
     string input;
 
@@ -907,7 +1030,7 @@ void getOrganizerInfo(Organizer& organizer, vector<Admin>& adminList, vector<Org
     organizer.organizerId = generateId("O", organizerList.size() + 1);
 }
 
-bool getAdminInfo(Admin& admin, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList)
+bool getAdminInfo(Admin &admin, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList)
 {
     string secretPassword = "Secret";
     string inputPassword;
@@ -927,7 +1050,8 @@ bool getAdminInfo(Admin& admin, vector<Admin>& adminList, vector<Organizer>& org
     return true;
 }
 
-bool login(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList, CurrentUser& currentUser) {
+bool login(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, CurrentUser &currentUser)
+{
     clearScreen();
     cout << "=== LOGIN ===" << endl;
 
@@ -972,8 +1096,10 @@ bool login(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<
     }
 
     // Check vendor
-    for (int i = 0; i < vendorList.size(); i++) {
-        if (vendorList[i].baseInfo.email == email && vendorList[i].baseInfo.password == password) {
+    for (int i = 0; i < vendorList.size(); i++)
+    {
+        if (vendorList[i].baseInfo.email == email && vendorList[i].baseInfo.password == password)
+        {
             currentUser.type = UserType::VENDOR;
             currentUser.userIndex = i;
             currentUser.userId = vendorList[i].vendorId;
@@ -990,7 +1116,7 @@ bool login(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<
     return false;
 }
 
-void logout(CurrentUser& currentUser)
+void logout(CurrentUser &currentUser)
 {
     char confirmed;
     cout << "Are you sure you want to logout (Y/N)";
@@ -1011,7 +1137,7 @@ void logout(CurrentUser& currentUser)
     }
 }
 
-void addService(CurrentUser& currentUser, vector<Vendor>& vendorList)
+void addService(CurrentUser &currentUser, vector<Vendor> &vendorList)
 {
     if (currentUser.type != VENDOR)
         return;
@@ -1027,7 +1153,8 @@ void addService(CurrentUser& currentUser, vector<Vendor>& vendorList)
     getline(cin, newService.description);
 
     int categoryChoice;
-    while (true) {
+    while (true)
+    {
         cout << "\nChoose Service Category:" << endl;
         cout << "1. Catering" << endl;
         cout << "2. Photography" << endl;
@@ -1037,7 +1164,8 @@ void addService(CurrentUser& currentUser, vector<Vendor>& vendorList)
         cout << "Enter your choice (1-5): ";
         cin >> categoryChoice;
 
-        if (cin.fail()) {
+        if (cin.fail())
+        {
             cin.clear();
             cin.ignore();
             cout << "Invalid input. Please enter a number between 1 and 5.\n";
@@ -1046,11 +1174,21 @@ void addService(CurrentUser& currentUser, vector<Vendor>& vendorList)
 
         switch (categoryChoice)
         {
-        case 1: newService.type = "Catering"; break;
-        case 2: newService.type = "Photography"; break;
-        case 3: newService.type = "Decoration"; break;
-        case 4: newService.type = "Music / Entertainment"; break;
-        case 5: newService.type = "Venue"; break;
+        case 1:
+            newService.type = "Catering";
+            break;
+        case 2:
+            newService.type = "Photography";
+            break;
+        case 3:
+            newService.type = "Decoration";
+            break;
+        case 4:
+            newService.type = "Music / Entertainment";
+            break;
+        case 5:
+            newService.type = "Venue";
+            break;
         default:
             cout << "Invalid choice. Please try again.\n";
             continue;
@@ -1076,7 +1214,7 @@ void addService(CurrentUser& currentUser, vector<Vendor>& vendorList)
     pauseScreen();
 }
 
-void displayUserProfile(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList)
+void displayUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
 {
     clearScreen();
     cout << "=== MY PROFILE ===" << endl;
@@ -1092,7 +1230,7 @@ void displayUserProfile(CurrentUser& currentUser, vector<Vendor>& vendorList, ve
     {
     case ADMIN:
     {
-        Admin& admin = adminList[currentUser.userIndex];
+        Admin &admin = adminList[currentUser.userIndex];
         cout << "User Type: Administrator" << endl;
         cout << "Admin ID: " << admin.adminId << endl;
         cout << "Name: " << admin.baseInfo.name << endl;
@@ -1102,7 +1240,7 @@ void displayUserProfile(CurrentUser& currentUser, vector<Vendor>& vendorList, ve
     }
     case ORGANIZER:
     {
-        Organizer& org = organizerList[currentUser.userIndex];
+        Organizer &org = organizerList[currentUser.userIndex];
         cout << "User Type: Wedding Organizer" << endl;
         cout << "Organizer ID: " << org.organizerId << endl;
         cout << "Name: " << org.baseInfo.name << endl;
@@ -1119,7 +1257,7 @@ void displayUserProfile(CurrentUser& currentUser, vector<Vendor>& vendorList, ve
     }
     case VENDOR:
     {
-        Vendor& vendor = vendorList[currentUser.userIndex];
+        Vendor &vendor = vendorList[currentUser.userIndex];
         cout << "User Type: Service Vendor" << endl;
         cout << "Vendor ID: " << vendor.vendorId << endl;
         cout << "Name: " << vendor.baseInfo.name << endl;
@@ -1135,37 +1273,37 @@ void displayUserProfile(CurrentUser& currentUser, vector<Vendor>& vendorList, ve
     pauseScreen();
 }
 
-void displayAllUser(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList)
+void displayAllUser(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
 {
     clearScreen();
     cout << "=== ALL USERS LIST ===" << endl;
 
     cout << "\n--- ADMINISTRATORS ---" << endl;
-    for (Admin& admin : adminList)
+    for (Admin &admin : adminList)
     {
         cout << "Admin ID: " << admin.adminId << " | Name: " << admin.baseInfo.name
-            << " | Email: " << admin.baseInfo.email << endl;
+             << " | Email: " << admin.baseInfo.email << endl;
     }
 
     cout << "\n--- ORGANIZERS ---" << endl;
-    for (Organizer& org : organizerList)
+    for (Organizer &org : organizerList)
     {
         cout << "Organizer ID: " << org.organizerId << " | Name: " << org.baseInfo.name
-            << " | Email: " << org.baseInfo.email << endl;
+             << " | Email: " << org.baseInfo.email << endl;
     }
 
     cout << "\n--- VENDORS ---" << endl;
-    for (Vendor& vendor : vendorList)
+    for (Vendor &vendor : vendorList)
     {
         cout << "Vendor ID: " << vendor.vendorId << " | Name: " << vendor.baseInfo.name
-            << " | Email: " << vendor.baseInfo.email
-            << " | Company: " << vendor.companyName << endl;
+             << " | Email: " << vendor.baseInfo.email
+             << " | Company: " << vendor.companyName << endl;
     }
 
     pauseScreen();
 }
 
-void userRegister(vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList)
+void userRegister(vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
 {
     int choice;
     clearScreen();
@@ -1212,7 +1350,7 @@ void userRegister(vector<Vendor>& vendorList, vector<Organizer>& organizerList, 
     saveDataIntoFile<Vendor>(vendorList, "vendors.txt");
 }
 
-void updateBaseInfo(BaseInfo& baseInfo, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList)
+void updateBaseInfo(BaseInfo &baseInfo, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList)
 {
     int choice;
     cout << "\n=== UPDATE BASE INFORMATION ===" << endl;
@@ -1235,16 +1373,20 @@ void updateBaseInfo(BaseInfo& baseInfo, vector<Admin>& adminList, vector<Organiz
         cout << "Name updated successfully!" << endl;
         break;
     case 2:
-        do {
+        do
+        {
             cout << "Enter email: ";
             getline(cin, baseInfo.email);
-            if (baseInfo.email == "0") {
+            if (baseInfo.email == "0")
+            {
                 return;
             }
-            if (!isValidEmail(baseInfo.email)) {
+            if (!isValidEmail(baseInfo.email))
+            {
                 cout << "Invalid email format. Please try again. Enter '0' to exit. " << endl;
             }
-            if (isEmailExist(baseInfo.email, adminList, organizerList, vendorList)) {
+            if (isEmailExist(baseInfo.email, adminList, organizerList, vendorList))
+            {
                 cout << "Email already exists. Please try again. Enter '0' to exit. " << endl;
             }
             break;
@@ -1252,13 +1394,16 @@ void updateBaseInfo(BaseInfo& baseInfo, vector<Admin>& adminList, vector<Organiz
         cout << "Email updated successfully!" << endl;
         break;
     case 3:
-        do {
+        do
+        {
             cout << "Enter phone: ";
             getline(cin, baseInfo.phoneNum);
-            if (baseInfo.phoneNum == "0") {
+            if (baseInfo.phoneNum == "0")
+            {
                 return;
             }
-            if (!isValidMalaysianPhone(baseInfo.phoneNum)) {
+            if (!isValidMalaysianPhone(baseInfo.phoneNum))
+            {
                 cout << "Invalid Malaysian phone number. Please try again. Enter '0' to exit. " << endl;
             }
             break;
@@ -1283,7 +1428,7 @@ void updateBaseInfo(BaseInfo& baseInfo, vector<Admin>& adminList, vector<Organiz
     pauseScreen();
 }
 
-void updateAdminInfo(Admin& admin, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList)
+void updateAdminInfo(Admin &admin, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList)
 {
     int choice;
     cout << "\n=== UPDATE ADMIN INFORMATION ===" << endl;
@@ -1309,7 +1454,7 @@ void updateAdminInfo(Admin& admin, vector<Admin>& adminList, vector<Organizer>& 
     }
 }
 
-void updateVendorInfo(Vendor& vendor, vector<Admin>& adminList, vector<Organizer>& organizerList, vector<Vendor>& vendorList)
+void updateVendorInfo(Vendor &vendor, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList)
 {
     int choice;
 
@@ -1369,7 +1514,7 @@ void updateVendorInfo(Vendor& vendor, vector<Admin>& adminList, vector<Organizer
     }
 }
 
-void updateUserProfile(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList)
+void updateUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
 {
     clearScreen();
 
@@ -1416,7 +1561,7 @@ void updateUserProfile(CurrentUser& currentUser, vector<Vendor>& vendorList, vec
     }
 }
 
-void updateOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList)
+void updateOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList)
 {
     if (currentUser.type != VENDOR)
     {
@@ -1428,7 +1573,7 @@ void updateOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList)
     clearScreen();
     cout << "=== UPDATE SERVICES ===" << endl;
 
-    Vendor& vendor = vendorList[currentUser.userIndex];
+    Vendor &vendor = vendorList[currentUser.userIndex];
 
     if (vendor.serviceHasProvide.empty())
     {
@@ -1439,11 +1584,11 @@ void updateOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList)
 
     cout << "\nYour Services:" << endl;
     int index = 1;
-    for (auto& service : vendor.serviceHasProvide)
+    for (auto &service : vendor.serviceHasProvide)
     {
         cout << index << ". " << service.serviceName
-            << " - RM" << service.price
-            << " (Qty: " << service.quantity << ")" << endl;
+             << " - RM" << service.price
+             << " (Qty: " << service.quantity << ")" << endl;
         index++;
     }
 
@@ -1452,14 +1597,14 @@ void updateOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList)
     cin >> serviceIndex;
     cin.ignore();
 
-    if (serviceIndex < 1 || serviceIndex >(int)vendor.serviceHasProvide.size())
+    if (serviceIndex < 1 || serviceIndex > (int)vendor.serviceHasProvide.size())
     {
         cout << "Invalid selection!" << endl;
         pauseScreen();
         return;
     }
 
-    Service& service = vendor.serviceHasProvide[serviceIndex - 1];
+    Service &service = vendor.serviceHasProvide[serviceIndex - 1];
 
     int updateChoice;
     cout << "\nCurrent Service Information:" << endl;
@@ -1539,14 +1684,14 @@ void updateOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList)
     pauseScreen();
 }
 
-void displayAllServices(vector<Vendor>& vendorList)
+void displayAllServices(vector<Vendor> &vendorList)
 {
     bool hasServices = false;
 
     clearScreen();
     cout << "=== ALL AVAILABLE SERVICES ===" << endl;
 
-    for (auto& vendor : vendorList)
+    for (auto &vendor : vendorList)
     {
         if (!vendor.serviceHasProvide.empty())
         {
@@ -1555,7 +1700,7 @@ void displayAllServices(vector<Vendor>& vendorList)
             cout << "\n--- Services by " << vendor.baseInfo.name << " (" << vendor.companyName << ") ---" << endl;
             cout << "Vendor ID: " << vendor.vendorId << " | Contact: " << vendor.baseInfo.phoneNum << endl;
 
-            for (auto& service : vendor.serviceHasProvide)
+            for (auto &service : vendor.serviceHasProvide)
             {
                 cout << serviceNum << ". Service: " << service.serviceName << endl;
                 cout << "   Description: " << service.description << endl;
@@ -1577,7 +1722,7 @@ void displayAllServices(vector<Vendor>& vendorList)
     pauseScreen();
 }
 
-void displayServicesByVendor(vector<Vendor>& vendorList)
+void displayServicesByVendor(vector<Vendor> &vendorList)
 {
     int vendorNum = 1;
     int choice;
@@ -1594,7 +1739,7 @@ void displayServicesByVendor(vector<Vendor>& vendorList)
 
     // Display all vendors
     cout << "Available Vendors:" << endl;
-    for (auto& vendor : vendorList)
+    for (auto &vendor : vendorList)
     {
         cout << vendorNum << ". " << vendor.baseInfo.name << " (" << vendor.companyName << ")" << endl;
         cout << "   Vendor ID: " << vendor.vendorId << " | Services: " << vendor.serviceHasProvide.size() << endl;
@@ -1605,14 +1750,14 @@ void displayServicesByVendor(vector<Vendor>& vendorList)
     cin >> choice;
     cin.ignore();
 
-    if (choice < 1 || choice >(int)vendorList.size())
+    if (choice < 1 || choice > (int)vendorList.size())
     {
         cout << "Invalid selection!" << endl;
         pauseScreen();
         return;
     }
 
-    Vendor& selectedVendor = vendorList[choice - 1];
+    Vendor &selectedVendor = vendorList[choice - 1];
 
     clearScreen();
     cout << "=== SERVICES BY " << selectedVendor.baseInfo.name << " ===" << endl;
@@ -1627,7 +1772,7 @@ void displayServicesByVendor(vector<Vendor>& vendorList)
     else
     {
         int serviceNum = 1;
-        for (auto& service : selectedVendor.serviceHasProvide)
+        for (auto &service : selectedVendor.serviceHasProvide)
         {
             cout << serviceNum << ". " << service.serviceName << endl;
             cout << "   Description: " << service.description << endl;
@@ -1642,20 +1787,20 @@ void displayServicesByVendor(vector<Vendor>& vendorList)
 
     pauseScreen();
 }
-//Bug here - cannot print out by type
-void displayServicesByType(vector<Vendor>& vendorList)
+// Bug here - cannot print out by type
+void displayServicesByType(vector<Vendor> &vendorList)
 {
     clearScreen();
     cout << "=== SERVICES BY TYPE ===" << endl;
 
     // First, collect all unique service types
     vector<string> serviceTypes;
-    for (auto& vendor : vendorList)
+    for (auto &vendor : vendorList)
     {
-        for (auto& service : vendor.serviceHasProvide)
+        for (auto &service : vendor.serviceHasProvide)
         {
             bool typeExists = false;
-            for (auto& existingType : serviceTypes)
+            for (auto &existingType : serviceTypes)
             {
                 if (existingType == service.type)
                 {
@@ -1680,7 +1825,7 @@ void displayServicesByType(vector<Vendor>& vendorList)
     // Display available types
     cout << "Available Service Types:" << endl;
     int typeNum = 1;
-    for (auto& type : serviceTypes)
+    for (auto &type : serviceTypes)
     {
         cout << typeNum << ". " << type << endl;
         typeNum++;
@@ -1691,7 +1836,7 @@ void displayServicesByType(vector<Vendor>& vendorList)
     cin >> choice;
     cin.ignore();
 
-    if (choice < 1 || choice >(int)serviceTypes.size())
+    if (choice < 1 || choice > (int)serviceTypes.size())
     {
         cout << "Invalid selection!" << endl;
         pauseScreen();
@@ -1705,9 +1850,9 @@ void displayServicesByType(vector<Vendor>& vendorList)
     cout << string(50, '=') << endl;
 
     bool found = false;
-    for (auto& vendor : vendorList)
+    for (auto &vendor : vendorList)
     {
-        for (auto& service : vendor.serviceHasProvide)
+        for (auto &service : vendor.serviceHasProvide)
         {
             if (service.type == selectedType)
             {
@@ -1732,7 +1877,7 @@ void displayServicesByType(vector<Vendor>& vendorList)
     pauseScreen();
 }
 
-bool deleteOwnAccount(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList)
+bool deleteOwnAccount(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
 {
     clearScreen();
     cout << "=== DELETE MY ACCOUNT ===" << endl;
@@ -1765,7 +1910,7 @@ bool deleteOwnAccount(CurrentUser& currentUser, vector<Vendor>& vendorList, vect
 
     // Warning message
     cout << "\n"
-        << string(50, '!') << endl;
+         << string(50, '!') << endl;
     cout << "WARNING: This action cannot be undone!" << endl;
     cout << "All your data will be permanently deleted!" << endl;
     cout << string(50, '!') << endl;
@@ -1841,7 +1986,7 @@ bool deleteOwnAccount(CurrentUser& currentUser, vector<Vendor>& vendorList, vect
     return true;
 }
 
-void deleteOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList)
+void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList)
 {
     if (currentUser.type != VENDOR)
     {
@@ -1853,7 +1998,7 @@ void deleteOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList)
     clearScreen();
     cout << "=== DELETE MY SERVICES ===" << endl;
 
-    Vendor& vendor = vendorList[currentUser.userIndex];
+    Vendor &vendor = vendorList[currentUser.userIndex];
 
     if (vendor.serviceHasProvide.empty())
     {
@@ -1865,11 +2010,11 @@ void deleteOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList)
     // Display current services
     cout << "Your Current Services:" << endl;
     int serviceNum = 1;
-    for (auto& service : vendor.serviceHasProvide)
+    for (auto &service : vendor.serviceHasProvide)
     {
         cout << serviceNum << ". " << service.serviceName
-            << " - RM" << fixed << setprecision(2) << service.price
-            << " (Qty: " << service.quantity << ")" << endl;
+             << " - RM" << fixed << setprecision(2) << service.price
+             << " (Qty: " << service.quantity << ")" << endl;
         cout << "   Type: " << service.type << endl;
         cout << "   Status: " << (service.available ? "Available" : "Not Available") << endl;
         serviceNum++;
@@ -1887,7 +2032,7 @@ void deleteOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList)
         return;
     }
 
-    if (choice < 1 || choice >(int)vendor.serviceHasProvide.size())
+    if (choice < 1 || choice > (int)vendor.serviceHasProvide.size())
     {
         cout << "Invalid selection!" << endl;
         pauseScreen();
@@ -1895,7 +2040,7 @@ void deleteOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList)
     }
 
     // Show selected service details
-    Service& selectedService = vendor.serviceHasProvide[choice - 1];
+    Service &selectedService = vendor.serviceHasProvide[choice - 1];
     cout << "\nYou selected to delete:" << endl;
     cout << "Service: " << selectedService.serviceName << endl;
     cout << "Type: " << selectedService.type << endl;
@@ -1924,7 +2069,7 @@ void deleteOwnService(CurrentUser& currentUser, vector<Vendor>& vendorList)
     pauseScreen();
 }
 
-void cancelBookedService(CurrentUser& currentUser, vector<Organizer>& organizerList, vector<Vendor>& vendorList, vector<WeddingEvent>& events)
+void cancelBookedService(CurrentUser &currentUser, vector<Organizer> &organizerList, vector<Vendor> &vendorList, vector<WeddingEvent> &events)
 {
     int cancelChoice;
     char confirm;
@@ -1937,11 +2082,14 @@ void cancelBookedService(CurrentUser& currentUser, vector<Organizer>& organizerL
 
     clearScreen();
     cout << "=== CANCEL BOOKED SERVICES ===" << endl;
-    Organizer& organizer = organizerList[currentUser.userIndex];
+    Organizer &organizer = organizerList[currentUser.userIndex];
 
-    for (int i = 0; i < events.size(); i++) {
-        if (events[i].eventId == currentUser.currentWeddingId) {
-            if (events[i].bookedServices.empty()) {
+    for (int i = 0; i < events.size(); i++)
+    {
+        if (events[i].eventId == currentUser.currentWeddingId)
+        {
+            if (events[i].bookedServices.empty())
+            {
                 cout << "You have no booked services to cancel." << endl;
                 pauseScreen();
                 return;
@@ -1958,14 +2106,18 @@ void cancelBookedService(CurrentUser& currentUser, vector<Organizer>& organizerL
             pauseScreen();
             return;
         }
-        if (cancelChoice < 1 || cancelChoice > events[i].bookedServices.size()){
+        if (cancelChoice < 1 || cancelChoice > events[i].bookedServices.size())
+        {
             cout << "Invalid selection!" << endl;
             pauseScreen();
             return;
         }
-        for (int j = 0; j < vendorList.size(); j++) {
-            for (int k = 0; k < vendorList[j].serviceHasProvide.size(); k++) {
-                if (vendorList[j].serviceHasProvide[k].serviceId == events[i].bookedServices[cancelChoice - 1]) {
+        for (int j = 0; j < vendorList.size(); j++)
+        {
+            for (int k = 0; k < vendorList[j].serviceHasProvide.size(); k++)
+            {
+                if (vendorList[j].serviceHasProvide[k].serviceId == events[i].bookedServices[cancelChoice - 1])
+                {
                     cout << "Service: " << vendorList[j].serviceHasProvide[k].serviceName << endl;
                     cout << "Description: " << vendorList[j].serviceHasProvide[k].description << endl;
                     cout << "Type: " << vendorList[j].serviceHasProvide[k].type << endl;
@@ -1980,9 +2132,12 @@ void cancelBookedService(CurrentUser& currentUser, vector<Organizer>& organizerL
         events[i].bookedServices.erase(events[i].bookedServices.begin() + (cancelChoice - 1));
         events[i].totalCost -= events[i].totalCost;
 
-        for (int j = 0; j < vendorList.size(); j++) {
-            for (int k = 0; k < vendorList[j].serviceHasProvide.size(); k++) {
-                if (vendorList[j].serviceHasProvide[k].serviceId == events[i].bookedServices[cancelChoice - 1]) {
+        for (int j = 0; j < vendorList.size(); j++)
+        {
+            for (int k = 0; k < vendorList[j].serviceHasProvide.size(); k++)
+            {
+                if (vendorList[j].serviceHasProvide[k].serviceId == events[i].bookedServices[cancelChoice - 1])
+                {
                     vendorList[j].serviceHasProvide[k].quantity += 1;
                     break;
                 }
@@ -1992,8 +2147,10 @@ void cancelBookedService(CurrentUser& currentUser, vector<Organizer>& organizerL
     pauseScreen();
 }
 
-void readAllBookedServices(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
-    if (currentUser.type == VENDOR) {
+void readAllBookedServices(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList)
+{
+    if (currentUser.type == VENDOR)
+    {
         cout << "Vendor cannot view booked services!" << endl;
         pauseScreen();
         return;
@@ -2001,29 +2158,35 @@ void readAllBookedServices(CurrentUser& currentUser, vector<WeddingEvent>& event
 
     // Get current wedding ID from organizer
     string currentWeddingId;
-    for (const auto& organizer : organizerList) {
-        if (organizer.organizerId == currentUser.userId) {
+    for (const auto &organizer : organizerList)
+    {
+        if (organizer.organizerId == currentUser.userId)
+        {
             currentWeddingId = organizer.currentWeddingId;
             break;
         }
     }
 
-    if (currentWeddingId.empty()) {
+    if (currentWeddingId.empty())
+    {
         cout << "No active wedding! Please create a wedding first." << endl;
         pauseScreen();
         return;
     }
 
     // Find the current wedding event
-    const WeddingEvent* currentEvent = nullptr;
-    for (const auto& event : events) {
-        if (event.eventId == currentWeddingId) {
+    const WeddingEvent *currentEvent = nullptr;
+    for (const auto &event : events)
+    {
+        if (event.eventId == currentWeddingId)
+        {
             currentEvent = &event;
             break;
         }
     }
 
-    if (!currentEvent || currentEvent->status == "cancelled") {
+    if (!currentEvent || currentEvent->status == "cancelled")
+    {
         cout << "Wedding not found or cancelled!" << endl;
         pauseScreen();
         return;
@@ -2039,21 +2202,27 @@ void readAllBookedServices(CurrentUser& currentUser, vector<WeddingEvent>& event
     cout << "Remaining Budget: RM" << fixed << setprecision(2) << (currentEvent->budget - currentEvent->totalCost) << endl;
     cout << string(80, '=') << endl;
 
-    if (currentEvent->bookedServices.empty()) {
+    if (currentEvent->bookedServices.empty())
+    {
         cout << "No services booked for this wedding yet." << endl;
     }
-    else {
+    else
+    {
         cout << "Total Booked Services: " << currentEvent->bookedServices.size() << endl;
         cout << string(80, '-') << endl;
 
         int serviceCount = 1;
-        for (const string& bookedId : currentEvent->bookedServices) {
+        for (const string &bookedId : currentEvent->bookedServices)
+        {
             bool serviceFound = false;
 
             // Search through all vendors and their services
-            for (const auto& vendor : vendorList) {
-                for (const auto& service : vendor.serviceHasProvide) {
-                    if (service.serviceId == bookedId) {
+            for (const auto &vendor : vendorList)
+            {
+                for (const auto &service : vendor.serviceHasProvide)
+                {
+                    if (service.serviceId == bookedId)
+                    {
                         cout << serviceCount << ". Service: " << service.serviceName << endl;
                         cout << "   Vendor: " << vendor.baseInfo.name << " (" << vendor.companyName << ")" << endl;
                         cout << "   Description: " << service.description << endl;
@@ -2067,10 +2236,12 @@ void readAllBookedServices(CurrentUser& currentUser, vector<WeddingEvent>& event
                         break;
                     }
                 }
-                if (serviceFound) break;
+                if (serviceFound)
+                    break;
             }
 
-            if (!serviceFound) {
+            if (!serviceFound)
+            {
                 cout << serviceCount << ". Service ID " << bookedId << " (Service details not found)" << endl;
                 cout << "   " << string(70, '-') << endl;
             }
@@ -2082,15 +2253,17 @@ void readAllBookedServices(CurrentUser& currentUser, vector<WeddingEvent>& event
         cout << "Total Services Booked: " << currentEvent->bookedServices.size() << endl;
         cout << "Total Amount: RM" << fixed << setprecision(2) << currentEvent->totalCost << endl;
         cout << "Budget Utilization: " << fixed << setprecision(1)
-            << (currentEvent->totalCost / currentEvent->budget * 100) << "%" << endl;
+             << (currentEvent->totalCost / currentEvent->budget * 100) << "%" << endl;
     }
 
     pauseScreen();
 }
 
 // Function to delete a booked service from current wedding
-void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
-    if (currentUser.type != ORGANIZER) {
+void deleteBookedService(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList)
+{
+    if (currentUser.type != ORGANIZER)
+    {
         cout << "Only organizers can delete booked services!" << endl;
         pauseScreen();
         return;
@@ -2098,34 +2271,41 @@ void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events,
 
     // Get current wedding ID from organizer
     string currentWeddingId;
-    for (const auto& organizer : organizerList) {
-        if (organizer.organizerId == currentUser.userId) {
+    for (const auto &organizer : organizerList)
+    {
+        if (organizer.organizerId == currentUser.userId)
+        {
             currentWeddingId = organizer.currentWeddingId;
             break;
         }
     }
 
-    if (currentWeddingId.empty()) {
+    if (currentWeddingId.empty())
+    {
         cout << "No active wedding! Please create a wedding first." << endl;
         pauseScreen();
         return;
     }
 
     // Find the current wedding event
-    WeddingEvent* currentEvent = nullptr;
-    for (auto& event : events) {
-        if (event.eventId == currentWeddingId) {
+    WeddingEvent *currentEvent = nullptr;
+    for (auto &event : events)
+    {
+        if (event.eventId == currentWeddingId)
+        {
             currentEvent = &event;
             break;
         }
     }
 
-    if (!currentEvent || currentEvent->status == "cancelled") {
+    if (!currentEvent || currentEvent->status == "cancelled")
+    {
         cout << "Wedding not found or cancelled!" << endl;
         pauseScreen();
         return;
     }
-    if (currentEvent->status == "completed") {
+    if (currentEvent->status == "completed")
+    {
         cout << "Cannot delete services from a completed wedding!" << endl;
         pauseScreen();
         return;
@@ -2137,7 +2317,8 @@ void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events,
     cout << "Wedding Date: " << currentEvent->weddingDate << endl;
     cout << string(60, '=') << endl;
 
-    if (currentEvent->bookedServices.empty()) {
+    if (currentEvent->bookedServices.empty())
+    {
         cout << "No services booked for this wedding." << endl;
         pauseScreen();
         return;
@@ -2150,13 +2331,17 @@ void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events,
     vector<string> validServiceIds; // Store only valid service IDs for selection
     int displayIndex = 1;
 
-    for (const string& bookedId : currentEvent->bookedServices) {
+    for (const string &bookedId : currentEvent->bookedServices)
+    {
         bool serviceFound = false;
 
         // Search through all vendors and their services
-        for (const auto& vendor : vendorList) {
-            for (const auto& service : vendor.serviceHasProvide) {
-                if (service.serviceId == bookedId) {
+        for (const auto &vendor : vendorList)
+        {
+            for (const auto &service : vendor.serviceHasProvide)
+            {
+                if (service.serviceId == bookedId)
+                {
                     cout << displayIndex << ". " << service.serviceName << endl;
                     cout << "   Vendor: " << vendor.baseInfo.name << " (" << vendor.companyName << ")" << endl;
                     cout << "   Type: " << service.type << endl;
@@ -2169,10 +2354,12 @@ void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events,
                     break;
                 }
             }
-            if (serviceFound) break;
+            if (serviceFound)
+                break;
         }
 
-        if (!serviceFound) {
+        if (!serviceFound)
+        {
             cout << displayIndex << ". Service ID " << bookedId << " (Details not found - maybe deleted by vendor)" << endl;
             cout << "   Price: Unknown" << endl;
             cout << "   " << string(50, '-') << endl;
@@ -2182,7 +2369,8 @@ void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events,
         }
     }
 
-    if (validServiceIds.empty()) {
+    if (validServiceIds.empty())
+    {
         cout << "No valid services to delete." << endl;
         pauseScreen();
         return;
@@ -2193,7 +2381,8 @@ void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events,
     cin >> choice;
 
     // Input validation
-    if (cin.fail()) {
+    if (cin.fail())
+    {
         cin.clear();
         cin.ignore(10000, '\n');
         cout << "Invalid input! Please enter a number." << endl;
@@ -2202,13 +2391,15 @@ void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events,
     }
     cin.ignore();
 
-    if (choice == 0) {
+    if (choice == 0)
+    {
         cout << "Service deletion cancelled." << endl;
         pauseScreen();
         return;
     }
 
-    if (choice < 1 || choice > static_cast<int>(validServiceIds.size())) {
+    if (choice < 1 || choice > static_cast<int>(validServiceIds.size()))
+    {
         cout << "Invalid selection!" << endl;
         pauseScreen();
         return;
@@ -2219,28 +2410,34 @@ void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events,
     // Find service details and the actual index in bookedServices
     string serviceName = "Unknown Service";
     double servicePrice = 0.0;
-    Vendor* serviceVendor = nullptr;
-    Service* selectedService = nullptr;
+    Vendor *serviceVendor = nullptr;
+    Service *selectedService = nullptr;
     int actualIndex = -1;
 
     // Find the actual index in bookedServices vector
-    for (int i = 0; i < currentEvent->bookedServices.size(); i++) {
-        if (currentEvent->bookedServices[i] == selectedServiceId) {
+    for (int i = 0; i < currentEvent->bookedServices.size(); i++)
+    {
+        if (currentEvent->bookedServices[i] == selectedServiceId)
+        {
             actualIndex = static_cast<int>(i);
             break;
         }
     }
 
-    if (actualIndex == -1) {
+    if (actualIndex == -1)
+    {
         cout << "Error: Service not found in booked services!" << endl;
         pauseScreen();
         return;
     }
 
     // Find service details from vendor list
-    for (auto& vendor : vendorList) {
-        for (auto& service : vendor.serviceHasProvide) {
-            if (service.serviceId == selectedServiceId) {
+    for (auto &vendor : vendorList)
+    {
+        for (auto &service : vendor.serviceHasProvide)
+        {
+            if (service.serviceId == selectedServiceId)
+            {
                 serviceName = service.serviceName;
                 servicePrice = service.price;
                 serviceVendor = &vendor;
@@ -2248,20 +2445,23 @@ void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events,
                 break;
             }
         }
-        if (selectedService) break;
+        if (selectedService)
+            break;
     }
 
     // Confirmation
     cout << "\nYou selected to delete:" << endl;
     cout << "Service: " << serviceName << endl;
-    if (serviceVendor) {
+    if (serviceVendor)
+    {
         cout << "Vendor: " << serviceVendor->baseInfo.name << endl;
     }
     cout << "Price: RM" << fixed << setprecision(2) << servicePrice << endl;
 
-    if (servicePrice > 0) {
+    if (servicePrice > 0)
+    {
         cout << "\nThis will reduce your total cost from RM" << fixed << setprecision(2) << currentEvent->totalCost
-            << " to RM" << fixed << setprecision(2) << (currentEvent->totalCost - servicePrice) << endl;
+             << " to RM" << fixed << setprecision(2) << (currentEvent->totalCost - servicePrice) << endl;
     }
 
     char confirm;
@@ -2269,7 +2469,8 @@ void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events,
     cin >> confirm;
     cin.ignore();
 
-    if (confirm != 'y' && confirm != 'Y') {
+    if (confirm != 'y' && confirm != 'Y')
+    {
         cout << "Service deletion cancelled." << endl;
         pauseScreen();
         return;
@@ -2279,16 +2480,19 @@ void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events,
     currentEvent->bookedServices.erase(currentEvent->bookedServices.begin() + actualIndex);
 
     // Update total cost only if service price is known
-    if (servicePrice > 0) {
+    if (servicePrice > 0)
+    {
         currentEvent->totalCost -= servicePrice;
         // Ensure total cost doesn't go negative
-        if (currentEvent->totalCost < 0) {
+        if (currentEvent->totalCost < 0)
+        {
             currentEvent->totalCost = 0;
         }
     }
 
     // Update service availability
-    if (selectedService) {
+    if (selectedService)
+    {
         selectedService->quantity++;
         selectedService->available = true;
     }
@@ -2300,23 +2504,28 @@ void deleteBookedService(CurrentUser& currentUser, vector<WeddingEvent>& events,
     cout << "\nService '" << serviceName << "' deleted successfully!" << endl;
     cout << "New total cost: RM" << fixed << setprecision(2) << currentEvent->totalCost << endl;
 
-    if (currentEvent->budget > 0) {
+    if (currentEvent->budget > 0)
+    {
         cout << "Remaining budget: RM" << fixed << setprecision(2) << (currentEvent->budget - currentEvent->totalCost) << endl;
     }
 
     pauseScreen();
 }
 
-void setWeddingToCurrent(CurrentUser& currentUser, vector<Organizer>& organizerList, vector<WeddingEvent>& events) {
-    if (currentUser.type != ORGANIZER) {
+void setWeddingToCurrent(CurrentUser &currentUser, vector<Organizer> &organizerList, vector<WeddingEvent> &events)
+{
+    if (currentUser.type != ORGANIZER)
+    {
         cout << "Only organizers can manage weddings!" << endl;
         pauseScreen();
         return;
     }
 
     vector<WeddingEvent> myEvents;
-    for (auto& event : events) {
-        if (event.organizerId == currentUser.userId && event.status != "planning") {
+    for (auto &event : events)
+    {
+        if (event.organizerId == currentUser.userId && event.status != "planning")
+        {
             myEvents.push_back(event);
         }
     }
@@ -2325,16 +2534,18 @@ void setWeddingToCurrent(CurrentUser& currentUser, vector<Organizer>& organizerL
     cout << "=== SET CURRENT WEDDING ===" << endl;
     cout << "Your Weddings:" << endl;
 
-    if (myEvents.empty()) {
+    if (myEvents.empty())
+    {
         cout << "You have no avalaible weddings to set as current wedding!" << endl;
         pauseScreen();
         return;
     }
 
-    for (int i = 0; i < myEvents.size(); i++) {
+    for (int i = 0; i < myEvents.size(); i++)
+    {
         cout << i + 1 << ". " << myEvents[i].groomName << " & " << myEvents[i].brideName << endl
-            << " | Date: " << myEvents[i].weddingDate << endl
-            << " | Status: " << myEvents[i].status << endl;
+             << " | Date: " << myEvents[i].weddingDate << endl
+             << " | Status: " << myEvents[i].status << endl;
     }
 
     int choice;
@@ -2342,13 +2553,15 @@ void setWeddingToCurrent(CurrentUser& currentUser, vector<Organizer>& organizerL
     cin >> choice;
     cin.ignore();
 
-    if (choice == 0) {
+    if (choice == 0)
+    {
         cout << "Set current wedding cancelled." << endl;
         pauseScreen();
         return;
     }
 
-    if (choice < 1 || choice >myEvents.size()) {
+    if (choice < 1 || choice > myEvents.size())
+    {
         cout << "Invalid selection!" << endl;
         pauseScreen();
         return;
@@ -2362,21 +2575,25 @@ void setWeddingToCurrent(CurrentUser& currentUser, vector<Organizer>& organizerL
     cout << "Current wedding set to: " << myEvents[choice - 1].groomName << " & " << myEvents[choice - 1].brideName << endl;
     cout << "Wedding ID: " << myEvents[choice - 1].eventId << endl;
     pauseScreen();
-
 }
 
-void cancelWedding(string currentWeddingId, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Participant>& participants) {
+void cancelWedding(string currentWeddingId, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Participant> &participants)
+{
     WeddingEvent selectedEvent;
     clearScreen();
     cout << "=== CANCEL WEDDING ===" << endl;
-    for (int i = 0; i < events.size(); i++) {
-        if (events[i].eventId == currentWeddingId) {
-            if (events[i].status == "cancelled") {
+    for (int i = 0; i < events.size(); i++)
+    {
+        if (events[i].eventId == currentWeddingId)
+        {
+            if (events[i].status == "cancelled")
+            {
                 cout << "This wedding is already cancelled." << endl;
                 pauseScreen();
                 return;
             }
-            if (events[i].status == "completed") {
+            if (events[i].status == "completed")
+            {
                 cout << "Cannot cancel a completed wedding." << endl;
                 pauseScreen();
                 return;
@@ -2397,12 +2614,17 @@ void cancelWedding(string currentWeddingId, vector<WeddingEvent>& events, vector
     cin >> confirm;
     cin.ignore();
 
-    if (confirm == 'y' || confirm == 'Y') {
+    if (confirm == 'y' || confirm == 'Y')
+    {
         // Restore all booked services
-        for (string& serviceId : selectedEvent.bookedServices) {
-            for (auto& vendor : vendorList) {
-                for (auto& service : vendor.serviceHasProvide) {
-                    if (service.serviceId == serviceId) {
+        for (string &serviceId : selectedEvent.bookedServices)
+        {
+            for (auto &vendor : vendorList)
+            {
+                for (auto &service : vendor.serviceHasProvide)
+                {
+                    if (service.serviceId == serviceId)
+                    {
                         service.quantity++;
                         service.available = true;
                         break; // found the service, no need to keep searching
@@ -2426,13 +2648,15 @@ void cancelWedding(string currentWeddingId, vector<WeddingEvent>& events, vector
 
         cout << "Wedding cancelled successfully. All booked services were released." << endl;
     }
-    else {
+    else
+    {
         cout << "Cancellation aborted." << endl;
     }
     pauseScreen();
 }
 
-void UpdateWeddingMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList, vector<WeddingEvent>& events) {
+void UpdateWeddingMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events)
+{
     int choice;
     do
     {
@@ -2440,7 +2664,8 @@ void UpdateWeddingMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vec
         cout << "=== SERVICES MANAGEMENT===" << endl;
         cout << "1. Book a New Service for Wedding" << endl;
         cout << "2. Read All The Booked Service" << endl;
-        cout << "3. Cancel Booked Service" << endl << endl;
+        cout << "3. Cancel Booked Service" << endl
+             << endl;
 
         cout << "=== WEDDING MANAGEMENT ===" << endl;
         cout << "4. Mark as Completed" << endl;
@@ -2465,8 +2690,10 @@ void UpdateWeddingMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vec
             cancelBookedService(currentUser, organizerList, vendorList, events);
             break;
         case 4:
-            for (int i = 0; i < events.size(); i++) {
-                if (events[i].eventId == currentUser.currentWeddingId) {
+            for (int i = 0; i < events.size(); i++)
+            {
+                if (events[i].eventId == currentUser.currentWeddingId)
+                {
                     events[i].status = "completed";
                 }
             }
@@ -2484,7 +2711,8 @@ void UpdateWeddingMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vec
     } while (choice != 0);
 }
 
-void MyProfileMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList) {
+void MyProfileMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
+{
     int choice;
     do
     {
@@ -2509,7 +2737,8 @@ void MyProfileMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<
             pauseScreen();
             break;
         case 3:
-            if (deleteOwnAccount(currentUser, vendorList, organizerList, adminList)) {
+            if (deleteOwnAccount(currentUser, vendorList, organizerList, adminList))
+            {
                 return;
             }
         case 0:
@@ -2523,10 +2752,10 @@ void MyProfileMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<
     } while (choice != 0);
 }
 
-void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList, vector<WeddingEvent>& events, vector<Participant>& participants)
+void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants)
 {
     int choice;
-    WeddingEvent* currentEvent = nullptr;
+    WeddingEvent *currentEvent = nullptr;
 
     do
     {
@@ -2534,7 +2763,7 @@ void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<
         cout << "=== ORGANIZER DASHBOARD ===" << endl;
         cout << "Welcome, " << currentUser.userName << " (Wedding Organizer)" << endl;
         // Display wedding info
-        Organizer& org = organizerList[currentUser.userIndex];
+        Organizer &org = organizerList[currentUser.userIndex];
         cout << "==========================================" << endl;
         cout << "1. Book a New Wedding" << endl;
         cout << "2. View My All Wedding" << endl;
@@ -2574,14 +2803,17 @@ void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<
             generateInvitationCardMenu(currentUser, events, organizerList);
             break;
         case 7:
-            for (auto& event : events) {
-                if (event.eventId == currentUser.currentWeddingId) {
+            for (auto &event : events)
+            {
+                if (event.eventId == currentUser.currentWeddingId)
+                {
                     currentEvent = &event;
                     break;
                 }
             }
 
-            if (!currentEvent || currentEvent->status == "cancelled") {
+            if (!currentEvent || currentEvent->status == "cancelled")
+            {
                 cout << "Wedding not found or cancelled!" << endl;
                 pauseScreen();
                 return;
@@ -2608,7 +2840,7 @@ void organizerMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<
     } while (choice != 0 && currentUser.type != NONE);
 }
 
-void adminMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList, vector<WeddingEvent>& events, vector<Participant>& participants, vector<PaymentTransaction>& transactions)
+void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants, vector<PaymentTransaction> &transactions)
 {
     int choice;
     WeddingEvent currentEvent;
@@ -2620,23 +2852,28 @@ void adminMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Orga
         cout << "==========================================" << endl;
         cout << "USER MANAGEMENT:" << endl;
         cout << "1. View All Users" << endl;
-        cout << "2. Register New User" << endl << endl;
+        cout << "2. Register New User" << endl
+             << endl;
 
         cout << "SERVICE MANAGEMENT:" << endl;
         cout << "3. View All Services" << endl;
         cout << "4. View Services by Vendor" << endl;
-        cout << "5. View Services by Type" << endl << endl;
+        cout << "5. View Services by Type" << endl
+             << endl;
 
         cout << "EVENT MANAGEMENT:" << endl;
         cout << "6. View All Weddings" << endl;
         cout << "7. View Weddings by Organizer" << endl;
-        cout << "8. View Weddings by Status" << endl << endl;
+        cout << "8. View Weddings by Status" << endl
+             << endl;
 
         cout << "MONITORING MANAGEMENT" << endl;
-        cout << "9. View Participant by Wedding" << endl << endl;
+        cout << "9. View Participant by Wedding" << endl
+             << endl;
 
         cout << "Reporting Management" << endl;
-        cout << "10. Generate Reports" << endl << endl;
+        cout << "10. Generate Reports" << endl
+             << endl;
 
         cout << "OWN ACCOUNT MANAGEMENT:" << endl;
         cout << "11. My Profile" << endl;
@@ -2675,14 +2912,17 @@ void adminMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Orga
             viewWeddingByStatus(events);
             break;
         case 9:
-            for (auto& event : events) {
-                if (event.eventId == currentUser.currentWeddingId) {
+            for (auto &event : events)
+            {
+                if (event.eventId == currentUser.currentWeddingId)
+                {
                     currentEvent = event;
                     break;
                 }
             }
 
-            if (currentEvent.eventId.empty() || currentEvent.status == "cancelled") {
+            if (currentEvent.eventId.empty() || currentEvent.status == "cancelled")
+            {
                 cout << "Wedding not found or cancelled!" << endl;
                 pauseScreen();
                 return;
@@ -2707,7 +2947,7 @@ void adminMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Orga
     } while (choice != 0 && currentUser.type != NONE);
 }
 // product
-void vendorMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList)
+void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
 {
     int choice;
     do
@@ -2717,7 +2957,7 @@ void vendorMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Org
         cout << "Welcome, " << currentUser.userName << " (Service Vendor)" << endl;
 
         // Display vendor info
-        Vendor& vendor = vendorList[currentUser.userIndex];
+        Vendor &vendor = vendorList[currentUser.userIndex];
         cout << "Company: " << vendor.companyName << endl;
         cout << "Services: " << vendor.serviceHasProvide.size() << endl;
         cout << "==========================================" << endl;
@@ -2725,11 +2965,13 @@ void vendorMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Org
         cout << "1. Add New Service" << endl;
         cout << "2. View My Services" << endl;
         cout << "3. Update My Services" << endl;
-        cout << "4. Delete My Services" << endl << endl;
+        cout << "4. Delete My Services" << endl
+             << endl;
 
         cout << "MARKET RESEARCH:" << endl;
         cout << "5. View All Services " << endl;
-        cout << "6. View Services by Type" << endl << endl;
+        cout << "6. View Services by Type" << endl
+             << endl;
 
         cout << "ACCOUNT MANAGEMENT:" << endl;
         cout << "7. My Profile" << endl;
@@ -2774,7 +3016,7 @@ void vendorMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Org
     } while (choice != 0 && currentUser.type != NONE);
 }
 
-void mainMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organizer>& organizerList, vector<Admin>& adminList, vector<WeddingEvent>& events, vector<Participant>& participants, vector<PaymentTransaction>& transactions)
+void mainMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants, vector<PaymentTransaction> &transactions)
 {
     int choice;
 
@@ -2786,11 +3028,14 @@ void mainMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organ
         cout << "======================================" << endl;
         cout << "1. Login" << endl;
         cout << "2. Register New Account" << endl;
-        cout << "3. Exit" << endl;
+        cout << "0. Exit" << endl;
         cout << "======================================" << endl;
-        cout << "Enter your choice: ";
-        cin >> choice;
-        cin.ignore();
+        choice = returnInt();
+
+        if (choice = -1)
+        {
+            continue;
+        }
 
         switch (choice)
         {
@@ -2819,7 +3064,7 @@ void mainMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organ
         case 2:
             userRegister(vendorList, organizerList, adminList);
             break;
-        case 3:
+        case 0:
             cout << "Thank you for using Wedding Management System!" << endl;
             cout << "Goodbye!" << endl;
             break;
@@ -2832,13 +3077,19 @@ void mainMenu(CurrentUser& currentUser, vector<Vendor>& vendorList, vector<Organ
 }
 
 // Event
-bool isValidDate(const string& date) {
-    if (date.length() != 10) return false;
-    if (date[4] != '-' || date[7] != '-') return false;
+bool isValidDate(const string &date)
+{
+    if (date.length() != 10)
+        return false;
+    if (date[4] != '-' || date[7] != '-')
+        return false;
 
-    for (int i = 0; i < 10; i++) {
-        if (i == 4 || i == 7) continue;
-        if (!isdigit(date[i])) return false;
+    for (int i = 0; i < 10; i++)
+    {
+        if (i == 4 || i == 7)
+            continue;
+        if (!isdigit(date[i]))
+            return false;
     }
 
     time_t now = time(0);
@@ -2849,18 +3100,25 @@ bool isValidDate(const string& date) {
     int month = stoi(date.substr(5, 2));
     int day = stoi(date.substr(8, 2));
 
-    if (month < 1 || month > 12) return false;
-    if (day < 1 || day > 31) return false;
+    if (month < 1 || month > 12)
+        return false;
+    if (day < 1 || day > 31)
+        return false;
 
-    if (year < (currentDate.tm_year + 1900)) return false;
-    if (year == (currentDate.tm_year + 1900) && month < (currentDate.tm_mon + 1)) return false;
-    if (year == (currentDate.tm_year + 1900) && month == (currentDate.tm_mon + 1) && day <= currentDate.tm_mday) return false;
+    if (year < (currentDate.tm_year + 1900))
+        return false;
+    if (year == (currentDate.tm_year + 1900) && month < (currentDate.tm_mon + 1))
+        return false;
+    if (year == (currentDate.tm_year + 1900) && month == (currentDate.tm_mon + 1) && day <= currentDate.tm_mday)
+        return false;
 
     return true;
 }
 
-bool isValidWeddingDate(const string& date) {
-    if (!isValidDate(date)) return false;
+bool isValidWeddingDate(const string &date)
+{
+    if (!isValidDate(date))
+        return false;
 
     int year = stoi(date.substr(0, 4));
     int month = stoi(date.substr(5, 2));
@@ -2872,14 +3130,15 @@ bool isValidWeddingDate(const string& date) {
     futureDate.tm_mday += 30;
     mktime(&futureDate);
 
-    tm inputDate = { 0 };
+    tm inputDate = {0};
     inputDate.tm_year = year - 1900;
     inputDate.tm_mon = month - 1;
     inputDate.tm_mday = day;
     mktime(&inputDate);
 
     if (inputDate.tm_year < futureDate.tm_year ||
-        (inputDate.tm_year == futureDate.tm_year && inputDate.tm_yday < futureDate.tm_yday)) {
+        (inputDate.tm_year == futureDate.tm_year && inputDate.tm_yday < futureDate.tm_yday))
+    {
         cout << "Wedding date must be at least 30 days from today!\n";
         return false;
     }
@@ -2887,10 +3146,14 @@ bool isValidWeddingDate(const string& date) {
     return true;
 }
 
-bool isDateAvailable(const string& date, const vector<WeddingEvent>& events, const string& venue) {
-    for (const auto& event : events) {
-        if (event.weddingDate == date && event.status != "cancelled") {
-            if (venue.empty() || event.weddingVenue == venue) {
+bool isDateAvailable(const string &date, const vector<WeddingEvent> &events, const string &venue)
+{
+    for (const auto &event : events)
+    {
+        if (event.weddingDate == date && event.status != "cancelled")
+        {
+            if (venue.empty() || event.weddingVenue == venue)
+            {
                 return false;
             }
         }
@@ -2898,24 +3161,32 @@ bool isDateAvailable(const string& date, const vector<WeddingEvent>& events, con
     return true;
 }
 
-bool isValidBudget(double budget) {
-    if (budget < 1000) {
+bool isValidBudget(double budget)
+{
+    if (budget < 1000)
+    {
         cout << "Budget must be at least RM1000!\n";
         return false;
     }
-    if (budget > 1000000) {
+    if (budget > 1000000)
+    {
         cout << "Budget cannot exceed RM1,000,000!\n";
         return false;
     }
     return true;
 }
 
-double calculateServiceCost(const vector<int>& serviceIds, const vector<Vendor>& vendorList) {
+double calculateServiceCost(const vector<int> &serviceIds, const vector<Vendor> &vendorList)
+{
     double total = 0.0;
-    for (int serviceId : serviceIds) {
-        for (const auto& vendor : vendorList) {
-            for (const auto& service : vendor.serviceHasProvide) {
-                if (service.serviceId == "S" + to_string(serviceId)) {
+    for (int serviceId : serviceIds)
+    {
+        for (const auto &vendor : vendorList)
+        {
+            for (const auto &service : vendor.serviceHasProvide)
+            {
+                if (service.serviceId == "S" + to_string(serviceId))
+                {
                     total += service.price;
                     break;
                 }
@@ -2925,8 +3196,10 @@ double calculateServiceCost(const vector<int>& serviceIds, const vector<Vendor>&
     return total;
 }
 
-void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
-    if (currentUser.type != ORGANIZER) {
+void createNewWedding(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList)
+{
+    if (currentUser.type != ORGANIZER)
+    {
         cout << "Only organizers can create weddings!" << endl;
         pauseScreen();
         return;
@@ -2948,14 +3221,17 @@ void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, ve
     getline(cin, newEvent.brideName);
 
     bool validDate = false;
-    while (!validDate) {
+    while (!validDate)
+    {
         cout << "Wedding Date (YYYY-MM-DD): ";
         getline(cin, newEvent.weddingDate);
 
-        if (!isValidWeddingDate(newEvent.weddingDate)) {
+        if (!isValidWeddingDate(newEvent.weddingDate))
+        {
             cout << "Invalid date! Please use YYYY-MM-DD format and ensure it's at least 30 days from today.\n";
         }
-        else {
+        else
+        {
             validDate = true;
         }
     }
@@ -2967,29 +3243,36 @@ void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, ve
     getline(cin, newEvent.weddingTheme);
 
     bool validBudget = false;
-    while (!validBudget) {
+    while (!validBudget)
+    {
         cout << "Budget (RM): ";
         string budgetStr;
         getline(cin, budgetStr);
 
-        try {
+        try
+        {
             newEvent.budget = stod(budgetStr);
-            if (!isValidBudget(newEvent.budget)) {
+            if (!isValidBudget(newEvent.budget))
+            {
                 cout << "Budget must be between RM1000 and RM1,000,000!\n";
             }
-            else {
+            else
+            {
                 validBudget = true;
             }
         }
-        catch (...) {
+        catch (...)
+        {
             cout << "Invalid budget amount!\n";
         }
     }
 
     events.push_back(newEvent);
 
-    for (auto& organizer : organizerList) {
-        if (organizer.organizerId == currentUser.userId) {
+    for (auto &organizer : organizerList)
+    {
+        if (organizer.organizerId == currentUser.userId)
+        {
             organizer.currentWeddingId = newEvent.eventId;
             break;
         }
@@ -3001,36 +3284,44 @@ void createNewWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, ve
     pauseScreen();
 }
 
-void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<Organizer>& organizerList) {
-    if (currentUser.type != ORGANIZER) {
+void bookServicesForWedding(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList)
+{
+    if (currentUser.type != ORGANIZER)
+    {
         cout << "Only organizers can book services!" << endl;
         pauseScreen();
         return;
     }
 
     string currentWeddingId;
-    for (const auto& organizer : organizerList) {
-        if (organizer.organizerId == currentUser.userId) {
+    for (const auto &organizer : organizerList)
+    {
+        if (organizer.organizerId == currentUser.userId)
+        {
             currentWeddingId = organizer.currentWeddingId;
             break;
         }
     }
 
-    if (currentWeddingId.empty()) {
+    if (currentWeddingId.empty())
+    {
         cout << "No active wedding! Please create a wedding first." << endl;
         pauseScreen();
         return;
     }
 
-    WeddingEvent* currentEvent = nullptr;
-    for (auto& event : events) {
-        if (event.eventId == currentWeddingId) {
+    WeddingEvent *currentEvent = nullptr;
+    for (auto &event : events)
+    {
+        if (event.eventId == currentWeddingId)
+        {
             currentEvent = &event;
             break;
         }
     }
 
-    if (!currentEvent || currentEvent->status == "cancelled") {
+    if (!currentEvent || currentEvent->status == "cancelled")
+    {
         cout << "Wedding not found or cancelled!" << endl;
         pauseScreen();
         return;
@@ -3058,15 +3349,27 @@ void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& even
     cin >> choice;
     cin.ignore();
 
-    if (choice == 0) return;
+    if (choice == 0)
+        return;
 
     string serviceType;
-    switch (choice) {
-    case 1: serviceType = "venue"; break;
-    case 2: serviceType = "catering"; break;
-    case 3: serviceType = "photography"; break;
-    case 4: serviceType = "decoration"; break;
-    case 5: serviceType = ""; break;
+    switch (choice)
+    {
+    case 1:
+        serviceType = "venue";
+        break;
+    case 2:
+        serviceType = "catering";
+        break;
+    case 3:
+        serviceType = "photography";
+        break;
+    case 4:
+        serviceType = "decoration";
+        break;
+    case 5:
+        serviceType = "";
+        break;
     default:
         cout << "Invalid choice!" << endl;
         pauseScreen();
@@ -3079,12 +3382,15 @@ void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& even
     vector<pair<int, int>> availableServices;
     int optionNum = 1;
 
-    for (int i = 0; i < vendorList.size(); i++) {
-        const auto& vendor = vendorList[i];
-        for (int j = 0; j < vendor.serviceHasProvide.size(); j++) {
-            const auto& service = vendor.serviceHasProvide[j];
+    for (int i = 0; i < vendorList.size(); i++)
+    {
+        const auto &vendor = vendorList[i];
+        for (int j = 0; j < vendor.serviceHasProvide.size(); j++)
+        {
+            const auto &service = vendor.serviceHasProvide[j];
             if ((serviceType.empty() || service.type == serviceType) &&
-                service.available && service.quantity > 0) {
+                service.available && service.quantity > 0)
+            {
 
                 cout << optionNum << ". " << service.serviceName << " (by " << vendor.baseInfo.name << ")" << endl;
                 cout << "   Description: " << service.description << endl;
@@ -3093,13 +3399,14 @@ void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& even
                 cout << "   Available: " << service.quantity << endl;
                 cout << "   " << string(40, '-') << endl;
 
-                availableServices.push_back({ i, j });
+                availableServices.push_back({i, j});
                 optionNum++;
             }
         }
     }
 
-    if (availableServices.empty()) {
+    if (availableServices.empty())
+    {
         cout << "No available services in this category!" << endl;
         pauseScreen();
         return;
@@ -3110,20 +3417,22 @@ void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& even
     cin >> serviceChoice;
     cin.ignore();
 
-    if (serviceChoice < 1 || serviceChoice > static_cast<int>(availableServices.size())) {
+    if (serviceChoice < 1 || serviceChoice > static_cast<int>(availableServices.size()))
+    {
         cout << "Invalid selection!" << endl;
         pauseScreen();
         return;
     }
 
-    auto& selected = availableServices[static_cast<int>(serviceChoice - 1)];
-    Service& service = vendorList[selected.first].serviceHasProvide[selected.second];
-    Vendor& vendor = vendorList[selected.first];
+    auto &selected = availableServices[static_cast<int>(serviceChoice - 1)];
+    Service &service = vendorList[selected.first].serviceHasProvide[selected.second];
+    Vendor &vendor = vendorList[selected.first];
 
     double newTotal = currentEvent->totalCost + service.price;
-    if (newTotal > currentEvent->budget) {
+    if (newTotal > currentEvent->budget)
+    {
         cout << "Cannot book service! Exceeds budget by RM"
-            << fixed << setprecision(2) << (newTotal - currentEvent->budget) << endl;
+             << fixed << setprecision(2) << (newTotal - currentEvent->budget) << endl;
         pauseScreen();
         return;
     }
@@ -3138,14 +3447,16 @@ void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& even
     cin >> confirm;
     cin.ignore();
 
-    if (confirm != 'y' && confirm != 'Y') {
+    if (confirm != 'y' && confirm != 'Y')
+    {
         cout << "Booking cancelled." << endl;
         pauseScreen();
         return;
     }
 
     service.quantity--;
-    if (service.quantity == 0) {
+    if (service.quantity == 0)
+    {
         service.available = false;
     }
 
@@ -3158,18 +3469,22 @@ void bookServicesForWedding(CurrentUser& currentUser, vector<WeddingEvent>& even
     pauseScreen();
 }
 
-void viewAllWeddings(CurrentUser& currentUser, const vector<WeddingEvent>& events, const vector<Vendor>& vendorList) {
+void viewAllWeddings(CurrentUser &currentUser, const vector<WeddingEvent> &events, const vector<Vendor> &vendorList)
+{
     clearScreen();
     cout << "=== ALL WEDDING EVENTS ===" << endl;
 
-    if (events.empty()) {
+    if (events.empty())
+    {
         cout << "No wedding events found." << endl;
         pauseScreen();
         return;
     }
 
-    for (const auto& event : events) {
-        if (event.status == "cancelled") continue;
+    for (const auto &event : events)
+    {
+        if (event.status == "cancelled")
+            continue;
 
         cout << "Event ID: " << event.eventId << endl;
         cout << "Couple: " << event.groomName << " & " << event.brideName << endl;
@@ -3184,19 +3499,24 @@ void viewAllWeddings(CurrentUser& currentUser, const vector<WeddingEvent>& event
     pauseScreen();
 }
 
-void viewAllMyWeddings(CurrentUser& currentUser, const vector<WeddingEvent>& events, const vector<Vendor>& vendorList) {
+void viewAllMyWeddings(CurrentUser &currentUser, const vector<WeddingEvent> &events, const vector<Vendor> &vendorList)
+{
     clearScreen();
     cout << "=== ALL WEDDING EVENTS ===" << endl;
 
-    if (events.empty()) {
+    if (events.empty())
+    {
         cout << "No wedding events found." << endl;
         pauseScreen();
         return;
     }
 
-    for (const auto& event : events) {
-        if (event.status == "cancelled") continue;
-        if (event.organizerId == currentUser.userId) {
+    for (const auto &event : events)
+    {
+        if (event.status == "cancelled")
+            continue;
+        if (event.organizerId == currentUser.userId)
+        {
 
             cout << "Event ID: " << event.eventId << endl;
             cout << "Couple: " << event.groomName << " & " << event.brideName << endl;
@@ -3212,18 +3532,21 @@ void viewAllMyWeddings(CurrentUser& currentUser, const vector<WeddingEvent>& eve
     pauseScreen();
 }
 
-void viewWeddingsByOrganizer(vector<WeddingEvent>& events, vector<Organizer>& organizerList) {
+void viewWeddingsByOrganizer(vector<WeddingEvent> &events, vector<Organizer> &organizerList)
+{
     clearScreen();
     cout << "=== VIEW WEDDINGS BY ORGANIZER ===" << endl;
 
-    if (organizerList.empty()) {
+    if (organizerList.empty())
+    {
         cout << "No organizers found." << endl;
         pauseScreen();
         return;
     }
 
     cout << "Available Organizers:" << endl;
-    for (int i = 0; i < organizerList.size(); i++) {
+    for (int i = 0; i < organizerList.size(); i++)
+    {
         cout << (i + 1) << ". " << organizerList[i].baseInfo.name << endl;
     }
 
@@ -3232,20 +3555,23 @@ void viewWeddingsByOrganizer(vector<WeddingEvent>& events, vector<Organizer>& or
     cin >> choice;
     cin.ignore();
 
-    if (choice < 1 || choice > organizerList.size()) {
+    if (choice < 1 || choice > organizerList.size())
+    {
         cout << "Invalid selection!" << endl;
         pauseScreen();
         return;
     }
 
-    string& selectedOrganizerId = organizerList[choice - 1].organizerId;
+    string &selectedOrganizerId = organizerList[choice - 1].organizerId;
 
     clearScreen();
     cout << "=== WEDDINGS BY " << organizerList[choice - 1].baseInfo.name << " ===" << endl;
 
     bool found = false;
-    for (auto& event : events) {
-        if (event.organizerId == selectedOrganizerId && event.status != "cancelled") {
+    for (auto &event : events)
+    {
+        if (event.organizerId == selectedOrganizerId && event.status != "cancelled")
+        {
             cout << "Event ID: " << event.eventId << endl;
             cout << "Couple: " << event.groomName << " & " << event.brideName << endl;
             cout << "Date: " << event.weddingDate << endl;
@@ -3258,14 +3584,16 @@ void viewWeddingsByOrganizer(vector<WeddingEvent>& events, vector<Organizer>& or
         }
     }
 
-    if (!found) {
+    if (!found)
+    {
         cout << "No weddings found for this organizer." << endl;
     }
 
     pauseScreen();
 }
 
-void viewWeddingByStatus(vector<WeddingEvent>& events) {
+void viewWeddingByStatus(vector<WeddingEvent> &events)
+{
     clearScreen();
     cout << "=== VIEW WEDDINGS BY STATUS ===" << endl;
 
@@ -3281,12 +3609,22 @@ void viewWeddingByStatus(vector<WeddingEvent>& events) {
     cin.ignore();
 
     string status;
-    switch (choice) {
-    case 1: status = "planning"; break;
-    case 2: status = "completed"; break;
-    case 3: status = "cancelled"; break;
-    case 4: status = "Paid"; break;
-    case 0: return;
+    switch (choice)
+    {
+    case 1:
+        status = "planning";
+        break;
+    case 2:
+        status = "completed";
+        break;
+    case 3:
+        status = "cancelled";
+        break;
+    case 4:
+        status = "Paid";
+        break;
+    case 0:
+        return;
     default:
         cout << "Invalid selection!" << endl;
         pauseScreen();
@@ -3297,8 +3635,10 @@ void viewWeddingByStatus(vector<WeddingEvent>& events) {
     cout << "=== WEDDINGS WITH STATUS: " << status << " ===" << endl;
 
     bool found = false;
-    for (auto& event : events) {
-        if (event.status == status) {
+    for (auto &event : events)
+    {
+        if (event.status == status)
+        {
             cout << "Event ID: " << event.eventId << endl;
             cout << "Couple: " << event.groomName << " & " << event.brideName << endl;
             cout << "Date: " << event.weddingDate << endl;
@@ -3310,29 +3650,34 @@ void viewWeddingByStatus(vector<WeddingEvent>& events) {
         }
     }
 
-    if (!found) {
+    if (!found)
+    {
         cout << "No weddings found with this status." << endl;
     }
 
     pauseScreen();
 }
 
-void showInvitationCards(CurrentUser& currentUser) {
+void showInvitationCards(CurrentUser &currentUser)
+{
     vector<InvitationCard> existingCards;
     vector<InvitationCard> userCards;
     int counter = 1;
-    
+
     clearScreen();
     loadInvitationCards(existingCards);
-    
+
     // Filter cards by current user's ID and wedding ID
-    for (auto& card : existingCards) {
-        if (card.userId == currentUser.userId && card.weddingId == currentUser.currentWeddingId) {
+    for (auto &card : existingCards)
+    {
+        if (card.userId == currentUser.userId && card.weddingId == currentUser.currentWeddingId)
+        {
             userCards.push_back(card);
         }
     }
 
-    if (userCards.empty()) {
+    if (userCards.empty())
+    {
         cout << "\n+-------------------------------------+" << endl;
         cout << "|      NO INVITATION CARDS FOUND     |" << endl;
         cout << "+-------------------------------------+" << endl;
@@ -3346,28 +3691,30 @@ void showInvitationCards(CurrentUser& currentUser) {
     cout << "|           YOUR SAVED INVITATION CARDS          |" << endl;
     cout << "+-------------------------------------------------+" << endl;
     cout << "Found " << userCards.size() << " invitation card(s) for this wedding:" << endl;
-    
-    for (InvitationCard& card : userCards) {
+
+    for (InvitationCard &card : userCards)
+    {
         cout << "Invitation Card #" << counter << endl;
-        switch(card.templateChoice){
-            case 1:
-                cout << template1(card);
-                break;
-            case 2:
-                cout << template2(card);
-                break;
-            case 3:
-                cout <<  template3(card);
-                break;
-            case 4:
-                cout <<  template4(card);
-                break;
-            case 5:
-                cout <<  template5(card);
-                break;
-            default:
-                cout << "Unknown template!" << endl;
-                break;
+        switch (card.templateChoice)
+        {
+        case 1:
+            cout << template1(card);
+            break;
+        case 2:
+            cout << template2(card);
+            break;
+        case 3:
+            cout << template3(card);
+            break;
+        case 4:
+            cout << template4(card);
+            break;
+        case 5:
+            cout << template5(card);
+            break;
+        default:
+            cout << "Unknown template!" << endl;
+            break;
         }
         counter++;
     }
@@ -3375,22 +3722,26 @@ void showInvitationCards(CurrentUser& currentUser) {
     pauseScreen();
 }
 
-void deleteInvitationCard(CurrentUser& currentUser) {
+void deleteInvitationCard(CurrentUser &currentUser)
+{
     vector<InvitationCard> existingCards;
     vector<InvitationCard> userCards;
-    
+
     int counter = 1;
     clearScreen();
     loadInvitationCards(existingCards);
-    
+
     // Filter cards by current user's ID and wedding ID
-    for (auto& card : existingCards) {
-        if (card.userId == currentUser.userId && card.weddingId == currentUser.currentWeddingId) {
+    for (auto &card : existingCards)
+    {
+        if (card.userId == currentUser.userId && card.weddingId == currentUser.currentWeddingId)
+        {
             userCards.push_back(card);
         }
     }
 
-    if (userCards.empty()) {
+    if (userCards.empty())
+    {
         cout << "\n+-------------------------------------+" << endl;
         cout << "|         NO CARDS TO DELETE          |" << endl;
         cout << "+-------------------------------------+" << endl;
@@ -3404,30 +3755,31 @@ void deleteInvitationCard(CurrentUser& currentUser) {
     cout << "+-------------------------------------------------+" << endl;
     cout << "Select card to delete:" << endl;
     cout << "=================================================" << endl;
-    
-    for (InvitationCard& card : userCards) {
-        cout << "Invitation Card #" << counter << endl;
-        switch(card.templateChoice){
-            case 1:
-                cout << template1(card);
-                break;
-            case 2:
-                cout << template2(card);
-                break;
-            case 3:
-                cout <<  template3(card);
-                break;
-            case 4:
-                cout <<  template4(card);
-                break;
-            case 5:
-                cout <<  template5(card);
-                break;
-            default:
-                cout << "Unknown template!" << endl;
-                break;
 
-        }            
+    for (InvitationCard &card : userCards)
+    {
+        cout << "Invitation Card #" << counter << endl;
+        switch (card.templateChoice)
+        {
+        case 1:
+            cout << template1(card);
+            break;
+        case 2:
+            cout << template2(card);
+            break;
+        case 3:
+            cout << template3(card);
+            break;
+        case 4:
+            cout << template4(card);
+            break;
+        case 5:
+            cout << template5(card);
+            break;
+        default:
+            cout << "Unknown template!" << endl;
+            break;
+        }
         counter++;
     }
     cout << "\n0. <- Cancel" << endl;
@@ -3437,13 +3789,15 @@ void deleteInvitationCard(CurrentUser& currentUser) {
     int deleteChoice;
     cin >> deleteChoice;
 
-    if (deleteChoice == 0) {
+    if (deleteChoice == 0)
+    {
         cout << "\nDeletion cancelled." << endl;
         pauseScreen();
         return;
     }
-    
-    if (deleteChoice < 1 || deleteChoice > userCards.size()) {
+
+    if (deleteChoice < 1 || deleteChoice > userCards.size())
+    {
         cout << "\nInvalid choice!" << endl;
         pauseScreen();
         return;
@@ -3454,48 +3808,57 @@ void deleteInvitationCard(CurrentUser& currentUser) {
     char confirm;
     cin >> confirm;
 
-    if (toupper(confirm) == 'Y') {
+    if (toupper(confirm) == 'Y')
+    {
         InvitationCard cardToDelete = userCards[deleteChoice - 1];
-       
-        for(auto& card : existingCards) {
-            if (card.cardId == cardToDelete.cardId){
+
+        for (auto &card : existingCards)
+        {
+            if (card.cardId == cardToDelete.cardId)
+            {
                 swap(card, existingCards.back());
                 existingCards.pop_back();
                 cout << "\nInvitation card deleted successfully!" << endl;
                 break;
             }
         }
-        
+
         // Save updated data
         saveDataIntoFile<InvitationCard>(existingCards, "invitation_cards.txt");
 
         cout << "\nInvitation card deleted successfully!" << endl;
     }
-    else {
+    else
+    {
         cout << "\nDeletion cancelled." << endl;
     }
     pauseScreen();
 }
 
-void generateInvitationCardMenu(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Organizer>& organizerList) {
+void generateInvitationCardMenu(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Organizer> &organizerList)
+{
     int choice;
     string contactNumber;
-    if (currentUser.type != ORGANIZER) {
+    if (currentUser.type != ORGANIZER)
+    {
         cout << "Only organizers can generate invitation cards!" << endl;
         pauseScreen();
         return;
     }
 
     string currentWeddingId;
-    for (auto& organizer : organizerList) {
-        if (organizer.organizerId == currentUser.userId) {
+    for (auto &organizer : organizerList)
+    {
+        if (organizer.organizerId == currentUser.userId)
+        {
             currentWeddingId = organizer.currentWeddingId;
             contactNumber = organizer.baseInfo.phoneNum;
             break;
         }
     }
 
-    if (currentWeddingId.empty()) {
+    if (currentWeddingId.empty())
+    {
         cout << "No active wedding! Please create a wedding first." << endl;
         cin.ignore();
         pauseScreen();
@@ -3503,20 +3866,24 @@ void generateInvitationCardMenu(CurrentUser& currentUser, vector<WeddingEvent>& 
     }
 
     WeddingEvent wedding;
-    for (auto& event : events) {
-        if (event.eventId == currentWeddingId && event.status == "planning") {
+    for (auto &event : events)
+    {
+        if (event.eventId == currentWeddingId && event.status == "planning")
+        {
             wedding = event;
             break;
         }
     }
 
-    if (wedding.eventId.empty()) {
+    if (wedding.eventId.empty())
+    {
         cout << "Wedding not found or not in planning status!" << endl;
         pauseScreen();
         return;
     }
 
-    do {
+    do
+    {
         cout << "\n=== GENERATE INVITATION CARD ===" << endl;
         cout << "Bride: " << wedding.brideName << " | Groom: " << wedding.groomName << endl;
         cout << "=====================================" << endl;
@@ -3528,49 +3895,53 @@ void generateInvitationCardMenu(CurrentUser& currentUser, vector<WeddingEvent>& 
         cout << "Enter your choice: ";
         cin >> choice;
 
-        switch (choice) {
-            case 1:
-                invitationTemplate(events, wedding, currentUser);
-                break;
-            case 2:
-                generateCustomInvitation(events, wedding, contactNumber,currentUser);
-                break;
-            case 3:
-                showInvitationCards(currentUser);
-                break;
-            case 4:
-                deleteInvitationCard(currentUser);
-                break;
-            case 0:
-                cout << "Returning to main menu..." << endl;
-                break;
-                
-            default:
-                cout << "Invalid choice! Please try again." << endl;
-                pauseScreen();
-                break;
+        switch (choice)
+        {
+        case 1:
+            invitationTemplate(events, wedding, currentUser);
+            break;
+        case 2:
+            generateCustomInvitation(events, wedding, contactNumber, currentUser);
+            break;
+        case 3:
+            showInvitationCards(currentUser);
+            break;
+        case 4:
+            deleteInvitationCard(currentUser);
+            break;
+        case 0:
+            cout << "Returning to main menu..." << endl;
+            break;
+
+        default:
+            cout << "Invalid choice! Please try again." << endl;
+            pauseScreen();
+            break;
         }
     } while (choice != 0);
 }
 
-void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& wedding, string contactNumber, CurrentUser& currentUser) {
+void generateCustomInvitation(vector<WeddingEvent> &events, WeddingEvent &wedding, string contactNumber, CurrentUser &currentUser)
+{
     int templateChoice;
     char saveChoice;
     char generateAnother;
     InvitationCard card;
     vector<InvitationCard> existingCards;
 
-    do {
+    do
+    {
 
-        loadInvitationCards(existingCards); 
-        
+        loadInvitationCards(existingCards);
+
         cout << "\n=== GENERATE YOUR INVITATION CARD ===" << endl;
         cout << "Current Wedding Details:" << endl;
         cout << "Bride: " << wedding.brideName << endl;
         cout << "Groom: " << wedding.groomName << endl;
         cout << "Date: " << wedding.weddingDate << endl;
         cout << "Venue: " << wedding.weddingVenue << endl;
-        cout << "Contact: " << contactNumber << endl << endl;
+        cout << "Contact: " << contactNumber << endl
+             << endl;
         cout << "=================================" << endl;
         cout << "Select your preferred template:" << endl;
         cout << "1. Classic Elegant" << endl;
@@ -3582,29 +3953,32 @@ void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& weddin
         cout << "Enter your choice: ";
         cin >> templateChoice;
         cin.ignore();
-        
-        if (templateChoice == 0) {
+
+        if (templateChoice == 0)
+        {
             cout << "Generation cancelled." << endl;
             pauseScreen();
             return;
         }
 
-        if (templateChoice < 1 || templateChoice > 5) {
+        if (templateChoice < 1 || templateChoice > 5)
+        {
             cout << "Invalid template choice!" << endl;
             pauseScreen();
             continue;
         }
 
         cout << "\n=== YOUR WEDDING INVITATION ===" << endl;
-        
+
         // Generate invitation text based on template choice
         string invitationText = generateInvitationByChoice(templateChoice, card);
         cout << invitationText << endl;
-        
+
         cout << "\nDo you want to save this invitation card? (y/n): ";
         cin >> saveChoice;
 
-        if (toupper(saveChoice) == 'Y') {
+        if (toupper(saveChoice) == 'Y')
+        {
             // Fill the card data
             card.userId = currentUser.userId;
             card.weddingId = currentUser.currentWeddingId;
@@ -3614,12 +3988,13 @@ void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& weddin
             card.weddingDate = wedding.weddingDate;
             card.weddingVenue = wedding.weddingVenue;
             card.contactNumber = contactNumber;
-            
+
             existingCards.push_back(card);
             saveInvitationCards(existingCards);
             cout << "Invitation card saved successfully!" << endl;
         }
-        else {
+        else
+        {
             cout << "Invitation card not saved." << endl;
         }
 
@@ -3629,26 +4004,29 @@ void generateCustomInvitation(vector<WeddingEvent>& events, WeddingEvent& weddin
     } while (toupper(generateAnother) == 'Y');
 }
 
-string generateInvitationByChoice(int choice, InvitationCard& card) {
-    switch (choice) {
-        case 1:
-            return template1(card);
-        case 2:
-            return template2(card);
-        case 3:
-            return template3(card);
-        case 4:
-            return template4(card);
-        case 5:
-            return template5(card);
-        default:
-            return "Invalid template choice!";
+string generateInvitationByChoice(int choice, InvitationCard &card)
+{
+    switch (choice)
+    {
+    case 1:
+        return template1(card);
+    case 2:
+        return template2(card);
+    case 3:
+        return template3(card);
+    case 4:
+        return template4(card);
+    case 5:
+        return template5(card);
+    default:
+        return "Invalid template choice!";
     }
 }
 
-string returnTime(Participant& p)
+string returnTime(Participant &p)
 {
-    if (p.attendance.checkInTime == 0) {
+    if (p.attendance.checkInTime == 0)
+    {
         return "N/A";
     }
 
@@ -3663,79 +4041,40 @@ string returnTime(Participant& p)
 
 bool checkIsExist(vector<Participant> participant, string name, string eventId)
 {
-    for (auto& p : participant)
+    for (auto &p : participant)
     {
-        if (p.eventId == eventId) {
+        if (p.eventId == eventId)
+        {
             if (p.name == name)
             {
                 return true; // true represent is exist
             }
         }
-
     }
     return false; // false represent not exist
 }
-//Monitoring
-// [Monitoring] return integer after verify
-int returnInt()
-{
-    int selection;
-
-    cout << "Enter your choice > ";
-    cin >> selection;
-
-    if (cin.fail())
-    {
-        cin.clear();
-        cin.ignore();
-        cout << "Invalid input. Please enter a number.\n\n";
-        return -1;
-    }
-
-    cin.ignore();
-    return selection;
-}
-
-// [Monitoring] return upper case char after verify
-char returnUpperChar()
-{
-
-    char selection;
-    cout << "Enter your choice > ";
-    cin >> selection;
-
-    if (cin.fail())
-    {
-        cin.clear();
-        cin.ignore();
-        //(numeric_limits<streamsize>::max(), '\n');
-        cout << "Invalid input. Please enter a character.\n\n";
-        return '\0'; // special value meaning "invalid"
-    }
-
-    cin.ignore(); // clean up buffer
-    return toupper(selection);
-}
 
 // [Monitoring] update the file after push back the vector
-void updateFile(ofstream& outFile, vector<Participant>& participants)
+void updateFile(ofstream &outFile, vector<Participant> &participants)
 {
-    for (auto& p : participants)
+    for (auto &p : participants)
     {
         outFile << p.eventId << "|"
-            << p.name << "|"
-            << (p.isVip ? 1 : 0) << "|"
-            << (p.attendance.isPresent ? 1 : 0) << "|"
-            << p.attendance.checkInTime
-            << "\n";
+                << p.name << "|"
+                << (p.isVip ? 1 : 0) << "|"
+                << (p.attendance.isPresent ? 1 : 0) << "|"
+                << p.attendance.checkInTime
+                << "\n";
     }
 }
 
-time_t parseDate(const string& dateStr) {
+time_t parseDate(const string &dateStr)
+{
     tm t = {};
     istringstream ss(dateStr);
     ss >> get_time(&t, "%Y-%m-%d"); // parse YYYY-MM-DD
-    if (ss.fail()) {
+    if (ss.fail())
+    {
         throw runtime_error("Invalid date format: " + dateStr);
     }
     // Convert to time_t
@@ -3743,9 +4082,11 @@ time_t parseDate(const string& dateStr) {
 }
 
 // Strip time (keep only date part)
-time_t toDateOnly(time_t t) {
+time_t toDateOnly(time_t t)
+{
     tm temp;
-    if (localtime_s(&temp, &t) != 0) {
+    if (localtime_s(&temp, &t) != 0)
+    {
         // Handle error - return original time or some error value
         return t; // or return -1 or throw exception depending on your error handling strategy
     }
@@ -3771,10 +4112,12 @@ void printParticipant(Participant p, WeddingEvent currentEvent)
     cout << "| " << setw(20) << left << (p.isVip ? "Yes" : "No");
 
     // Present
-    if (p.attendance.isPresent) {
+    if (p.attendance.isPresent)
+    {
         cout << "| " << setw(30) << left << (p.attendance.isPresent ? "Yes" : "No");
     }
-    else {
+    else
+    {
         if (today < weddingDay)
         {
             cout << "| " << setw(30) << left << "Haven't reach the date";
@@ -3785,10 +4128,12 @@ void printParticipant(Participant p, WeddingEvent currentEvent)
         }
     }
 
-    if (p.attendance.isPresent) {
+    if (p.attendance.isPresent)
+    {
         cout << "| " << setw(26) << left << returnTime(p);
     }
-    else {
+    else
+    {
         // Check-in Time
         if (today < weddingDay)
         {
@@ -3807,7 +4152,8 @@ void printParticipant(Participant p, WeddingEvent currentEvent)
     cout << "|\n";
 }
 
-void deleteAllParticipants(vector<Participant>& participants, string eventId) {
+void deleteAllParticipants(vector<Participant> &participants, string eventId)
+{
     bool anyRemoved = false;
     for (int i = 0; i < participants.size(); i++)
     {
@@ -3817,7 +4163,8 @@ void deleteAllParticipants(vector<Participant>& participants, string eventId) {
             anyRemoved = true;
         }
     }
-    if (anyRemoved) {
+    if (anyRemoved)
+    {
         ofstream outFile("participants.txt");
         if (!outFile)
         {
@@ -3829,7 +4176,7 @@ void deleteAllParticipants(vector<Participant>& participants, string eventId) {
     }
 }
 
-void deleteParticipants(vector<Participant>& participants, WeddingEvent currentEvent)
+void deleteParticipants(vector<Participant> &participants, WeddingEvent currentEvent)
 {
     // enter the name, if searched then show the information, then ask to edit what
     string name, input;
@@ -3846,7 +4193,7 @@ void deleteParticipants(vector<Participant>& participants, WeddingEvent currentE
 
     while (true)
     {
-        cout << "Please enter the participant's name to delete. (E.g. Cai Xu Kun)\n";
+        cout << "Please enter the participant's name to delete. (E.g. Cai Xu Kun) (0 to Exit)\n";
         getline(cin, name);
 
         if (cin.fail())
@@ -3858,13 +4205,13 @@ void deleteParticipants(vector<Participant>& participants, WeddingEvent currentE
         // Table header
         cout << string(115, '-') << "\n";
         cout << "| " << setw(30) << left << "Name"
-            << "| " << setw(20) << left << "isVip"
-            << "| " << setw(30) << left << "Present"
-            << "| " << setw(26) << left << "Check-in Time"
-            << "|\n";
+             << "| " << setw(20) << left << "isVip"
+             << "| " << setw(30) << left << "Present"
+             << "| " << setw(26) << left << "Check-in Time"
+             << "|\n";
         cout << string(115, '-') << "\n";
 
-        for (auto& p : participants)
+        for (auto &p : participants)
         {
             if (p.eventId == currentEvent.eventId && name == p.name)
             {
@@ -3937,29 +4284,36 @@ void deleteParticipants(vector<Participant>& participants, WeddingEvent currentE
     }
 }
 //[Monitoring][E]
-void editParticipantsName(vector<Participant>& participants, Participant participant, string weddingId)
+void editParticipantsName(vector<Participant> &participants, Participant participant, string weddingId)
 {
-    string newname;
+    string newName;
 
     while (true)
     {
-        cout << "Please enter the new participant's name. (E.g. Cai Xu Kun)\n";
-        getline(cin, newname);
+        cout << "Please enter the new participant's name. (E.g. Cai Xu Kun) (0 to Exit)\n";
+        getline(cin, newName);
 
         if (cin.fail())
         {
-            cout << "Please enter number or character only.\n\n";
+            cout << "Please enter only character and number.";
             continue;
         }
 
-        if (!checkIsExist(participants, newname, weddingId))
+        if (newName == "0")
+        {
+            cout << "Back to previous page.";
+            pauseScreen();
+            return;
+        }
+
+        if (!checkIsExist(participants, newName, weddingId))
         {
             // Find and update the participant in the vector
-            for (auto& p : participants)
+            for (auto &p : participants)
             {
                 if (p.name == participant.name && p.eventId == weddingId)
                 {
-                    p.name = newname;
+                    p.name = newName;
 
                     // Open file only when we need to update
                     ofstream outFile("participants.txt");
@@ -3972,21 +4326,21 @@ void editParticipantsName(vector<Participant>& participants, Participant partici
                     updateFile(outFile, participants);
                     outFile.close();
 
-                    cout << "Participant name updated successfully from '" << participant.name << "' to '" << newname << "'.\n\n";
+                    cout << "Participant name updated successfully from '" << participant.name << "' to '" << newName << "'.\n\n";
                     break;
                 }
             }
         }
         else
         {
-            cout << "Error: A participant with the name '" << newname << "' already exists.\n\n";
+            cout << "Error: A participant with the name '" << newName << "' already exists.\n\n";
         }
         break;
     }
 }
 
 //[Monitoring][E]
-void editParticipantsVip(vector<Participant>& participants, Participant participant, string weddingId)
+void editParticipantsVip(vector<Participant> &participants, Participant participant, string weddingId)
 {
     char selection;
 
@@ -4003,7 +4357,7 @@ void editParticipantsVip(vector<Participant>& participants, Participant particip
         if (selection == 'Y')
         {
             // Find and update the participant in the vector
-            for (auto& p : participants)
+            for (auto &p : participants)
             {
                 if (p.name == participant.name && p.eventId == weddingId)
                 {
@@ -4033,21 +4387,20 @@ void editParticipantsVip(vector<Participant>& participants, Participant particip
     }
 }
 
-bool askForTime(Participant participant, tm& t, string& weddingDateStr)
+bool askForTime(Participant participant, tm &t, string &weddingDateStr)
 {
     while (true)
     {
         std::string input;
         cout << "Current Edit Participant: " << participant.name
-            << "\nCheck-in Time: " << returnTime(participant)
-            << "\nPlease enter check-in time. (format: HH:MM:SS) (0: exit) \n> ";
+             << "\nCheck-in Time: " << returnTime(participant)
+             << "\nPlease enter check-in time. (format: HH:MM:SS) (0: exit) \n> ";
 
         getline(cin, input);
 
         if (cin.fail())
         {
-            cin.clear();
-            cout << "Please enter valid input.\n\n";
+            cout << "Please enter only character and number.";
             continue;
         }
 
@@ -4091,7 +4444,7 @@ bool askForTime(Participant participant, tm& t, string& weddingDateStr)
 }
 
 //[Monitoring][E]
-void editParticipantsPresent(vector<Participant>& participants, Participant participant, WeddingEvent currentEvent)
+void editParticipantsPresent(vector<Participant> &participants, Participant participant, WeddingEvent currentEvent)
 {
     char selection;
     tm t = {};
@@ -4111,7 +4464,7 @@ void editParticipantsPresent(vector<Participant>& participants, Participant part
             // if yes -> no, clear the check in time
             if (participant.attendance.isPresent)
             {
-                for (auto& p : participants)
+                for (auto &p : participants)
                 {
                     if (p.name == participant.name && p.eventId == currentEvent.eventId)
                     {
@@ -4140,7 +4493,7 @@ void editParticipantsPresent(vector<Participant>& participants, Participant part
                 if (askForTime(participant, t, currentEvent.weddingDate))
                 {
                     // Find and update the participant in the vector
-                    for (auto& p : participants)
+                    for (auto &p : participants)
                     {
                         if (p.name == participant.name && p.eventId == currentEvent.eventId)
                         {
@@ -4179,14 +4532,14 @@ void editParticipantsPresent(vector<Participant>& participants, Participant part
 }
 
 //[Monitoring][E]
-void editParticipantsCheckInTime(vector<Participant>& participants, Participant participant, WeddingEvent currentEvent)
+void editParticipantsCheckInTime(vector<Participant> &participants, Participant participant, WeddingEvent currentEvent)
 {
     tm t = {};
 
     if (askForTime(participant, t, currentEvent.weddingDate))
     {
         // Find and update the participant in the vector
-        for (auto& p : participants)
+        for (auto &p : participants)
         {
             if (p.name == participant.name && p.eventId == currentEvent.eventId)
             {
@@ -4213,7 +4566,7 @@ void editParticipantsCheckInTime(vector<Participant>& participants, Participant 
 }
 
 //[Monitoring][E]
-void updateParticipants(vector<Participant>& participants, WeddingEvent currentEvent)
+void updateParticipants(vector<Participant> &participants, WeddingEvent currentEvent)
 {
     // enter the name, if searched then show the information, then ask to edit what
     string name, input;
@@ -4230,25 +4583,32 @@ void updateParticipants(vector<Participant>& participants, WeddingEvent currentE
 
     while (true)
     {
-        cout << "Please enter the participant's name to edit. (E.g. Cai Xu Kun)\n";
+        cout << "Please enter the participant's name to edit. (E.g. Cai Xu Kun) (0 to Exit)\n";
         getline(cin, name);
 
         if (cin.fail())
         {
-            cout << "Please enter number or character only.\n\n";
+            cout << "Please enter only character and number.";
             continue;
+        }
+
+        if (name == "0")
+        {
+            cout << "Back to previous page.";
+            pauseScreen();
+            return;
         }
 
         // Table header
         cout << string(115, '-') << "\n";
         cout << "| " << setw(30) << left << "Name"
-            << "| " << setw(20) << left << "isVip"
-            << "| " << setw(30) << left << "Present"
-            << "| " << setw(26) << left << "Check-in Time"
-            << "|\n";
+             << "| " << setw(20) << left << "isVip"
+             << "| " << setw(30) << left << "Present"
+             << "| " << setw(26) << left << "Check-in Time"
+             << "|\n";
         cout << string(115, '-') << "\n";
 
-        for (auto& p : participants)
+        for (auto &p : participants)
         {
             if (p.eventId == currentEvent.eventId && name == p.name)
             {
@@ -4308,16 +4668,30 @@ void updateParticipants(vector<Participant>& participants, WeddingEvent currentE
 }
 
 // [Monitoring][C][Mark][D] check user enter participants list
-bool checkParticipantsList(stringstream& buffer)
+bool checkParticipantsList(stringstream &buffer)
 {
     string name;
-    cout << "Enter participant names (type 'done' on the end to finish).\n";
+    cout << "Enter participant names (type 'done' on the end to finish) (0 to Exit).\n";
 
     // check is it "done" inside
     while (true)
     {
         // let user enter the name list
         getline(cin, name);
+
+        if (cin.fail())
+        {
+            cout << "Please enter only character and number.";
+            continue;
+        }
+
+        if (name == "0")
+        {
+            cout << "Back to previous page.";
+            pauseScreen();
+            return;
+        }
+
         if (name == "done")
         {
             return true;
@@ -4332,7 +4706,7 @@ bool checkParticipantsList(stringstream& buffer)
 }
 
 // [Monitoring][C][Mark] show just the name of the buffer
-void readBuffer(stringstream& buffer)
+void readBuffer(stringstream &buffer)
 {
     string name;
 
@@ -4352,7 +4726,7 @@ void readBuffer(stringstream& buffer)
 }
 
 // [Mark Attendance][U]
-void markAttendance(vector<Participant>& participants, string weddingId)
+void markAttendance(vector<Participant> &participants, string weddingId)
 {
     string name;
     stringstream buffer;
@@ -4398,7 +4772,7 @@ void markAttendance(vector<Participant>& participants, string weddingId)
             {
                 if (!name.empty())
                 {
-                    for (auto& p : participants)
+                    for (auto &p : participants)
                     {
                         if (p.eventId == weddingId && name == p.name)
                         {
@@ -4455,27 +4829,34 @@ void searchParticipantOneByOne(vector<Participant> participants, WeddingEvent cu
 
     while (true)
     {
-        cout << "Please enter the participants name to search. (E.g. Cai Xu Kun)\n";
+        cout << "Please enter the participants name to search. (0 to Exit) (E.g. Cai Xu Kun)\n";
         getline(cin, name);
-
-        transform(name.begin(), name.end(), name.begin(), ::tolower);
 
         if (cin.fail())
         {
-            cout << "Please enter number or character only.\n\n";
+            cout << "Please enter only character and number.";
             continue;
         }
+
+        if (name == "0")
+        {
+            cout << "Back to previous page.";
+            pauseScreen();
+            return;
+        }
+
+        transform(name.begin(), name.end(), name.begin(), ::tolower);
 
         // Table header
         cout << string(115, '-') << "\n";
         cout << "| " << setw(30) << left << "Name"
-            << "| " << setw(20) << left << "isVip"
-            << "| " << setw(30) << left << "Present"
-            << "| " << setw(26) << left << "Check-in Time"
-            << "|\n";
+             << "| " << setw(20) << left << "isVip"
+             << "| " << setw(30) << left << "Present"
+             << "| " << setw(26) << left << "Check-in Time"
+             << "|\n";
         cout << string(115, '-') << "\n";
 
-        for (auto& p : participants)
+        for (auto &p : participants)
         {
             if (p.eventId != currentEvent.eventId)
                 continue;
@@ -4500,10 +4881,7 @@ void searchParticipantOneByOne(vector<Participant> participants, WeddingEvent cu
         {
             cout << string(115, '-') << "\n";
             cout << found << " result" << (found > 1 ? "s" : "") << " of participant" << (found > 1 ? "s" : "") << " names " << name << " or similar in the file. ( Press Enter to continue .... )\n";
-            do
-            {
-                getline(cin, input);
-            } while (!input.empty());
+            pauseScreen();
         }
         break;
     }
@@ -4525,10 +4903,10 @@ void showAllParticipants(vector<Participant> participants, WeddingEvent currentE
     // Table header
     cout << string(115, '-') << "\n";
     cout << "| " << setw(30) << left << "Name"
-        << "| " << setw(20) << left << "isVip"
-        << "| " << setw(30) << left << "Present"
-        << "| " << setw(26) << left << "Check-in Time"
-        << "|\n";
+         << "| " << setw(20) << left << "isVip"
+         << "| " << setw(30) << left << "Present"
+         << "| " << setw(26) << left << "Check-in Time"
+         << "|\n";
     cout << string(115, '-') << "\n";
 
     while (!participants.empty())
@@ -4543,20 +4921,17 @@ void showAllParticipants(vector<Participant> participants, WeddingEvent currentE
         }
     }
 
-    if (!found) {
+    if (!found)
+    {
         cout << "| " << setw(111) << left << "No participants found for this wedding." << "|\n";
     }
 
     cout << string(115, '-') << "\n";
-    cout << "Press Enter to continue .... )\n";
-    do
-    {
-        getline(cin, input);
-    } while (!input.empty());
+    pauseScreen();
 }
 
 // [Monitoring][R] search participants menu
-void searchParticipantsMenu(vector<Participant>& participants, WeddingEvent currentEvent)
+void searchParticipantsMenu(vector<Participant> &participants, WeddingEvent currentEvent)
 {
     int selection;
 
@@ -4593,7 +4968,7 @@ void searchParticipantsMenu(vector<Participant>& participants, WeddingEvent curr
 }
 
 // [Monitoring][C] add participants to list
-void addParticipantsToList(vector<Participant>& participants, stringstream& buffer, string weddingId)
+void addParticipantsToList(vector<Participant> &participants, stringstream &buffer, string weddingId)
 {
     string name;
     char selection;
@@ -4664,7 +5039,7 @@ void addParticipantsToList(vector<Participant>& participants, stringstream& buff
     }
 }
 
-void addParticipantsByList(vector<Participant>& participants, string weddingId)
+void addParticipantsByList(vector<Participant> &participants, string weddingId)
 {
     string name;
     stringstream buffer;
@@ -4769,20 +5144,30 @@ void addParticipantsByList(vector<Participant>& participants, string weddingId)
     }
 }
 
-void addParticipantOneByOne(vector<Participant>& participants, string weddingId)
+void addParticipantOneByOne(vector<Participant> &participants, string weddingId)
 {
     string name;
     char selection;
     int isVip = 0;
     Participant p;
 
-    cout << "Enter the participants name you going to add.\n> ";
-    getline(cin, name);
-
-    if (cin.fail())
+    while (true)
     {
-        cout << "Please enter number or character only.\n\n";
-        return;
+        cout << "Enter the participants name you going to add. (0 to Exit)\n> ";
+        getline(cin, name);
+
+        if (cin.fail())
+        {
+            cout << "Please enter only character and number.";
+            continue;
+        }
+
+        if (name == "")
+        {
+            cout << "Back to previous page.";
+            pauseScreen();
+            return;
+        }
     }
 
     if (checkIsExist(participants, name, weddingId))
@@ -4794,30 +5179,45 @@ void addParticipantOneByOne(vector<Participant>& participants, string weddingId)
     // Ask if VIP
     while (true)
     {
-        cout << "\nIs " << name << " a VIP ? (Yes: y, No: n)\n";
+        cout << "\nIs " << name << " a VIP ? (Yes: y, No: n, Exit: e)\n";
         selection = returnUpperChar();
 
         if (selection == '\0')
         {
             continue;
+        }
+
+        if (selection == 'E')
+        {
+            cout << "Back to previous page.";
+            pauseScreen();
+            return;
         }
 
         if (selection == 'Y')
         {
             isVip = 1;
         }
+
         break;
     }
 
     // Confirm addition
     while (true)
     {
-        cout << "Are you confirm to add \"" << name << "\"" << " which is " << (isVip == 1 ? "VIP" : "not VIP") << " ? (Yes: y, No: n)\n";
+        cout << "Are you confirm to add \"" << name << "\"" << " which is " << (isVip == 1 ? "VIP" : "not VIP") << " ? (Yes: y, No: n, Exit: E)\n";
         selection = returnUpperChar();
 
         if (selection == '\0')
         {
             continue;
+        }
+
+        if (selection == 'E')
+        {
+            cout << "Back to previous page.";
+            pauseScreen();
+            return;
         }
         break;
     }
@@ -4854,7 +5254,7 @@ void addParticipantOneByOne(vector<Participant>& participants, string weddingId)
     }
 }
 
-void addParticipantsMenu(vector<Participant>& participants, WeddingEvent currentEvent)
+void addParticipantsMenu(vector<Participant> &participants, WeddingEvent currentEvent)
 {
     int selection;
 
@@ -4888,7 +5288,7 @@ void addParticipantsMenu(vector<Participant>& participants, WeddingEvent current
     }
 }
 
-bool addDefaultParticipants(vector<Participant>& participants)
+bool addDefaultParticipants(vector<Participant> &participants)
 {
     ifstream inFile("participants.txt");
 
@@ -4942,7 +5342,7 @@ void displayPresentAmount(vector<Participant> participants, WeddingEvent current
     }
 
     // Count participants for current wedding
-    for (const auto& p : participants)
+    for (const auto &p : participants)
     {
         if (p.eventId == currentEvent.eventId)
         {
@@ -4979,14 +5379,14 @@ void displayPresentAmount(vector<Participant> participants, WeddingEvent current
     pauseScreen();
 }
 
-void participantMenu(vector<Participant>& participants, WeddingEvent currentEvent)
+void participantMenu(vector<Participant> &participants, WeddingEvent currentEvent)
 {
     int selection = 0;
     time_t now = time(nullptr); // current time
     time_t today = toDateOnly(now);
 
     time_t weddingDay = parseDate(currentEvent.weddingDate); // convert from string
-    weddingDay = toDateOnly(weddingDay);        // keep only date
+    weddingDay = toDateOnly(weddingDay);                     // keep only date
 
     while (true)
     {
@@ -5003,10 +5403,12 @@ void participantMenu(vector<Participant>& participants, WeddingEvent currentEven
         switch (selection)
         {
         case 1:
-            if (today > weddingDay) {
+            if (today > weddingDay)
+            {
                 cout << "Wedding already ended. You are not allowed to add participants.\n";
             }
-            else {
+            else
+            {
                 cout << "Add Participants selected.\n\n";
                 addParticipantsMenu(participants, currentEvent);
             }
@@ -5016,15 +5418,18 @@ void participantMenu(vector<Participant>& participants, WeddingEvent currentEven
             searchParticipantsMenu(participants, currentEvent);
             break;
         case 3:
-            if (today > weddingDay) {
+            if (today > weddingDay)
+            {
                 cout << "Wedding already ended. You are not allowed to mark attendance.\n";
                 pauseScreen();
             }
-            else if (today < weddingDay) {
+            else if (today < weddingDay)
+            {
                 cout << "Wedding has not started yet. You are not allowed to mark attendance.\n";
                 pauseScreen();
             }
-            else {
+            else
+            {
                 cout << "Mark Attendance selected.\n\n";
                 markAttendance(participants, currentEvent.eventId);
             }
@@ -5038,10 +5443,12 @@ void participantMenu(vector<Participant>& participants, WeddingEvent currentEven
             deleteParticipants(participants, currentEvent);
             break;
         case 6:
-            if (today < weddingDay) {
+            if (today < weddingDay)
+            {
                 cout << "Wedding has not started yet. You are not allowed to view attendance.\n";
             }
-            else {
+            else
+            {
                 cout << "View Attendance Statistics selected.\n\n";
                 displayPresentAmount(participants, currentEvent);
             }
@@ -5057,16 +5464,20 @@ void participantMenu(vector<Participant>& participants, WeddingEvent currentEven
         }
     }
 }
-//Payment
-void viewPaymentSummary(CurrentUser& currentUser, WeddingEvent& selectedEvent, vector<Vendor>& vendorList) { // Changed to reference
+
+// Payment
+void viewPaymentSummary(CurrentUser &currentUser, WeddingEvent &selectedEvent, vector<Vendor> &vendorList)
+{ // Changed to reference
     clearScreen();
-    if (selectedEvent.status != "planning") {
+    if (selectedEvent.status != "planning")
+    {
         cout << "Payment summary is only available for weddings in the 'complete' state." << endl;
         pauseScreen();
         return;
     }
 
-    if (selectedEvent.bookedServices.empty()) {
+    if (selectedEvent.bookedServices.empty())
+    {
         cout << "No services have been booked for this wedding." << endl;
         pauseScreen();
         return;
@@ -5082,27 +5493,33 @@ void viewPaymentSummary(CurrentUser& currentUser, WeddingEvent& selectedEvent, v
     cout << "---------------------------------------" << endl;
 
     double subtotal = 0.0;
-    for (string serviceIdNum : selectedEvent.bookedServices) {
+    for (string serviceIdNum : selectedEvent.bookedServices)
+    {
         string searchId = serviceIdNum;
         cout << "Looking for service: " << searchId << endl;
 
         bool found = false;
-        for (const auto& vendor : vendorList) {
+        for (const auto &vendor : vendorList)
+        {
             cout << "Checking vendor: " << vendor.vendorId << endl;
-            for (const auto& service : vendor.serviceHasProvide) {
+            for (const auto &service : vendor.serviceHasProvide)
+            {
                 cout << "Service ID: '" << service.serviceId << "' vs '" << searchId << "'" << endl;
 
-                if (service.serviceId == searchId) {
+                if (service.serviceId == searchId)
+                {
                     cout << left << setw(30) << service.serviceName << right << setw(10) << fixed << setprecision(2) << service.price << endl;
                     subtotal += service.price;
                     found = true;
                     break;
                 }
             }
-            if (found) break;
+            if (found)
+                break;
         }
 
-        if (!found) {
+        if (!found)
+        {
             cout << "Service " << searchId << " NOT FOUND!" << endl;
         }
     }
@@ -5115,14 +5532,15 @@ void viewPaymentSummary(CurrentUser& currentUser, WeddingEvent& selectedEvent, v
     tm nowTm;
     localtime_s(&nowTm, &now);
 
-    tm weddingTm = { 0 };
+    tm weddingTm = {0};
     weddingTm.tm_year = stoi(selectedEvent.weddingDate.substr(0, 4)) - 1900;
     weddingTm.tm_mon = stoi(selectedEvent.weddingDate.substr(5, 2)) - 1;
     weddingTm.tm_mday = stoi(selectedEvent.weddingDate.substr(8, 2));
 
     time_t weddingTime = mktime(&weddingTm);
 
-    if (difftime(now, weddingTime) > 0) {
+    if (difftime(now, weddingTime) > 0)
+    {
         lateFine = 50.0;
         cout << left << setw(30) << "Late Payment Fine" << right << setw(10) << fixed << setprecision(2) << lateFine << endl;
     }
@@ -5130,16 +5548,19 @@ void viewPaymentSummary(CurrentUser& currentUser, WeddingEvent& selectedEvent, v
     cout << left << setw(30) << "Grand Total" << right << setw(10) << fixed << setprecision(2) << (subtotal + lateFine) << endl;
     cout << "=======================================" << endl;
 
-    if (lateFine > 0) {
+    if (lateFine > 0)
+    {
         cout << "Note: A late payment fine of RM50 has been applied as the wedding date has passed." << endl;
     }
 
     pauseScreen();
 }
 
-void generateReport(CurrentUser& currentUser, WeddingEvent& selectedEvent, vector<Vendor>& vendorList) { // Changed to reference
+void generateReport(CurrentUser &currentUser, WeddingEvent &selectedEvent, vector<Vendor> &vendorList)
+{
     clearScreen();
-    if (selectedEvent.status != "Paid") {
+    if (selectedEvent.status != "Paid")
+    {
         cout << "Report can only be generated after weddings is 'Paid'." << endl;
         pauseScreen();
         return;
@@ -5148,15 +5569,18 @@ void generateReport(CurrentUser& currentUser, WeddingEvent& selectedEvent, vecto
     vector<PaymentTransaction> transactions;
     saveDataIntoFile(transactions, "payment_history.txt");
 
-    PaymentTransaction* transaction = nullptr;
-    for (auto& pt : transactions) {
-        if (pt.weddingId == selectedEvent.eventId) {
+    PaymentTransaction *transaction = nullptr;
+    for (auto &pt : transactions)
+    {
+        if (pt.weddingId == selectedEvent.eventId)
+        {
             transaction = &pt;
             break;
         }
     }
 
-    if (!transaction) {
+    if (!transaction)
+    {
         cout << "No payment transaction found for this completed wedding." << endl;
         pauseScreen();
         return;
@@ -5181,17 +5605,22 @@ void generateReport(CurrentUser& currentUser, WeddingEvent& selectedEvent, vecto
     cout << "Payment Status: " << transaction->paymentStatus << endl;
     cout << "--------------------------------------" << endl;
     cout << "SERVICES RENDERED" << endl;
-    for (string serviceIdNum : selectedEvent.bookedServices) {
+    for (string serviceIdNum : selectedEvent.bookedServices)
+    {
         bool found = false;
-        for (const auto& vendor : vendorList) {
-            for (const auto& service : vendor.serviceHasProvide) {
-                if (service.serviceId == serviceIdNum) {
+        for (const auto &vendor : vendorList)
+        {
+            for (const auto &service : vendor.serviceHasProvide)
+            {
+                if (service.serviceId == serviceIdNum)
+                {
                     cout << "* " << service.serviceName << " (" << service.type << ") - RM" << fixed << setprecision(2) << service.price << endl;
                     found = true;
                     break;
                 }
             }
-            if (found) break;
+            if (found)
+                break;
         }
     }
     cout << "======================================" << endl;
@@ -5199,24 +5628,30 @@ void generateReport(CurrentUser& currentUser, WeddingEvent& selectedEvent, vecto
     pauseScreen();
 }
 
-void generateAllPaidReports(vector<WeddingEvent>& events, vector<Vendor>& vendorList, vector<PaymentTransaction>& transactions) {
+void generateAllPaidReports(vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<PaymentTransaction> &transactions)
+{
     clearScreen();
     cout << "======================================" << endl;
     cout << "        ALL PAID WEDDINGS" << endl;
     cout << "======================================" << endl;
 
-    for (auto& event : events) {
-        if (event.status == "Paid") {
-            // 找对应交易
-            PaymentTransaction* transaction = nullptr;
-            for (auto& pt : transactions) {
-                if (pt.weddingId == event.eventId) {
+    for (auto &event : events)
+    {
+        if (event.status == "Paid")
+        {
+
+            PaymentTransaction *transaction = nullptr;
+            for (auto &pt : transactions)
+            {
+                if (pt.weddingId == event.eventId)
+                {
                     transaction = &pt;
                     break;
                 }
             }
 
-            if (!transaction) continue; // 没有交易就跳过
+            if (!transaction)
+                continue;
 
             cout << "--------------------------------------" << endl;
             cout << "Event ID: " << event.eventId << endl;
@@ -5230,12 +5665,16 @@ void generateAllPaidReports(vector<WeddingEvent>& events, vector<Vendor>& vendor
             cout << "Payment Status: " << transaction->paymentStatus << endl;
             cout << "--------------------------------------" << endl;
             cout << "Services:" << endl;
-            for (string serviceIdNum : event.bookedServices) {
-                for (const auto& vendor : vendorList) {
-                    for (const auto& service : vendor.serviceHasProvide) {
-                        if (service.serviceId == serviceIdNum) {
+            for (string serviceIdNum : event.bookedServices)
+            {
+                for (const auto &vendor : vendorList)
+                {
+                    for (const auto &service : vendor.serviceHasProvide)
+                    {
+                        if (service.serviceId == serviceIdNum)
+                        {
                             cout << "* " << service.serviceName << " (" << service.type
-                                << ") - RM" << fixed << setprecision(2) << service.price << endl;
+                                 << ") - RM" << fixed << setprecision(2) << service.price << endl;
                         }
                     }
                 }
@@ -5246,120 +5685,245 @@ void generateAllPaidReports(vector<WeddingEvent>& events, vector<Vendor>& vendor
     pauseScreen();
 }
 
-bool processPayment(CurrentUser& currentUser, vector<WeddingEvent>& events, WeddingEvent& selectedEvent) {
+bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, WeddingEvent &selectedEvent)
+{
     int PaymentChoice;
     string paymentMethod;
     int methodChoice;
 
     clearScreen();
-    if (selectedEvent.totalCost <= 0) {
+    if (selectedEvent.totalCost <= 0)
+    {
         cout << "No services booked yet. Nothing to pay." << endl;
         pauseScreen();
         return false;
     }
-    if (selectedEvent.status == "Paid") {
+    if (selectedEvent.status == "Paid")
+    {
         cout << "You are paid." << endl;
         pauseScreen();
         return false;
     }
-    cout << "=== MAKE PAYMENT ===" << endl;
-    cout << "Total amount to pay: RM" << fixed << setprecision(2) << selectedEvent.totalCost << endl;
-    cout << "Select a payment method:" << endl;
-    cout << "1. Credit/Debit Card" << endl;
-    cout << "2. Online Banking" << endl;
-    cout << "3. TNG" << endl;
-    cout << "4. Cash" << endl;
-    cout << "Enter your choice: ";
-    cin >> methodChoice;
-    cin.ignore();
+    while (true)
+    {
+        cout << "=== MAKE PAYMENT ===" << endl;
+        cout << "Total amount to pay: RM" << fixed << setprecision(2) << selectedEvent.totalCost << endl;
+        cout << "Select a payment method:" << endl;
+        cout << "1. Credit/Debit Card" << endl;
+        cout << "2. Online Banking" << endl;
+        cout << "3. TNG" << endl;
+        cout << "4. Cash" << endl;
+        cout << "0. Exit" << endl;
+        methodChoice = returnInt();
 
-    switch (methodChoice) {
-    case 1: {
-        paymentMethod = "Credit/Debit Card";
-        string cardNumber, securityCode, expiryDate;
-        bool cardValid = false;
+        if (methodChoice = -1)
+        {
+            continue;
+        }
 
-        while (!cardValid) {
-            cout << "Enter 16-digit card number: ";
-            getline(cin, cardNumber);
+        if (methodChoice = 0)
+        {
+            cout << "Back to previous page.";
+            pauseScreen();
+            return;
+        }
 
-            cout << "Enter 3-digit security code: ";
-            getline(cin, securityCode);
+        switch (methodChoice)
+        {
+        case 1:
+        {
+            paymentMethod = "Credit/Debit Card";
+            string cardNumber, securityCode, expiryDate;
+            bool cardValid = false;
 
-            cout << "Enter expiry date (MM/YY): ";
-            getline(cin, expiryDate);
+            while (!cardValid)
+            {
+                cout << "Enter 16-digit card number (0 to Exit): ";
+                getline(cin, cardNumber);
+                if (cin.fail())
+                {
+                    cout << "Please enter only character and number.";
+                    continue;
+                }
+                if (cardNumber == "0")
+                {
+                    cout << "Back to previous page.";
+                    pauseScreen();
+                    return;
+                }
 
-            bool isCardNumberValid = cardNumber.length() == 16 && all_of(cardNumber.begin(), cardNumber.end(), ::isdigit);
-            bool isSecurityCodeValid = securityCode.length() == 3 && all_of(securityCode.begin(), securityCode.end(), ::isdigit);
+                cout << "Enter 3-digit security code (0 to Exit): ";
+                getline(cin, securityCode);
+                if (cin.fail())
+                {
+                    cout << "Please enter only character and number.";
+                    continue;
+                }
+                if (securityCode == "0")
+                {
+                    cout << "Back to previous page.";
+                    pauseScreen();
+                    return;
+                }
 
-            // Expiry date validation: Must be a future date from the current date (September 2025)
-            bool isExpiryDateValid = false;
-            if (regex_match(expiryDate, regex("\\d{2}/\\d{2}"))) {
-                int expMonth = stoi(expiryDate.substr(0, 2));
-                int expYear = stoi(expiryDate.substr(3, 2));
-                // Check if month is between 1-12 and year is valid
-                if (expMonth >= 1 && expMonth <= 12 && expYear >= 25) {
-                    isExpiryDateValid = true;
+                cout << "Enter expiry date (MM/YY) (0 to Exit): ";
+                getline(cin, expiryDate);
+
+                if (cin.fail())
+                {
+                    cout << "Please enter only character and number.";
+                    continue;
+                }
+
+                if (expiryDate == "0")
+                {
+                    cout << "Back to previous page.";
+                    pauseScreen();
+                    return;
+                }
+
+                bool isCardNumberValid = cardNumber.length() == 16 && all_of(cardNumber.begin(), cardNumber.end(), ::isdigit);
+                bool isSecurityCodeValid = securityCode.length() == 3 && all_of(securityCode.begin(), securityCode.end(), ::isdigit);
+
+                // Expiry date validation: Must be a future date from the current date (September 2025)
+                bool isExpiryDateValid = false;
+                if (regex_match(expiryDate, regex("\\d{2}/\\d{2}")))
+                {
+                    int expMonth = stoi(expiryDate.substr(0, 2));
+                    int expYear = stoi(expiryDate.substr(3, 2));
+                    // Check if month is between 1-12 and year is valid
+                    if (expMonth >= 1 && expMonth <= 12 && expYear >= 25)
+                    {
+                        isExpiryDateValid = true;
+                    }
+                }
+
+                if (isCardNumberValid && isSecurityCodeValid && isExpiryDateValid)
+                {
+                    cardValid = true;
+                }
+                else
+                {
+                    cout << "Invalid card details. Please ensure card number is 16 digits, security code is 3 digits, and the expiry date is valid (MM/YY)." << endl;
                 }
             }
-
-            if (isCardNumberValid && isSecurityCodeValid && isExpiryDateValid) {
-                cardValid = true;
-            }
-            else {
-                cout << "Invalid card details. Please ensure card number is 16 digits, security code is 3 digits, and the expiry date is valid (MM/YY)." << endl;
-            }
+            loadingTime();
+            break;
         }
-        loadingTime();
-        break;
-    }
-    case 2: {
-        paymentMethod = "Online Banking";
-        string username, password;
-        cout << "Enter bank username: ";
-        getline(cin, username);
-        cout << "Enter bank password: ";
-        getline(cin, password);
-        cout << "Payment processing..." << endl;
-        loadingTime();
-    } break;
-    case 3: {
-        paymentMethod = "TNG";
-        string phoneNumber;
-        bool phoneValid = false;
-        while (!phoneValid) {
-            cout << "Enter 11-digit Malaysian phone number: ";
-            getline(cin, phoneNumber);
+        case 2:
+        {
+            paymentMethod = "Online Banking";
+            string username, password;
+            while (true)
+            {
+                cout << "Enter bank username (0 to exit): ";
+                getline(cin, username);
 
-            if (phoneNumber.length() == 11 && all_of(phoneNumber.begin(), phoneNumber.end(), ::isdigit)) {
-                phoneValid = true;
+                if (cin.fail())
+                {
+                    cout << "Please enter only character and number.";
+                    continue;
+                }
+
+                if (username == "0")
+                {
+                    cout << "Back to previous page.";
+                    pauseScreen();
+                    return;
+                }
+
+                cout << "Enter bank password (0 to exit): ";
+                getline(cin, password);
+
+                if (cin.fail())
+                {
+                    cout << "Please enter only character and number.";
+                    continue;
+                }
+
+                if (password == "0")
+                {
+                    cout << "Back to previous page.";
+                    pauseScreen();
+                    return;
+                }
             }
-            else {
-                cout << "Invalid phone number. Please enter a valid 11-digit number." << endl;
-            }
+            cout << "Payment processing..." << endl;
+            loadingTime();
         }
-        loadingTime();
         break;
-    }
-    case 4: {
-        paymentMethod = "Cash";
-        double cashAmount;
-        cout << "Enter cash amount received: RM";
-        cin >> cashAmount;
-        cin.ignore();
-        cout << "Payment processing..." << endl;
-        loadingTime();
-    } break;
-    default:
-        cout << "Invalid payment method!" << endl;
-        pauseScreen();
-        loadingTime();
+        case 3:
+        {
+            paymentMethod = "TNG";
+            string phoneNumber;
+            bool phoneValid = false;
+            while (!phoneValid)
+            {
+                cout << "Enter 11-digit Malaysian phone number (0 to exit): ";
+                getline(cin, phoneNumber);
+
+                if (cin.fail())
+                {
+                    cout << "Please enter only character and number.";
+                    continue;
+                }
+
+                if (phoneNumber == "0")
+                {
+                    cout << "Back to previous page.";
+                    pauseScreen();
+                    return;
+                }
+
+                if (phoneNumber.length() == 11 && all_of(phoneNumber.begin(), phoneNumber.end(), ::isdigit))
+                {
+                    phoneValid = true;
+                }
+                else
+                {
+                    cout << "Invalid phone number. Please enter a valid 11-digit number." << endl;
+                }
+            }
+            loadingTime();
+            break;
+        }
+        case 4:
+        {
+            paymentMethod = "Cash";
+            double cashAmount;
+            while (true)
+            {
+                cout << "Enter cash amount received in RM (0 to Exit): ";
+                cashAmount = returnDouble();
+
+                if (cashAmount == -1)
+                {
+                    continue;
+                }
+
+                if (cashAmount == 0)
+                {
+                    cout << "Back to previous page.";
+                    pauseScreen();
+                    return;
+                }
+            }
+            cout << "Payment processing..." << endl;
+            loadingTime();
+        }
         break;
+        default:
+            cout << "Invalid payment method!" << endl;
+            pauseScreen();
+            loadingTime();
+            break;
+        }
+        return true;
     }
-    return true;
 }
 
-void receipt(CurrentUser& currentUser, WeddingEvent& selectedEvent, string paymentMethod) {
+void receipt(CurrentUser &currentUser, WeddingEvent &selectedEvent, string paymentMethod)
+{
     time_t now = time(0);
     tm ltm;
     localtime_s(&ltm, &now);
@@ -5383,12 +5947,14 @@ void receipt(CurrentUser& currentUser, WeddingEvent& selectedEvent, string payme
     cout << "Payment successful!" << endl;
 
     ofstream paymentFile("payment_history.txt", ios::app);
-    if (paymentFile) {
+    if (paymentFile)
+    {
         PaymentTransaction newTransaction;
         int transactionCount = 0;
         ifstream tempFile("payment_history.txt");
         string line;
-        while (getline(tempFile, line)) {
+        while (getline(tempFile, line))
+        {
             transactionCount++;
         }
         tempFile.close();
@@ -5408,24 +5974,29 @@ void receipt(CurrentUser& currentUser, WeddingEvent& selectedEvent, string payme
     pauseScreen();
 }
 
-void paymentAndReportingMenu(CurrentUser& currentUser, vector<WeddingEvent>& events, vector<Vendor>& vendorList) {
+void paymentAndReportingMenu(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList)
+{
     WeddingEvent selectedEvent;
     string paymentMethod;
-    //find out the current wedding
-    for (int i = 0; i < events.size(); i++) {
-        if (events[i].eventId == currentUser.currentWeddingId) {
+    // find out the current wedding
+    for (int i = 0; i < events.size(); i++)
+    {
+        if (events[i].eventId == currentUser.currentWeddingId)
+        {
             selectedEvent = events[i];
             break;
         }
     }
-    if (currentUser.currentWeddingId.empty() || selectedEvent.eventId.empty()) {
+    if (currentUser.currentWeddingId.empty() || selectedEvent.eventId.empty())
+    {
         cout << "No active wedding found!" << endl;
         pauseScreen();
         return;
     }
 
     int paymentChoice;
-    do {
+    do
+    {
         clearScreen();
         cout << "=== PAYMENT & REPORTING MODULE ===" << endl;
         cout << "1. Make Payment" << endl;
@@ -5433,13 +6004,20 @@ void paymentAndReportingMenu(CurrentUser& currentUser, vector<WeddingEvent>& eve
         cout << "3. Generate Report" << endl;
         cout << "4. View Payment History" << endl;
         cout << "0. Return to Main Menu" << endl;
-        cout << "Enter your choice: ";
-        cin >> paymentChoice;
-        cin.ignore();
 
-        switch (paymentChoice) {
-        case 1: {
-            if (processPayment(currentUser, events, selectedEvent)) {
+        paymentChoice = returnInt();
+
+        if (paymentChoice = -1)
+        {
+            continue;
+        }
+
+        switch (paymentChoice)
+        {
+        case 1:
+        {
+            if (processPayment(currentUser, events, selectedEvent))
+            {
                 receipt(currentUser, selectedEvent, paymentMethod);
                 selectedEvent.status = "Paid";
                 saveDataIntoFile(events, "events.txt");
@@ -5465,9 +6043,11 @@ void paymentAndReportingMenu(CurrentUser& currentUser, vector<WeddingEvent>& eve
     } while (true);
 }
 
-void viewPaymentHistory(CurrentUser& currentUser) {
+void viewPaymentHistory(CurrentUser &currentUser)
+{
     clearScreen();
-    if (currentUser.type != ORGANIZER) {
+    if (currentUser.type != ORGANIZER)
+    {
         cout << "Access denied. Only organizers can view payment history." << endl;
         pauseScreen();
         return;
@@ -5475,7 +6055,8 @@ void viewPaymentHistory(CurrentUser& currentUser) {
     cout << "=== PAYMENT HISTORY ===" << endl;
 
     ifstream file("payment_history.txt");
-    if (!file) {
+    if (!file)
+    {
         cout << "No Payment History." << endl;
         pauseScreen();
         return;
@@ -5483,9 +6064,11 @@ void viewPaymentHistory(CurrentUser& currentUser) {
 
     string line;
     bool foundHistory = false;
-    while (getline(file, line)) {
+    while (getline(file, line))
+    {
         PaymentTransaction pt = PaymentTransaction::fromFileString(line);
-        if (pt.userId == currentUser.userId) {
+        if (pt.userId == currentUser.userId)
+        {
             cout << "--------------------------------------" << endl;
             cout << "Transaction ID: " << pt.transactionId << endl;
             cout << "Wedding ID: " << pt.weddingId << endl;
@@ -5500,13 +6083,15 @@ void viewPaymentHistory(CurrentUser& currentUser) {
     }
     file.close();
 
-    if (!foundHistory) {
+    if (!foundHistory)
+    {
         cout << "No Payment History." << endl;
     }
     pauseScreen();
 }
 
-void loadingTime() {
+void loadingTime()
+{
     cout << "Loading...";
 
     for (int i = 0; i < 3; i++)
@@ -5517,7 +6102,8 @@ void loadingTime() {
     cout << endl;
 }
 
-int main() {
+int main()
+{
     vector<Vendor> vendorList;
     vector<Organizer> organizerList;
     vector<Admin> adminList;
@@ -5533,8 +6119,6 @@ int main() {
     loadDataFromFile<PaymentTransaction>(transactions, "payment_history.txt");
     loadDataFromFile<WeddingEvent>(events, "events.txt");
     addDefaultParticipants(participants);
-
-
 
     // Start main menu
     mainMenu(currentUser, vendorList, organizerList, adminList, events, participants, transactions);
