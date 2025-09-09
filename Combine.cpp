@@ -3162,7 +3162,6 @@ void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<
 {
     int choice;
     WeddingEvent *currentEvent = nullptr;
-    bool isLogout = false;
     do
     {
         clearScreen();
@@ -3439,6 +3438,7 @@ void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Org
             {
                 return; // Exit the menu function when successfully logged out
             }
+            pauseScreen();
             break;
         default:
             cout << "Invalid choice! Please try again." << endl;
