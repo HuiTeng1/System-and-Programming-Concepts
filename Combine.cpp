@@ -3999,7 +3999,12 @@ void generateCustomInvitation(vector<WeddingEvent> &events, WeddingEvent &weddin
         }
 
         cout << "\nWould you like to generate another template? (y/n): ";
-        cin >> generateAnother;
+        generateAnother  = returnUpperChar();
+
+        if (generateAnother == '\0')
+        {
+            continue;
+        }
 
     } while (toupper(generateAnother) == 'Y');
 }
