@@ -51,6 +51,7 @@ void updateOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList);
 void displayAllServices(vector<Vendor> &vendorList);
 void displayServicesByVendor(vector<Vendor> &vendorList);
 void displayServicesByType(vector<Vendor> &vendorList);
+void dispayOwnServices(CurrentUser &currentUser, vector<Vendor> &vendorList);
 void displayBookedServices(CurrentUser &currentUser, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
 bool deleteOwnAccount(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
 void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList);
@@ -146,9 +147,15 @@ struct Service
         getline(ss, s.description, '|');
         getline(ss, s.type, '|');
         getline(ss, temp, '|');
-        s.price = stod(temp);
+        if (!temp.empty()) {
+            s.price = stod(temp);
+        }
+        
         getline(ss, temp, '|');
-        s.quantity = stoi(temp);
+        if (!temp.empty()) {
+            s.quantity = stoi(temp);
+        }
+        
         getline(ss, temp);
         s.available = (temp == "1");
 
@@ -225,23 +232,31 @@ struct Vendor
         getline(ss, segment, '|');
         v.totalServicesProvided = stoi(segment);
 
-        // Parse services
-        getline(ss, segment, '|');
-        if (!segment.empty())
+        string servicesStr;
+    getline(ss, servicesStr); // Get the rest of the line (services part)
+    
+    if (!servicesStr.empty())
+    {
+        // Split services by "##" delimiter
+        int pos = 0;
+        string token;
+        
+        while ((pos = servicesStr.find("##")) != string::npos) 
         {
-            stringstream sss(segment);
-            string sItem;
-            while (getline(sss, sItem, '#'))
+            token = servicesStr.substr(0, pos);
+            if (!token.empty()) 
             {
-                if (getline(sss, sItem, '#'))
-                { // Skip the second #
-                    if (!sItem.empty())
-                    {
-                        v.serviceHasProvide.push_back(Service::fromFileString(sItem));
-                    }
-                }
+                v.serviceHasProvide.push_back(Service::fromFileString(token));
             }
+            servicesStr.erase(0, pos + 2); // Remove processed part + "##"
         }
+        
+        // Don't forget the last service (after the last "##")
+        if (!servicesStr.empty()) 
+        {
+            v.serviceHasProvide.push_back(Service::fromFileString(servicesStr));
+        }
+    }
         return v;
     }
 };
@@ -963,7 +978,7 @@ void getBaseUserInfo(BaseInfo &baseInfo, vector<Admin> &adminList, vector<Organi
 
     do
     {
-        cout << "Enter email: ";
+        cout << "Enter email (e.g., username@example.com): ";
         getline(cin, baseInfo.email);
         if (baseInfo.email == "0")
         {
@@ -1872,6 +1887,41 @@ void displayServicesByType(vector<Vendor> &vendorList)
     if (!found)
     {
         cout << "No services found for this type." << endl;
+    }
+
+    pauseScreen();
+}
+
+void displayOwnServices(CurrentUser &currentUser, vector<Vendor> &vendorList)
+{
+    if (currentUser.type != VENDOR)
+    {
+        cout << "Only vendors can view their services!" << endl;
+        pauseScreen();
+        return;
+    }
+
+    clearScreen();
+    cout << "=== MY SERVICES ===" << endl;
+
+    Vendor &vendor = vendorList[currentUser.userIndex];
+
+    if (vendor.serviceHasProvide.empty())
+    {
+        cout << "You have no services available." << endl;
+        pauseScreen();
+        return;
+    }
+
+    int serviceNum = 1;
+    for (auto &service : vendor.serviceHasProvide)
+    {
+        cout << serviceNum << ". " << service.serviceName
+             << " - RM" << fixed << setprecision(2) << service.price
+             << " (Qty: " << service.quantity << ")" << endl;
+        cout << "   Type: " << service.type << endl;
+        cout << "   Status: " << (service.available ? "Available" : "Not Available") << endl;
+        serviceNum++;
     }
 
     pauseScreen();
@@ -2970,11 +3020,11 @@ void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Org
 
         cout << "MARKET RESEARCH:" << endl;
         cout << "5. View All Services " << endl;
-        cout << "6. View Services by Type" << endl
-             << endl;
+        cout << "6. View Services by Type" << endl;
+        cout << "7. View Services by Vendor" << endl << endl;
 
         cout << "ACCOUNT MANAGEMENT:" << endl;
-        cout << "7. My Profile" << endl;
+        cout << "8. My Profile" << endl;
 
         cout << "0. Logout" << endl;
         cout << "==========================================" << endl;
@@ -2988,7 +3038,7 @@ void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Org
             addService(currentUser, vendorList);
             break;
         case 2:
-            displayServicesByVendor(vendorList); // They can select themselves
+            displayOwnServices(currentUser, vendorList);
             break;
         case 3:
             updateOwnService(currentUser, vendorList);
@@ -3003,6 +3053,8 @@ void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Org
             displayServicesByType(vendorList);
             break;
         case 7:
+            displayServicesByVendor(vendorList);
+        case 8:
             MyProfileMenu(currentUser, vendorList, organizerList, adminList);
             break;
         case 0:
@@ -3032,7 +3084,7 @@ void mainMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organ
         cout << "======================================" << endl;
         choice = returnInt();
 
-        if (choice = -1)
+        if (choice == -1)
         {
             continue;
         }
@@ -3391,14 +3443,12 @@ void bookServicesForWedding(CurrentUser &currentUser, vector<WeddingEvent> &even
             if ((serviceType.empty() || service.type == serviceType) &&
                 service.available && service.quantity > 0)
             {
-
                 cout << optionNum << ". " << service.serviceName << " (by " << vendor.baseInfo.name << ")" << endl;
                 cout << "   Description: " << service.description << endl;
                 cout << "   Type: " << service.type << endl;
                 cout << "   Price: RM" << fixed << setprecision(2) << service.price << endl;
                 cout << "   Available: " << service.quantity << endl;
                 cout << "   " << string(40, '-') << endl;
-
                 availableServices.push_back({i, j});
                 optionNum++;
             }
