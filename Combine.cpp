@@ -11,19 +11,6 @@
 #include <regex>
 using namespace std;
 
-#include <windows.h>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
-#include <fstream>
-#include <iomanip>
-#include <algorithm>
-#include <cctype>
-#include <limits>
-#include <regex>
-using namespace std;
-
 // Forward declarations for structs
 struct Service;
 struct BaseInfo;
@@ -542,7 +529,7 @@ int returnInt()
 {
     int selection;
 
-    cout << "Enter your choice > ";
+    cout << "\nEnter your choice > ";
     cin >> selection;
 
     if (cin.fail())
@@ -561,7 +548,7 @@ double returnDouble()
 {
     double selection;
 
-    cout << "Enter your choice > ";
+    cout << "\nEnter your choice > ";
     cin >> selection;
 
     if (cin.fail())
@@ -580,7 +567,7 @@ char returnUpperChar()
 {
 
     char selection;
-    cout << "Enter your choice > ";
+    cout << "\nEnter your choice > ";
     cin >> selection;
 
     if (cin.fail())
