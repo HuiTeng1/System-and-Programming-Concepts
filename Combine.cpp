@@ -4179,6 +4179,7 @@ void updateWeddingDetails(CurrentUser &currentUser, vector<WeddingEvent> &events
     cout << "\nWedding details updated successfully!" << endl;
     pauseScreen();
 }
+
 void bookServicesForWedding(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList)
 {
     if (currentUser.type != ORGANIZER)
@@ -6419,7 +6420,7 @@ void participantMenu(vector<Participant> &participants, WeddingEvent currentEven
     {
         clearScreen();
         cout << "=== PARTICIPANT MONITORING MENU ===\n";
-        cout << "1. Add Participants\n2. Search Participants\n3. Mark Attendance\n4. Edit Participants Information\n5. Delete Participants\n0. Exit Monitoring Module\n\n";
+        cout << "1. Add Participants\n2. Search Participants\n3. Mark Attendance\n4. Edit Participants Information\n5. Delete Participants\n6. View Attendace State\n0. Exit Monitoring Module\n\n";
         selection = returnInt();
 
         if (selection == -1)
