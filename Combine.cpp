@@ -11,19 +11,20 @@
 #include <regex>
 using namespace std;
 
-struct Service;
-struct BaseInfo;
-struct Vendor;
-struct Organizer;
-struct Admin;
-struct CurrentUser;
-struct WeddingEvent;
-struct Attendance;
-struct Participant;
-struct PaymentTransaction;
-struct InvitationCard;
+#include <windows.h>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <iomanip>
+#include <algorithm>
+#include <cctype>
+#include <limits>
+#include <regex>
+using namespace std;
 
-// Function declarations
+// Forward declarations for structs
 struct Service;
 struct BaseInfo;
 struct Vendor;
@@ -57,6 +58,7 @@ bool isValidDate(const string &date);
 bool isValidWeddingDate(const string &date);
 bool isDateAvailable(const string &date, const vector<WeddingEvent> &events, const string &venue);
 bool isValidBudget(double budget);
+bool isServiceBooked(const string &serviceId, const vector<WeddingEvent> &events);
 
 // User management functions
 void getBaseUserInfo(BaseInfo &baseInfo, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList);
@@ -80,7 +82,7 @@ void displayAllServices(vector<Vendor> &vendorList);
 void displayServicesByVendor(vector<Vendor> &vendorList);
 void displayServicesByType(vector<Vendor> &vendorList);
 void displayOwnServices(CurrentUser &currentUser, vector<Vendor> &vendorList);
-void updateOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList);
+void updateOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<WeddingEvent> &events);
 void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<WeddingEvent> &events);
 
 // Wedding event functions
@@ -644,6 +646,7 @@ void invitationTemplate(vector<WeddingEvent> &events, WeddingEvent &wedding, Cur
 
     do
     {
+        clearScreen();
         cout << "\n=== INVITATION TEMPLATES ===" << endl;
         cout << "Choose a template to preview:" << endl;
         cout << "1. Classic Elegant" << endl;
@@ -673,27 +676,27 @@ void invitationTemplate(vector<WeddingEvent> &events, WeddingEvent &wedding, Cur
         switch (templateChoice)
         {
         case 1:
-            cout << "\n--- Classic Elegant Template ---";
+            cout << "\n--- Classic Elegant Template ---\n";
             cout << template1(sampleCard);
             pauseScreen();
             break;
         case 2:
-            cout << "\n--- Modern Minimalist Template ---";
+            cout << "\n--- Modern Minimalist Template ---\n";
             cout << template2(sampleCard);
             pauseScreen();
             break;
         case 3:
-            cout << "\n--- Romantic with Hearts Template ---";
+            cout << "\n--- Romantic with Hearts Template ---\n";
             cout << template3(sampleCard);
             pauseScreen();
             break;
         case 4:
-            cout << "\n--- Formal Traditional Template ---";
+            cout << "\n--- Formal Traditional Template ---\n";
             cout << template4(sampleCard);
             pauseScreen();
             break;
         case 5:
-            cout << "\n--- Fun & Casual Template ---";
+            cout << "\n--- Fun & Casual Template ---\n";
             cout << template5(sampleCard);
             pauseScreen();
             break;
@@ -1227,6 +1230,7 @@ void addService(CurrentUser &currentUser, vector<Vendor> &vendorList)
         cout << "3. Decoration" << endl;
         cout << "4. Music / Entertainment" << endl;
         cout << "5. Venue" << endl;
+        cout << "0. Exit" << endl;
         cout << "Enter your choice (1-5): ";
 
         categoryChoice = returnInt();
@@ -1252,6 +1256,9 @@ void addService(CurrentUser &currentUser, vector<Vendor> &vendorList)
         case 5:
             newService.type = "Venue";
             break;
+        case 0:
+            pauseScreen();
+            return;
         default:
             cout << "Invalid choice. Please try again.\n";
             continue;
@@ -1660,53 +1667,66 @@ void updateUserProfile(CurrentUser &currentUser, vector<Vendor> &vendorList, vec
     }
 }
 
-void updateOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList)
+void updateOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<WeddingEvent> &events)
 {
+    bool isBooked;
     if (currentUser.type != VENDOR)
     {
         cout << "Only vendors can update services!" << endl;
         pauseScreen();
         return;
-    }
-
+    }    
+    int serviceIndex;
+    Vendor &vendor = vendorList[currentUser.userIndex];
+    while (true)
+    {
     clearScreen();
     cout << "=== UPDATE SERVICES ===" << endl;
-
-    Vendor &vendor = vendorList[currentUser.userIndex];
-
     if (vendor.serviceHasProvide.empty())
     {
         cout << "No services available to update!" << endl;
         pauseScreen();
         return;
     }
-    int serviceIndex;
-    while (true)
-    {
+
+
         cout << "\nYour Services:" << endl;
         int index = 1;
         for (auto &service : vendor.serviceHasProvide)
         {
+            isBooked = isServiceBooked(service.serviceId, events);
             cout << index << ". " << service.serviceName
                  << " - RM" << service.price
                  << " (Qty: " << service.quantity << ")" << endl;
             index++;
+            if (isBooked){
+                cout << " [BOOKED - Cannot update]" << endl;
+            }
         }
 
         cout << "Select service to update (1-" << vendor.serviceHasProvide.size() << "): ";
         serviceIndex = returnInt();
 
-        if (!(serviceIndex == -1))
+        if (serviceIndex == -1)
         {
-            break;
+            continue;
         }
 
         if (serviceIndex < 1 || serviceIndex > (int)vendor.serviceHasProvide.size())
         {
             cout << "Invalid selection!" << endl;
+            pauseScreen();
+            continue;
+        }
+        Service &selectedService = vendor.serviceHasProvide[serviceIndex - 1];
+        if (isServiceBooked(selectedService.serviceId, events)){
+            cout << "This service is currently booked and cannot be updated!" << endl;
+            pauseScreen();
+            continue;
+        }else{
+            break;
         }
     }
-
     Service &service = vendor.serviceHasProvide[serviceIndex - 1];
     int updateChoice;
     while (true)
@@ -3540,7 +3560,7 @@ void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Org
             displayOwnServices(currentUser, vendorList);
             break;
         case 3:
-            updateOwnService(currentUser, vendorList);
+            updateOwnService(currentUser, vendorList,events);
             break;
         case 4:
             deleteOwnService(currentUser, vendorList, events);
@@ -4744,7 +4764,7 @@ void showInvitationCards(CurrentUser &currentUser)
         pauseScreen();
         return;
     }
-
+    
     cout << "\n+-------------------------------------------------+" << endl;
     cout << "|           YOUR SAVED INVITATION CARDS          |" << endl;
     cout << "+-------------------------------------------------+" << endl;
@@ -4853,6 +4873,7 @@ void deleteInvitationCard(CurrentUser &currentUser)
             pauseScreen();
             continue;
         }
+        break;
     }
 
     if (deleteChoice == 0)
@@ -4881,6 +4902,7 @@ void deleteInvitationCard(CurrentUser &currentUser)
             pauseScreen();
             continue;
         }
+        break;
     }
 
     if (toupper(confirm) == 'Y')
@@ -4901,7 +4923,6 @@ void deleteInvitationCard(CurrentUser &currentUser)
         // Save updated data
         saveDataIntoFile<InvitationCard>(existingCards, "invitation_cards.txt");
 
-        cout << "\nInvitation card deleted successfully!" << endl;
     }
     else
     {
@@ -4959,6 +4980,7 @@ void generateInvitationCardMenu(CurrentUser &currentUser, vector<WeddingEvent> &
 
     do
     {
+        clearScreen();
         cout << "\n=== GENERATE INVITATION CARD ===" << endl;
         cout << "Bride: " << wedding.brideName << " | Groom: " << wedding.groomName << endl;
         cout << "=====================================" << endl;
@@ -5011,7 +5033,7 @@ void generateCustomInvitation(vector<WeddingEvent> &events, WeddingEvent &weddin
 
     do
     {
-
+        clearScreen();
         loadInvitationCards(existingCards);
 
         cout << "\n=== GENERATE YOUR INVITATION CARD ===" << endl;
