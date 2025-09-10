@@ -135,8 +135,8 @@ void participantMenu(vector<Participant> &participants, WeddingEvent currentEven
 void viewPaymentSummary(CurrentUser &currentUser, WeddingEvent &selectedEvent, vector<Vendor> &vendorList);
 void generateReport(CurrentUser &currentUser, WeddingEvent &selectedEvent, vector<Vendor> &vendorList);
 void generateAllPaidReports(vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<PaymentTransaction> &transactions);
-bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, WeddingEvent &selectedEvent);
-void receipt(CurrentUser &currentUser, WeddingEvent &selectedEvent, string paymentMethod);
+bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, WeddingEvent &selectedEvent, string &paymentMethod);
+void receipt(CurrentUser &currentUser, WeddingEvent &selectedEvent, string &paymentMethod);
 void paymentAndReportingMenu(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList);
 void viewPaymentHistory(CurrentUser &currentUser);
 
@@ -1044,6 +1044,7 @@ void getBaseUserInfo(BaseInfo &baseInfo, vector<Admin> &adminList, vector<Organi
         if (!isValidMalaysianPhone(baseInfo.phoneNum))
         {
             cout << "Invalid Malaysian phone number. Please try again. Enter '0' to exit. " << endl;
+            continue;
         }
         break;
     } while (true);
@@ -3196,8 +3197,9 @@ void UpdateWeddingMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vec
                     if (events[i].status == "completed")
                     {
                         cout << "The wedding is already marked as completed." << endl;
-                    }
-                    else
+                    }else if(events[i].status == "Paid"){
+                        cout << "The wedding is already paid." << endl;
+                    }else
                     {
                         // Mark as completed
                         events[i].status = "completed";
@@ -6786,28 +6788,33 @@ void generateReport(CurrentUser &currentUser, WeddingEvent &selectedEvent, vecto
 
 void generateAllPaidReports(vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<PaymentTransaction> &transactions)
 {
+    int counter = 0;
     clearScreen();
     cout << "======================================" << endl;
     cout << "        ALL PAID WEDDINGS" << endl;
     cout << "======================================" << endl;
 
+    bool foundPaid = false;
+    
     for (auto &event : events)
     {
-        if (event.status == "Paid")
+        // Case-insensitive status check
+        string statusLower = event.status;
+        transform(statusLower.begin(), statusLower.end(), statusLower.begin(), ::tolower);
+        
+        if (statusLower == "paid")
         {
-
-            PaymentTransaction *transaction = nullptr;
+            foundPaid = true;
+            
+            // Find ALL transactions for this wedding
+            vector<PaymentTransaction*> eventTransactions;
             for (auto &pt : transactions)
             {
                 if (pt.weddingId == event.eventId)
                 {
-                    transaction = &pt;
-                    break;
+                    eventTransactions.push_back(&pt);
                 }
             }
-
-            if (!transaction)
-                continue;
 
             cout << "--------------------------------------" << endl;
             cout << "Event ID: " << event.eventId << endl;
@@ -6815,11 +6822,30 @@ void generateAllPaidReports(vector<WeddingEvent> &events, vector<Vendor> &vendor
             cout << "Wedding Date: " << event.weddingDate << endl;
             cout << "Venue: " << event.weddingVenue << endl;
             cout << "--------------------------------------" << endl;
-            cout << "Transaction ID: " << transaction->transactionId << endl;
-            cout << "Amount Paid: RM" << fixed << setprecision(2) << transaction->amount << endl;
-            cout << "Payment Method: " << transaction->paymentMethod << endl;
-            cout << "Payment Status: " << transaction->paymentStatus << endl;
-            cout << "--------------------------------------" << endl;
+            
+            if (eventTransactions.empty())
+            {
+                cout << "No transaction records found for this paid wedding!" << endl;
+            }
+            else
+            {
+                counter++;
+                cout << "TRANSACTION(S) FOUND: " << eventTransactions.size() << endl;
+                cout << "--------------------------------------" << endl;
+                
+                // Display all transactions for this wedding
+                for (int i = 0; i < eventTransactions.size(); i++)
+                {
+                    PaymentTransaction* transaction = eventTransactions[i];
+                    cout << "Transaction " << counter << ":" << endl;
+                    cout << "  Transaction ID: " << transaction->transactionId << endl;
+                    cout << "  Amount Paid: RM" << fixed << setprecision(2) << transaction->amount << endl;
+                    cout << "  Payment Method: " << transaction->paymentMethod << endl;
+                    cout << "  Payment Status: " << transaction->paymentStatus << endl;
+                    cout << "--------------------------------------" << endl;
+                }
+            }
+
             cout << "Services:" << endl;
             for (string serviceIdNum : event.bookedServices)
             {
@@ -6831,20 +6857,26 @@ void generateAllPaidReports(vector<WeddingEvent> &events, vector<Vendor> &vendor
                         {
                             cout << "* " << service.serviceName << " (" << service.type
                                  << ") - RM" << fixed << setprecision(2) << service.price << endl;
+                            break;
                         }
                     }
                 }
             }
-            cout << "======================================" << endl;
+            cout << "======================================" << endl << endl;
         }
     }
+    
+    if (!foundPaid)
+    {
+        cout << "No paid weddings found in the system!" << endl;
+        cout << "======================================" << endl;
+    }
+    
     pauseScreen();
 }
-
-bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, WeddingEvent &selectedEvent)
+bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, WeddingEvent &selectedEvent, string &paymentMethod)
 {
     int PaymentChoice;
-    string paymentMethod;
     int methodChoice;
 
     clearScreen();
@@ -7012,9 +7044,11 @@ bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, Wedd
                     pauseScreen();
                     return false;
                 }
+                break;
             }
             cout << "Payment processing..." << endl;
             loadingTime();
+            return true;
         }
         break;
         case 3:
@@ -7082,14 +7116,13 @@ bool processPayment(CurrentUser &currentUser, vector<WeddingEvent> &events, Wedd
         default:
             cout << "Invalid payment method!" << endl;
             pauseScreen();
-            loadingTime();
-            break;
+            return false;
         }
         return true;
     }
 }
 
-void receipt(CurrentUser &currentUser, WeddingEvent &selectedEvent, string paymentMethod)
+void receipt(CurrentUser &currentUser, WeddingEvent &selectedEvent, string &paymentMethod)
 {
     time_t now = time(0);
     tm ltm;
@@ -7107,7 +7140,7 @@ void receipt(CurrentUser &currentUser, WeddingEvent &selectedEvent, string payme
     cout << "User Name: " << currentUser.userName << endl;
     cout << "Payment Date: " << dateStr << endl;
     cout << "Payment Time: " << timeStr << endl;
-    cout << "Status: PAID" << endl;
+    cout << "Status: Paid" << endl;
     cout << "Payment Method: " << paymentMethod << endl;
     cout << "Amount Paid: RM " << fixed << setprecision(2) << selectedEvent.totalCost << endl;
     cout << "======================================" << endl;
@@ -7132,7 +7165,7 @@ void receipt(CurrentUser &currentUser, WeddingEvent &selectedEvent, string payme
         newTransaction.weddingId = selectedEvent.eventId;
         newTransaction.amount = selectedEvent.totalCost;
         newTransaction.paymentMethod = paymentMethod;
-        newTransaction.paymentStatus = "PAID";
+        newTransaction.paymentStatus = "Paid";
         newTransaction.transactionDate = dateStr;
         newTransaction.transactionTime = timeStr;
         paymentFile << newTransaction.toFileString() << endl;
@@ -7190,11 +7223,12 @@ void paymentAndReportingMenu(CurrentUser &currentUser, vector<WeddingEvent> &eve
         {
         case 1:
         {
-            if (processPayment(currentUser, events, selectedEvent))
+            if (processPayment(currentUser, events, selectedEvent,paymentMethod))
             {
                 receipt(currentUser, selectedEvent, paymentMethod);
                 selectedEvent.status = "Paid";
                 saveDataIntoFile(events, "events.txt");
+                loadDataFromFile(events, "events.txt");
             }
             break;
         }
