@@ -81,7 +81,7 @@ void displayServicesByVendor(vector<Vendor> &vendorList);
 void displayServicesByType(vector<Vendor> &vendorList);
 void displayOwnServices(CurrentUser &currentUser, vector<Vendor> &vendorList);
 void updateOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList);
-void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList);
+void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList,vector<WeddingEvent> & events);
 
 // Wedding event functions
 void createNewWedding(CurrentUser &currentUser, vector<WeddingEvent> &events, vector<Vendor> &vendorList, vector<Organizer> &organizerList);
@@ -156,7 +156,7 @@ void UpdateWeddingMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vec
 void MyProfileMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
 void organizerMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants);
 void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants, vector<PaymentTransaction> &transactions);
-void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList);
+void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList,vector<WeddingEvent> &events);
 void mainMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList, vector<WeddingEvent> &events, vector<Participant> &participants, vector<PaymentTransaction> &transactions);
 
 struct Service
@@ -2312,8 +2312,26 @@ bool deleteOwnAccount(CurrentUser &currentUser, vector<Vendor> &vendorList, vect
     return true;
 }
 
-void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList)
+bool isServiceBooked(const string &serviceId, const vector<WeddingEvent> &events) 
 {
+    for (const auto &event : events) {
+        // Only check active weddings (not cancelled or completed)
+        if (event.status == "cancelled" || event.status == "completed") {
+            continue;
+        }
+        
+        for (const auto &bookedServiceId : event.bookedServices) {
+            if (bookedServiceId == serviceId) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<WeddingEvent> & events)
+{
+    bool isBooked;
     if (currentUser.type != VENDOR)
     {
         cout << "Only vendors can delete services!" << endl;
@@ -2340,11 +2358,15 @@ void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList)
         int serviceNum = 1;
         for (auto &service : vendor.serviceHasProvide)
         {
+            isBooked = isServiceBooked(service.serviceId, events);
             cout << serviceNum << ". " << service.serviceName
                  << " - RM" << fixed << setprecision(2) << service.price
                  << " (Qty: " << service.quantity << ")" << endl;
             cout << "   Type: " << service.type << endl;
             cout << "   Status: " << (service.available ? "Available" : "Not Available") << endl;
+            if (isBooked) {
+            cout << " [BOOKED - Cannot delete]" << endl;
+        }
             serviceNum++;
         }
 
@@ -2381,6 +2403,14 @@ void deleteOwnService(CurrentUser &currentUser, vector<Vendor> &vendorList)
         cout << "Type: " << selectedService.type << endl;
         cout << "Price: RM" << fixed << setprecision(2) << selectedService.price << endl;
 
+        // Check if service is booked
+        if (isServiceBooked(selectedService.serviceId, events)) {
+            cout << "\n[Cannot delete service '" << selectedService.serviceName 
+                << "' because it has active bookings!]" << endl;
+            cout << "Wait for the weddings to complete or be cancelled before deleting this service." << endl;
+            pauseScreen();
+            return;
+        }
         // Confirmation
 
         cout << "\nAre you sure you want to delete this service? (y/n):\n";
@@ -3412,7 +3442,7 @@ void adminMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Orga
     } while (currentUser.type != NONE);
 }
 // product
-void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList)
+void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organizer> &organizerList, vector<Admin> &adminList,vector<WeddingEvent> &events)
 {
     int choice;
     do
@@ -3464,7 +3494,7 @@ void vendorMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Org
             updateOwnService(currentUser, vendorList);
             break;
         case 4:
-            deleteOwnService(currentUser, vendorList);
+            deleteOwnService(currentUser, vendorList,events);
             break;
         case 5:
             displayAllServices(vendorList);
@@ -3530,7 +3560,7 @@ void mainMenu(CurrentUser &currentUser, vector<Vendor> &vendorList, vector<Organ
                     organizerMenu(currentUser, vendorList, organizerList, adminList, events, participants);
                     break;
                 case VENDOR:
-                    vendorMenu(currentUser, vendorList, organizerList, adminList);
+                    vendorMenu(currentUser, vendorList, organizerList, adminList,events);
                     break;
                 default:
                     cout << "Unknown user type!" << endl;
@@ -4250,11 +4280,12 @@ void bookServicesForWedding(CurrentUser &currentUser, vector<WeddingEvent> &even
         cout << "==========================================" << endl;
 
         cout << "Service Categories:" << endl;
-        cout << "1. Venue" << endl;
-        cout << "2. Catering" << endl;
-        cout << "3. Photography" << endl;
-        cout << "4. Decoration" << endl;
-        cout << "5. View All Services" << endl;
+        cout << "1. Catering" << endl;
+        cout << "2. Photography" << endl;
+        cout << "3. Decoration" << endl;
+        cout << "4. Music / Entertainment" << endl;
+        cout << "5. Venue" << endl;
+        cout << "6. View All Services" << endl;
         cout << "0. Back to Main Menu" << endl;
 
         cout << "Select category: ";
@@ -4271,8 +4302,8 @@ void bookServicesForWedding(CurrentUser &currentUser, vector<WeddingEvent> &even
             cout << "Back to previous page.";
             pauseScreen();
             return;
-            ;
         }
+        break;
     }
 
     string serviceType;
@@ -4361,6 +4392,8 @@ void bookServicesForWedding(CurrentUser &currentUser, vector<WeddingEvent> &even
         if (serviceChoice < 1 || serviceChoice > static_cast<int>(availableServices.size()))
         {
             cout << "Invalid selection!" << endl;
+        }else{
+            break;
         }
     }
 
