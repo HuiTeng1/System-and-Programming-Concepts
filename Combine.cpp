@@ -1429,6 +1429,7 @@ void userRegister(vector<Vendor> &vendorList, vector<Organizer> &organizerList, 
 void updateBaseInfo(BaseInfo &baseInfo, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList)
 {
     int choice;
+    string oldPassword;
     while (true)
     {
         cout << "\n=== UPDATE BASE INFORMATION ===" << endl;
@@ -1493,9 +1494,17 @@ void updateBaseInfo(BaseInfo &baseInfo, vector<Admin> &adminList, vector<Organiz
         cout << "Phone updated successfully!" << endl;
         break;
     case 4:
-        cout << "Enter new password: ";
-        getline(cin, baseInfo.password);
-        cout << "Password updated successfully!" << endl;
+        cout << "Enter your current password: " << endl;
+        cin >> oldPassword;
+        cin.ignore();
+        if(oldPassword == baseInfo.password){
+            cout << "Enter new password: ";
+            getline(cin, baseInfo.password);
+            cout << "Password updated successfully!" << endl;
+        }else{
+            cout << "Your old password is wrong!";
+            return;
+        }
         break;
     case 5:
         getBaseUserInfo(baseInfo, adminList, organizerList, vendorList);
@@ -1507,7 +1516,6 @@ void updateBaseInfo(BaseInfo &baseInfo, vector<Admin> &adminList, vector<Organiz
         cout << "Invalid choice!" << endl;
         break;
     }
-    pauseScreen();
 }
 
 void updateAdminInfo(Admin &admin, vector<Admin> &adminList, vector<Organizer> &organizerList, vector<Vendor> &vendorList)
@@ -1531,6 +1539,7 @@ void updateAdminInfo(Admin &admin, vector<Admin> &adminList, vector<Organizer> &
     {
     case 1:
         updateBaseInfo(admin.baseInfo, adminList, organizerList, vendorList);
+        pauseScreen();
         break;
     case 0:
         return;
@@ -1568,6 +1577,7 @@ void updateVendorInfo(Vendor &vendor, vector<Admin> &adminList, vector<Organizer
     {
     case 1:
         updateBaseInfo(vendor.baseInfo, adminList, organizerList, vendorList);
+        pauseScreen();
         break;
     case 2:
         cout << "Enter new company name: ";
@@ -4321,6 +4331,12 @@ void bookServicesForWedding(CurrentUser &currentUser, vector<WeddingEvent> &even
         return;
     }
 
+    if (!currentEvent || currentEvent->status == "completed")
+    {
+        cout << "Wedding is already complete!" << endl;
+        pauseScreen();
+        return;
+    }
     int choice;
 
     while (true)
